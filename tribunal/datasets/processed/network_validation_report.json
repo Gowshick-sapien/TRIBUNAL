@@ -1,0 +1,20 @@
+{
+  "node_count": 705903,
+  "edge_count": 6924049,
+  "checks": {
+    "no_null_nodes": {
+      "passed": true,
+      "null_node_count": 0
+    },
+    "node_attributes_complete": {
+      "passed": true,
+      "missing_account_id_count": 0
+    },
+    "edge_attributes_valid": {
+      "passed": true,
+      "sample_missing_attrs_count": 0
+    }
+  },
+  "issues": [],
+  "status": "PASSED"
+}

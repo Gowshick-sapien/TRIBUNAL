@@ -95,6 +95,23 @@
 
 ---
 
+### Stage 2.1 — Phase B.4 Transaction Network Builder
+
+> Structural foundation for feature engineering & network analytics. Built as an in-memory NetworkX MultiDiGraph and persisted to disk.
+
+- [x] **`investigation/transaction_network_builder.py`** — `TransactionNetworkBuilder` class
+  - [x] `build()` — Builds `nx.MultiDiGraph` with account nodes and transaction edges
+  - [x] `save()` — Persists graph to `datasets/processed/transaction_network.gpickle`
+  - [x] `load()` — Instant zero-overhead loading from disk
+  - [x] `validate()` — Structural integrity checks (`network_validation_report.json`)
+  - [x] `get_network_statistics()` — Network topology metrics (`network_profile.json`)
+- [x] **CLI Script (`scripts/build_network.py`)** — One-command execution to build, validate, profile, and save graph.
+- [x] **Verification Manual Plan (`docs/B.4_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
+
+**Verify:** MultiDiGraph built, validated, and persisted (`transaction_network.gpickle`). Network profile JSON generated. Unit tests passing. Refer `docs/B.4_Verification_Plan.md`.
+
+---
+
 ### Stage 3 — Planner
 
 - [ ] `planner/query_parser.py` — Ollama extraction + regex fallback

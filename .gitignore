@@ -1,11 +1,46 @@
-AML Investigation Board — Final.txt
+# Environment & Configuration
+.env
+.venv/
+venv/
+ENV/
+env/
 
-# Bytecode & pytest
+# Python & Bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 .pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# Datasets & processed data
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Logs & Temporary files
+*.log
+*.tmp
+temp/
+scratch/
+
+# Large Datasets & Generated Graph Artifacts
 tribunal/datasets/*.csv
-tribunal/datasets/raw/*.csv
+tribunal/datasets/*.txt
+tribunal/datasets/raw/
 tribunal/datasets/processed/*.parquet
+tribunal/datasets/processed/*.gpickle
+tribunal/datasets/processed/*.pkl
+*.gpickle
+*.parquet
+
+# Keep directory structure preserved via .gitkeep
+!**/datasets/.gitkeep
+!**/datasets/raw/.gitkeep
+!**/datasets/processed/.gitkeep

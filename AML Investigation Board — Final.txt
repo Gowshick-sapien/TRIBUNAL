@@ -1,0 +1,342 @@
+# AML Investigation Board — Final Architecture & Implementation Plan
+
+**Problem statement:** AI-Powered Suspicious Activity Detection (Problem Statement 1)
+**Builder:** Solo participant
+**Positioning statement (use this verbatim in your pitch):**
+> Instead of AI agents independently scoring a transaction as suspicious, our system runs a sequential board of domain experts that each generate competing hypotheses as structured Investigation Cards. Those cards are wired into a weighted evidence graph — support and contradiction edges — which a tribunal reasons over to find the strongest explainable chain of evidence, before recommending an escalation action.
+
+Investigation Philosophy
+
+Rather than allowing independent AI agents to make isolated risk decisions, the system models a real-world compliance investigation.
+
+Each expert investigates the current Case File, contributes new Investigation Cards, updates the shared understanding of the case, and passes the investigation forward.
+
+The final decision emerges from reasoning over the accumulated evidence rather than from any individual model or agent.
+
+Experts
+        ↓
+Investigation Cards
+        ↓
+Case File
+        ↓
+Evidence Graph
+        ↓
+Defense
+        ↓
+Tribunal
+
+This document has two parts:
+1. **Version A — Full Architecture (the vision).** Put this on your architecture slide. You are not building all of it, and that's fine to say out loud.
+2. **Version B — Solo 48-Hour Build (the reality).** This is what you actually implement, scoped for one person, end to end.
+
+Everything in Version A not present in Version B is explicitly marked **"Architected, not built."** Showing that boundary honestly is a strength — it tells judges you understand the full problem space rather than just what you had time for.
+
+---
+
+## VERSION A — Full Architecture (for the diagram/slide)
+
+```
+                              USER QUERY
+                                   │
+                      Intent & Entity Extraction Agent
+              (query type, filters, date range, entity, AML pattern)
+                                   │
+                        Investigation Query Understanding & Planning Agent
+                (decides which experts run, in what order, and why)
+                                   │
+                     Case File Initialized
+                        (shared investigation context & working memory)
+                                   │
+════════════════════════════════════════════════════════════════
+         EXPERT INVESTIGATION BOARD (sequential, case file-aware)
+Experts investigate one after another,
+each building upon the current Case File
+rather than investigating independently.
+════════════════════════════════════════════════════════════════
+  Financial Pattern Expert      → structuring, smurfing, velocity, rolling sums
+        │  Financial Expert contributes Investigation Cards to the Case File
+        ▼
+  Customer Behaviour Expert     → historical deviation, profile shift, KYC context
+        │  Reads the current Case File before beginning its investigation, targets prior dominant hypothesis
+        │  writes Investigation Card + updates Case File
+        ▼
+  Network Intelligence Expert   → beneficiary fan-out, money flow, round-tripping
+        │  (runs only if triggered — see Adaptive Cycle below)
+        ▼
+  [Regulatory Rule / Statistical / Temporal / Geographic Experts]
+        (architected, not built — see Future-Work Layer)
+────────────────────────────────────────────────────────────────
+  Each expert outputs INVESTIGATION CARDS, not verdicts:
+  { hypothesis, evidence, confidence, supporting_txn_ids,
+    counter_hypothesis, missing_data, supports }
+  An expert may emit MULTIPLE competing hypotheses, not just one.
+════════════════════════════════════════════════════════════════
+                  Evidence Graph Construction Engine
+════════════════════════════════════════════════════════════════
+  Nodes = Provenance-aware Investigation Cards(hypothesis + evidence + confidence)
+  Edges  = supports / contradicts / missing-evidence
+  Edge weights = support_strength, contradiction_strength
+  Built directly from each card's own supports/counter_hypothesis
+  fields — the card declares its own relationships
+════════════════════════════════════════════════════════════════
+                   Adversarial Investigation Phase
+════════════════════════════════════════════════════════════════
+  Defense Agent  — examines the current dominant hypothesis recorded in the Case File
+                   only, and argues the strongest legitimate
+                   counter-explanation against specifically that
+                   hypothesis (payroll, seasonal business, known vendor)
+  [Prosecutor Agent, Evidence Auditor — architected, not built]
+════════════════════════════════════════════════════════════════
+              Adaptive Cycle (bounded, single-shot)
+════════════════════════════════════════════════════════════════
+  If confidence after Defense pass < threshold (e.g. 70%):
+    → run exactly ONE more expert from a fixed priority list
+    → update graph and case file
+    → stop regardless of outcome (no open-ended loop)
+════════════════════════════════════════════════════════════════
+                    Tribunal / Consensus Engine
+════════════════════════════════════════════════════════════════
+  - Graph reasoning: find strongest explainable path that survives
+    counter-evidence
+  - Identifies winning hypothesis AND runner-up hypothesis
+  - Conflict resolution where contradictions outweigh support
+  - Confidence → Low / Medium / High risk classification
+════════════════════════════════════════════════════════════════
+                  Investigation Report Generator
+════════════════════════════════════════════════════════════════
+  Winning Chain | Runner-up + why rejected | Missing Evidence |
+  Confidence | Escalation: Monitor / Review / Report
+```
+
+### Future-work layer (architected, explicitly not built)
+- Open-ended Adaptive Investigation Loop with expected-confidence-gain scoring per expert (the "confidence budget" idea) — Version B only implements one bounded cycle
+- Multi-round adversarial debate between Prosecutor and Defense agents (vs. the single targeted Defense pass built)
+- Missing-Evidence Nodes that actively trigger new data acquisition, rather than being surfaced as static report caveats
+- Investigation memory across repeat queries on the same customer over time
+- Generalization beyond AML to other investigation domains (fraud, insider trading, insurance claims) — mention this once, briefly, as a closing line, not a build target
+
+**How to present this slide:** walk through the full diagram in ~30 seconds, then say plainly "here's what we actually built end-to-end" and move to Version B. The gap between the two, stated honestly, reads as engineering judgment — not as a shortfall.
+
+---
+
+## VERSION B — Solo 48-Hour Build (what you actually implement)
+
+Two experts running sequentially, sharing a lightweight case file. One targeted Defense pass. One bounded optional re-investigation cycle — not an open loop. This is the complete, real build plan.
+
+### Required-components mapping (map explicitly — judges will check against the rules doc's own vocabulary)
+
+| Rules doc requirement | What satisfies it here |
+|---|---|
+| EDA Tool | Lightweight profiling module, invoked only for broad/exploratory queries, skipped for single-entity queries |
+| Feature Engineering Tool | Shared module: rolling sums, transaction velocity, amount deviation, frequency — used by both experts |
+| Anomaly Detection Tool | Financial Pattern Expert (rule-based) + simple statistical layer (z-score / Isolation Forest) |
+| Risk Classification Tool | Tribunal's confidence → Low/Medium/High mapping |
+| Explanation Component | Investigation Report Generator, tied to original query + winning evidence chain |
+
+Keep these exact labels visible in your code structure and README, even though the underlying logic is organized as "experts" and a "tribunal." Don't lose easy scoring points to a naming mismatch with the rules document.
+
+### Core pipeline (build in this order)
+
+**1. Intent & Planning Agent**
+- Parses query → `{intent, filters: {date_range, country, txn_type, customer_id}, target_pattern}`
+- Decides: run EDA? which experts, in what order? — this is your single most important "agentic" proof point. It must visibly branch differently for at least two distinct query types in the live demo.
+- Initializes the Case File (empty).
+
+**2. Financial Pattern Expert (runs first)**
+- Structuring/smurfing checks: deposits clustered under reporting threshold
+- Velocity checks: rolling sum, transaction frequency, amount deviation from customer baseline
+- Simple statistical outlier check (z-score or Isolation Forest on transaction amounts)
+- Emits 1–3 Investigation Cards
+- Writes dominant hypothesis + confidence + open question into the case file
+
+**3. Customer Behaviour Expert (runs second, reads case file first)**
+- Reads the case file — if Financial Expert's dominant hypothesis was "structuring," this expert specifically checks for behaviour patterns that support or undercut *that* hypothesis, rather than starting cold
+- Historical deviation: current activity vs. the customer's own baseline
+- Profile-context check: declared income/business type vs. transaction pattern, if the dataset has it
+- Emits 1–2 Investigation Cards, updates the case file if its findings are stronger
+
+**4. Evidence Graph Builder (NetworkX)**
+- Each Investigation Card → node
+- Edges built directly from each card's own `supports` / `counter_hypothesis` fields — translation, not inference
+- ~15–20 nodes max, in-memory, no graph database
+
+**5. Defense Agent (single pass, targeted)**
+- Reads only the case file's current dominant hypothesis
+- One LLM call: "here is the dominant hypothesis and its evidence — argue the strongest innocent explanation against it"
+- Adds one contradiction edge to the graph if it finds a plausible counter-explanation
+
+**6. Adaptive cycle — bounded, single-shot**
+- If confidence after step 5 is below a hardcoded threshold, run exactly **one** more expert from a fixed priority list (e.g., a simplified Network check: beneficiary count), then stop regardless of outcome
+- This is an if-statement, not a loop — no convergence logic, no expected-gain calculation
+- **Cut this step first if you fall behind schedule.**
+
+**7. Tribunal / Consensus**
+- Walk the graph, find the path with highest net support (support weight − contradiction weight)
+- Identify the runner-up hypothesis and the specific edge that tipped it below the winner
+- Map final confidence → Monitor / Review / Report
+- ~100–150 lines of Python: collect, connect, resolve, output
+- The Tribunal never reasons directly over raw transactions.
+- It reasons only over the Case File and the Evidence Graph assembled by the expert investigators.
+
+**8. Investigation Report Generator**
+- Structure: query recap → experts invoked and why → winning evidence chain → runner-up hypothesis and why it was rejected → missing-evidence caveats → confidence → recommendation
+- This is your highest-leverage component — it's what a judge reads first and remembers. Spend real time here.
+
+**9. Demo Interface**
+- Simple chat-style interface (Streamlit is fastest solo) — type 2–3 different queries live, audience watches the plan, case file, and graph change
+- A working, honest interface beats a polished static one
+
+### Solo 48-hour time budget
+
+| Block | Hours |
+|---|---|
+| Dataset sourcing, cleaning, README data documentation | 4–5 |
+| Intent/Planning agent | 3–4 |
+| Financial Pattern Expert | 5–6 |
+| Customer Behaviour Expert | 4–5 |
+| Evidence graph builder | 4–5 |
+| Defense agent (single, targeted pass) | 3 |
+| Adaptive cycle (bounded) | 1–2 |
+| Tribunal/consensus logic | 3 |
+| Report generator | 3 |
+| Demo interface | 4–5 |
+| Integration, testing, bug fixing | 5 |
+| README, disclosures, commit hygiene | 2–3 |
+| Buffer / sleep | remainder |
+
+**Cut order if behind schedule** (in this exact order, don't skip ahead):
+1. Drop the statistical outlier layer inside Financial Expert — keep rules-only detection
+2. Drop the adaptive re-investigation cycle entirely — ship with just the two sequential experts
+3. Drop demo polish — a plain but functional interface is fine
+4. Drop Customer Behaviour Expert's profile-context check — keep only historical deviation
+
+**Never cut:** the query-driven branching in the Planning Agent, and the Report Generator. Those two are what visibly demonstrate "agentic" and "explainable" to a judge — everything else is in service of them.
+
+---
+
+## Suggested Tech Stack (solo-friendly, minimal setup overhead)
+
+| Component | Suggestion | Why |
+|---|---|---|
+| Language | Python | Fastest path to NetworkX, sklearn, pandas together |
+| Graph | NetworkX | In-memory, zero infra, sufficient for ~20 nodes |
+| Stats/ML | scikit-learn (Isolation Forest, z-score via numpy) | Well-known, minimal tuning needed |
+| LLM calls (Defense Agent, Report phrasing) | One provider, one wrapper function | Don't build multi-provider abstraction — you don't need it |
+| Demo UI | Streamlit | Fastest to a working interactive interface solo |
+| Dataset | IBM AML dataset or a Kaggle synthetic AML transaction set | Both have labeled structuring-like patterns; document source + license in README either way |
+
+---
+
+## Worked Example — full pipeline walkthrough
+
+Use this as your test case while building, and potentially as your live demo query.
+
+**Query:** *"Find structuring in the last 30 days for customer 541"*
+
+1. **Planner** extracts `{intent: pattern_detection, target_pattern: structuring, customer_id: 541, date_range: last_30_days}` → decides to skip EDA (single-entity query), runs Financial Expert then Customer Expert.
+2. **Financial Expert** finds 12 deposits of $9,700–$9,900 over 4 days → emits Card with `hypothesis: structuring, confidence: 0.82, counter_hypothesis: cash_intensive_business, missing_data: merchant_category`. Writes `dominant_hypothesis: structuring` to the case file.
+3. **Customer Expert** reads the case file, checks customer 541's historical deposit pattern specifically against the structuring hypothesis, finds a 430% daily volume increase versus baseline → emits a supporting Card.
+4. **Graph builder** creates two nodes, one support edge between them.
+5. **Defense Agent** reads `dominant_hypothesis: structuring`, argues the strongest counter-case it can find (e.g., payroll-day timing) → if the argument holds up against the transaction timestamps, adds a contradiction edge; if it doesn't fit the data, no edge is added.
+6. **Adaptive cycle**: confidence is 0.86, above threshold → skipped, no extra expert runs.
+7. **Tribunal**: winning path is Structuring (86%), runner-up would be Payroll (rejected — timing mismatch).
+8. **Report** renders exactly as shown in the Report Output Shape below.
+
+---
+
+## Investigation Card Schema (your core data contract)
+
+```json
+{
+  "card_id": "card_001",
+
+  "source_expert": "financial_pattern",
+
+  "derived_from_transactions":
+  [
+      "txn_1042",
+      "txn_1043",
+      "txn_1050"
+  ],
+
+  "generated_at":
+  "2026-07-24T15:22:10",
+
+  "hypothesis":
+  "structuring",
+
+  "confidence":
+  0.82,
+
+  ...
+}
+Every Investigation Card carries provenance metadata identifying which expert generated it, which transactions or entities contributed to it, and when it was created. This enables complete traceability from the final tribunal decision back to the underlying evidence, making every conclusion auditable.
+```
+
+Each field maps directly to a graph element: `hypothesis` + `confidence` + `evidence` → the node; `supports` → an outgoing support edge; `counter_hypothesis` → a candidate contradiction edge the Defense Agent can pick up and strengthen; `missing_data` → a caveat surfaced directly in the final report, with no separate lookup structure needed.
+
+## Case File Schema (shared state between sequential experts)
+
+```json
+{
+  "dominant_hypothesis": "structuring",
+  "dominant_confidence": 0.82,
+  "contradictions_found": [],
+  "open_question": "does behaviour history support or undercut structuring?"
+  "active_investigation_stage":
+  "customer_behaviour"	
+}
+```
+
+Keep this dumb: each expert reads it before running and overwrites `dominant_hypothesis` / `dominant_confidence` only if its own findings are stronger. No merging logic, no belief propagation across experts — last-strongest-wins is sufficient for a 48-hour build. The moment this schema starts reconciling conflicting beliefs instead of just carrying state, you've reintroduced the open-ended loop you deliberately scoped out.
+
+## Graph Edge Schema
+
+```json
+{
+  "source": "card_001",
+  "target": "card_004",
+  "relation": "contradicts",
+  "weight": 0.71,
+  "reason": "card_004 shows consistent payroll-day timing inconsistent with structuring's irregular deposit pattern"
+}
+```
+
+## Report Output Shape
+
+```
+Investigation Summary
+Query: "Find structuring in the last 30 days for customer 541"
+Domains invoked: Financial Pattern Expert, Customer Behaviour Expert (Network skipped — query did not require it)
+
+Winning Hypothesis: Structuring
+Confidence: 86%
+Supporting Evidence Chain: card_001 (12 sub-threshold deposits) → card_003 (velocity spike, 430% daily volume increase)
+
+Runner-up Hypothesis: Payroll pattern (card_004) — 42% confidence
+Rejected because: deposit timing inconsistent with historical payroll cycle
+
+Missing Evidence: merchant category unavailable — would help confirm/reject cash-intensive-business explanation
+
+Recommendation: Review
+```
+
+---
+
+## README disclosure checklist (rules-doc requirement — don't skip)
+- [ ] Dataset name, source, and license/citation
+- [ ] Synthetic data generation logic, if used, with schema and assumptions clearly documented
+- [ ] All AI coding assistance and LLM APIs used, named explicitly
+- [ ] Open-source libraries used (NetworkX, scikit-learn, Streamlit, etc.)
+- [ ] Individual contribution note — solo participant, state that plainly
+- [ ] Explicit mapping table (from this doc) showing which module satisfies EDA / Feature Engineering / Anomaly Detection / Risk Classification / Explanation
+
+---
+
+## Open decisions to lock in before you start coding
+1. **Adaptive cycle confidence threshold** — placeholder used above is 70%; set the real value once you see actual confidence scores from your chosen dataset, don't guess blind.
+2. **Fixed priority-list expert for the optional extra cycle** — Network check (beneficiary count) was suggested; confirm your dataset actually supports this before committing to it.
+3. **Dataset choice** — IBM AML dataset vs. a Kaggle synthetic set; whichever you pick, the labeling quality will directly affect how convincing your Financial Expert's rules look in the demo, so sanity-check a sample before building rules against it.
+
+## One-sentence pitch to memorize
+> "We built an AI investigation board — not a fraud detector. Domain experts generate competing hypotheses as Investigation Cards, we wire those into a graph of support and contradiction, and a tribunal reasons over the graph to find the strongest explainable chain — not just a score, but a verdict you could hand to a compliance auditor."
