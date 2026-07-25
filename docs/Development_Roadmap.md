@@ -16,8 +16,8 @@
 | Phase | Name | Status |
 |---|---|---|
 | A | Foundation | **Complete** |
-| B | Core Engine (Data, Preprocessing, Graph, Feature Spec) | **In Progress** |
-| C | Investigation Engine | Not Started |
+| B | Core Engine (Data, Preprocessing, Network, Feature Store) | **Complete** |
+| C | Investigation Engine (Planner C.1 & Financial Expert C.2) | **In Progress** |
 | D | Product | Not Started |
 
 ---
@@ -95,7 +95,7 @@
 
 ---
 
-### Stage 2.1 — Phase B.4 Transaction Network Builder
+### Stage 2.1 — Transaction Network Builder
 
 > Structural foundation for feature engineering & network analytics. Built as an in-memory NetworkX MultiDiGraph and persisted to disk.
 
@@ -106,13 +106,13 @@
   - [x] `validate()` — Structural integrity checks (`network_validation_report.json`)
   - [x] `get_network_statistics()` — Network topology metrics (`network_profile.json`)
 - [x] **CLI Script (`scripts/build_network.py`)** — One-command execution to build, validate, profile, and save graph.
-- [x] **Verification Manual Plan (`docs/B.4_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
+- [x] **Verification Manual Plan (`docs/Stage_2.1_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
 
-**Verify:** MultiDiGraph built, validated, and persisted (`transaction_network.gpickle`). Network profile JSON generated. Unit tests passing. Refer `docs/B.4_Verification_Plan.md`.
+**Verify:** MultiDiGraph built, validated, and persisted (`transaction_network.gpickle`). Network profile JSON generated. Unit tests passing. Refer `docs/Stage_2.1_Verification_Plan.md`.
 
 ---
 
-### Stage 2.2 — Phase B.5 Feature Store Builder
+### Stage 2.2 — Feature Store Builder
 
 > Reusable collection of 44 AML analytical features across 705,903 accounts. Persisted to disk (`feature_store.parquet`).
 
@@ -128,90 +128,97 @@
   - [x] `save()` — Persists Parquet (`datasets/processed/feature_store.parquet`)
 - [x] **`data/loader.py` Integration** — Added `load_feature_store()` canonical data access method.
 - [x] **CLI Script (`scripts/build_feature_store.py`)** — One-command execution to compute, validate, profile, and save feature store.
-- [x] **Verification Manual Plan (`docs/B.5_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
+- [x] **Verification Manual Plan (`docs/Stage_2.2_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
 
-**Verify:** Feature Store built (705,903 accounts x 44 features), validated (`Status: PASSED`), and persisted (`feature_store.parquet` - 65.5 MB). All unit tests passing. Refer `docs/B.5_Verification_Plan.md`.
-
----
-
-### Stage 3 — Planner
-
-- [ ] `planner/query_parser.py` — Ollama extraction + regex fallback
-- [ ] `planner/execution_planner.py` — deterministic plan construction
-- [ ] `planner/planner.py` — orchestrates parse → plan
-- [ ] `tests/unit/test_query_parser.py`
-- [ ] `tests/unit/test_execution_planner.py`
-
-**First working milestone:**
-
-```
-Input:  "Find structuring during the last month"
-Output: InvestigationPlan + ExecutionPlan (JSON)
-```
-
-**Verify:** Targeted query skips EDA. Broad query includes EDA. Different queries produce visibly different plans.
+**Verify:** Feature Store built (705,903 accounts x 44 features), validated (`Status: PASSED`), and persisted (`feature_store.parquet` - 65.5 MB). All unit tests passing. Refer `docs/Stage_2.2_Verification_Plan.md`.
 
 ---
 
-### Stage 4 — Feature Engineering
+### Stage 3 — Query Understanding & Planning (Phase C.1 Framework)
 
-- [ ] `tools/feature_engineering.py`
-  - [ ] Rolling sums (7d, 30d)
-  - [ ] Transaction velocity
-  - [ ] Transaction frequency
-  - [ ] Amount deviation from baseline
-  - [ ] Threshold proximity (sub-threshold count/ratio)
-- [ ] `tools/anomaly_detection.py`
-- [ ] `tools/eda_tool.py`
-- [ ] `tests/unit/test_feature_engineering.py`
-- [ ] `tests/unit/test_anomaly_detection.py`
+- [x] **`planner/planner_constants.py`** — Single source of truth for vocabulary (`SUPPORTED_INTENTS`, `PATTERNS`, `OUTPUTS`, `EXPERTS`, `ASSETS`)
+- [x] **`planner/prompts.py`** — System prompts and JSON output schema definitions
+- [x] **`planner/exceptions.py`** — Planner exception hierarchy (`LLMClientError`, `QueryParseError`, `ValidationError`, `ExecutionPlannerError`)
+- [x] **`planner/llm_client.py`** — Ollama communication client with retry logic, timeout handling, and custom caller mocking
+- [x] **`planner/query_parser.py`** — JSON parsing, schema validation, normalization, and fallback rule-based regex parser
+- [x] **`planner/execution_planner.py`** — Deterministic execution matrix mapper (`InvestigationPlan` → `ExecutionPlan`)
+- [x] **`planner/planner.py`** — Orchestrator returning `PlanningResult` with microsecond profiling metrics (`llm_ms`, `parser_ms`, `planner_ms`, `total_ms`)
+- [x] **`models/execution_plan.py` & `models/planning_result.py`** — Added `schema_version = "1.0"` and `planner_version = "C.1"` versioning
+- [x] **Unit Tests (`tests/unit/test_planner*.py`, `test_query_parser.py`, `test_execution_planner.py`)** — 100% test pass rate
 
-**Verify:** Known structuring data produces `sub_threshold_ratio > 0.9`. Velocity spike detected. Empty input returns zero features without crash.
+**Verify:** Targeted query skips EDA. Broad query includes EDA. Benchmark verification matrix queries produce deterministic execution plans. Refer `docs/Phase_C_Consolidated_Verification_Plan.md`.
 
 ---
 
 ## Phase C — Investigation Engine
 
-### Stage 5 — Experts
+### Stage 5 — Domain Experts
 
-- [ ] `experts/financial_expert.py`
-  - [ ] Structuring check
-  - [ ] Velocity check
-  - [ ] Anomaly check
-  - [ ] Case File update
-- [ ] `experts/behaviour_expert.py`
-  - [ ] Historical deviation check
-  - [ ] Hypothesis-directed investigation
-  - [ ] Profile mismatch check
-- [ ] `tests/unit/test_financial_expert.py`
-- [ ] `tests/unit/test_behaviour_expert.py`
-- [ ] `tests/integration/test_expert_pipeline.py`
+#### Phase C.2 — Financial Investigation Expert
+- [x] **`experts/financial/candidate_selector.py`** — Target entity filtering and threshold activity candidate selection
+- [x] **`experts/financial/structuring_detector.py`** — Near-threshold structuring detection ($8k–$10k)
+- [x] **`experts/financial/velocity_detector.py`** — Rapid transaction velocity and burst score detection
+- [x] **`experts/financial/large_transfer_detector.py`** — Statistical outlier and large transfer anomaly detection
+- [x] **`experts/financial/frequency_detector.py`** — High-frequency transaction spike detection
+- [x] **`experts/financial/confidence.py`** — Probabilistic confidence aggregator ($1 - \prod(1 - s_i)$), severity mapping (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`), supporting metrics & provenance aggregation
+- [x] **`experts/financial/card_builder.py`** — `CardBuilder` translating `PatternFinding`s into `InvestigationCard` objects
+- [x] **`experts/financial/financial_expert.py`** — `FinancialExpert` entry point with 5-stage pipeline and public `investigate()` method
+- [x] **`models/investigation_card.py`** — Updated with `severity`, `supporting_metrics`, and `provenance` tracing
+- [x] **Unit Tests (`tests/unit/test_financial_expert.py`, `test_candidate_selector.py`, etc.)** — 100% test pass rate across normal, structuring, velocity, large transfer, mixed pattern, and empty dataset scenarios
 
-**Verify:** Financial Expert emits cards from structuring data. Behaviour Expert reads Case File and produces supporting/contradicting cards. Cards match InvestigationCard schema.
+#### Phase C.3 — Customer Behaviour Investigation Expert
+- [x] **`models/pattern_finding.py`** — Shared official `PatternFinding` and `MetricEvidence` domain models
+- [x] **`experts/base_expert.py`** — `BaseInvestigationExpert` shared orchestrator with `_post_process_findings()` hook
+- [x] **`experts/behaviour/candidate_selector.py`** — Candidate selection based on execution plan filters and baseline deviation
+- [x] **`experts/behaviour/behaviour_drift_detector.py`** — Baseline daily amount and frequency drift detection
+- [x] **`experts/behaviour/dormancy_detector.py`** — Dormant account reactivation detection
+- [x] **`experts/behaviour/spending_pattern_detector.py`** — Spending amount distribution shift detection
+- [x] **`experts/behaviour/currency_change_detector.py`** — Unexpected currency switch detection
+- [x] **`experts/behaviour/payment_pattern_detector.py`** — Payment format shift detection (ACH to Wire/Cash)
+- [x] **`experts/behaviour/counterparty_behaviour_detector.py`** — Counterparty network expansion detection
+- [x] **`experts/behaviour/confidence.py`** — Probabilistic score aggregator ($1 - \prod(1 - s_i)$) and severity mapper
+- [x] **`experts/behaviour/card_builder.py`** — `CardBuilder` generating `InvestigationCard` objects with `source_expert="behaviour"`
+- [x] **`experts/behaviour/behaviour_expert.py`** — `BehaviourExpert` entry point with public `investigate()` method
+- [x] **Unit Tests (`tests/unit/test_behaviour_*.py`)** — 100% test pass rate across normal, dormancy, spending, currency, payment format, counterparty expansion, and mixed anomaly scenarios
+
+**Verify:** Financial Expert and Behaviour Expert emit standardized cards with full provenance, metric evidence, and post-processing hook capability. All 68 unit tests passing. Refer `docs/Phase_C_Consolidated_Verification_Plan.md`.
 
 ---
 
-### Stage 6 — Evidence Graph
+### Stage 6 — Evidence Graph & Case Synthesis Engine (Phase C.4)
 
-- [ ] `investigation/graph_builder.py`
-  - [ ] Node creation from cards
-  - [ ] Support edges from `supports` field
-  - [ ] Contradiction edges from `counter_hypothesis`
-- [ ] `tests/unit/test_graph_builder.py`
+- [x] **`models/evidence_node.py`** — `EvidenceNode` contract (`account`, `card`, `hypothesis`, `provenance`)
+- [x] **`models/evidence_edge.py`** — `EvidenceEdge` contract (`HAS_EVIDENCE`, `SUPPORTS`, `CORROBORATES`, `CONTRADICTS`, `DERIVED_FROM`, `SAME_ACCOUNT`)
+- [x] **`models/evidence_graph.py`** — `EvidenceGraph` wrapping `networkx.DiGraph` with JSON & gpickle persistence
+- [x] **`investigation/evidence/provenance_manager.py`** — Lineage tracking and provenance validation (`transactions`, `features`, `detectors`)
+- [x] **`investigation/evidence/graph_validator.py`** — Card completeness, confidence score range, and graph structural integrity validation
+- [x] **`investigation/evidence/evidence_merger.py`** — Same-expert card deduplication and provenance merging
+- [x] **`investigation/evidence/evidence_linker.py`** — Node generation (`account`, `card`, `hypothesis`) and semantic relationship inference
+- [x] **`investigation/evidence/graph_metrics.py`** — Graph topology analytics (`node_count`, `edge_count`, `connected_components`, `average_confidence`, `graph_density`)
+- [x] **`investigation/evidence/evidence_graph_builder.py`** — Main `EvidenceGraphBuilder` orchestrator
+- [x] **`investigation/graph_builder.py`** — Root `GraphBuilder` alias redirecting to `EvidenceGraphBuilder`
+- [x] **Unit Tests (`tests/unit/test_evidence_*.py`, `test_provenance_manager.py`, `test_graph_validator.py`)** — 100% test pass rate
+- [x] **Manual Integration Script (`scripts/manual_test_phase_c.py`)** — Verified end-to-end integration across Planner → Financial Expert → Behaviour Expert → Evidence Graph Builder
 
-**Verify:** Two supporting cards → 1 support edge. Counter-hypothesis match → contradiction edge. Orphan references skipped with warning.
+**Verify:** Multi-expert cards linked into an explainable NetworkX `DiGraph` with corroboration/same-account edges and graph metrics. All 79 unit tests passing. Refer `docs/Phase_C_Consolidated_Verification_Plan.md`.
 
 ---
 
-### Stage 7 — Defense
+### Stage 7 — Adversarial Review Engine (Phase C.5)
 
-- [ ] `adversarial/defense_agent.py`
-  - [ ] LLM counter-explanation prompt
-  - [ ] Plausibility threshold gate
-  - [ ] Contradiction edge injection
-- [ ] `tests/unit/test_defense_agent.py`
+- [x] **`adversarial/evidence_reviewer.py`** — Graph traversal and finding extraction into `ReviewContext`
+- [x] **`adversarial/contradiction_detector.py`** — Conflicting expert finding detection (e.g. Financial Structuring vs Behaviour Normal Baseline)
+- [x] **`adversarial/alternative_hypothesis_generator.py`** — Plausible non-malicious competing explanation generation (Payroll, Merchant settlement, Festival shopping, Tax disbursement)
+- [x] **`adversarial/evidence_strength_analyzer.py`** — Evidence strength scoring and provenance completeness evaluation
+- [x] **`adversarial/uncertainty_estimator.py`** — Uncertainty estimation based on evidence sparsity and expert diversity
+- [x] **`adversarial/confidence_adjuster.py`** — Deterministic defense card confidence computation
+- [x] **`adversarial/rebuttal_builder.py`** — `RebuttalBuilder` generating `InvestigationCard` objects with `source_expert="defense"`
+- [x] **`adversarial/defense_agent.py`** — `DefenseAgent` entry point orchestrating 6-stage review pipeline and returning `list[InvestigationCard]`
+- [x] **`investigation/evidence/evidence_graph_builder.py`** — Added `augment_graph()` method to link defense cards into `EvidenceGraph`
+- [x] **Unit Tests (`tests/unit/test_*.py`)** — 7 unit test files (`test_evidence_reviewer.py`, `test_contradiction_detector.py`, `test_alternative_hypothesis.py`, `test_strength_analyzer.py`, `test_uncertainty.py`, `test_rebuttal_builder.py`, `test_defense_agent.py`)
+- [x] **Manual Integration Script (`scripts/manual_test_phase_c.py`)** — Verified end-to-end integration across Planner → Financial Expert → Behaviour Expert → Evidence Graph Builder → Adversarial Review Engine → Augmented Graph (11 nodes, 19 edges)
 
-**Verify:** Plausible counter → edge added. Weak counter → graph unchanged. LLM failure → `defense_skipped = true`.
+**Verify:** Independent adversarial review performed on `EvidenceGraph`. Defense cards (`source_expert="defense"`) generated and linked as competing nodes without modifying or deleting prosecution cards. All 87 unit tests passing. Refer `docs/Phase_C_Consolidated_Verification_Plan.md`.
 
 ---
 
@@ -280,14 +287,16 @@ Phase A  Foundation          ✅ COMPLETE
          ├── Skeleton        ✅
          └── Interfaces      ✅
 
-Phase B  Core Engine         ← NEXT
-         ├── Models
-         ├── Dataset
-         ├── Planner         ← First demo milestone
-         └── Features
+Phase B  Core Engine         ✅ COMPLETE
+         ├── Models          ✅
+         ├── Dataset         ✅
+         ├── Network Builder ✅
+         └── Feature Store   ✅
 
-Phase C  Investigation Engine
-         ├── Experts
+Phase C  Investigation Engine ← IN PROGRESS
+         ├── Planner (C.1)   ✅
+         ├── Financial Exp (C.2) ✅
+         ├── Behaviour Exp (C.3) ← NEXT
          ├── Graph
          ├── Defense
          └── Tribunal
@@ -322,4 +331,4 @@ Phase D  Product
 
 ---
 
-*Last updated: 2026-07-25 — Phase A complete*
+*Last updated: 2026-07-25 — Phase A, Phase B, and Phase C (C.1 & C.2) complete*

@@ -1,7 +1,7 @@
-# Phase B.4 — Transaction Network Builder: Manual Verification Plan
+# Stage 2.1 — Transaction Network Builder: Manual Verification Plan
 
 **Document Classification:** Verification & Testing Specification  
-**Phase:** B.4 (Transaction Network Builder)  
+**Stage:** Stage 2.1 (Transaction Network Builder)  
 **Target System:** TRIBUNAL — Core Engine  
 **Version:** 1.0  
 
@@ -9,7 +9,7 @@
 
 ## 1. Overview & Purpose
 
-This document specifies the **Manual & Automated Verification Plan** for Phase B.4 (Transaction Network Builder). 
+This document specifies the **Manual & Automated Verification Plan** for Stage 2.1 (Transaction Network Builder). 
 
 The Transaction Network Builder constructs an in-memory `NetworkX MultiDiGraph` representing the financial transaction ecosystem from raw processed datasets (`transactions.parquet` and `accounts.parquet`). It provides instant, zero-overhead loading from disk (`transaction_network.gpickle`) and generates structural validation and topology profiling metrics.
 
@@ -18,7 +18,7 @@ The Transaction Network Builder constructs an in-memory `NetworkX MultiDiGraph` 
 2. **Schema & Node Completeness**: Verify node count equals unique accounts (**705,903 nodes**) and edge count equals total transaction records (**6,924,049 edges**).
 3. **Attribute Provenance**: Ensure node and edge attributes are complete and correctly typed.
 4. **Persistence & Fast Loading**: Verify serialization to `transaction_network.gpickle` and instant `load()` execution.
-5. **Artifact Validation**: Audit `network_validation_report.json` and `network_profile.json`.
+5. **Artifact Audit**: Audit `network_validation_report.json` and `network_profile.json`.
 
 ---
 
@@ -207,22 +207,22 @@ Get-Content tribunal/datasets/processed/network_profile.json
 
 | Test Case ID | Description | Acceptance Criteria | Expected Result | Status |
 |---|---|---|---|---|
-| **B4-TC01** | Unit Test Suite | All 4 pytest cases pass | `4 passed in ~1.2s` | **PASS** |
-| **B4-TC02** | Graph Class Type | Graph instantiated as `nx.MultiDiGraph` | `isinstance(G, nx.MultiDiGraph) == True` | **PASS** |
-| **B4-TC03** | Total Node Count | Node count equals 705,903 unique accounts | `number_of_nodes() == 705,903` | **PASS** |
-| **B4-TC04** | Total Edge Count | Edge count equals 6,924,049 transactions | `number_of_edges() == 6,924,049` | **PASS** |
-| **B4-TC05** | Multi-Edge Preservation | Multiple txns between same A → B preserved | Multiple edge keys in `get_edge_data()` | **PASS** |
-| **B4-TC06** | Node Null Checks | Zero `None` or `nan` node keys | `null_node_count == 0` | **PASS** |
-| **B4-TC07** | Disk Persistence | Saved to `transaction_network.gpickle` | `File size ~997 MB` | **PASS** |
-| **B4-TC08** | Fast Runtime Load | Instant `builder.load()` from disk | Load time < 10 seconds | **PASS** |
-| **B4-TC09** | Validation Report | `network_validation_report.json` generated | Status = `PASSED` | **PASS** |
-| **B4-TC10** | Topology Profile | `network_profile.json` generated | All 11 metrics computed | **PASS** |
+| **S21-TC01** | Unit Test Suite | All 4 pytest cases pass | `4 passed in ~1.2s` | **PASS** |
+| **S21-TC02** | Graph Class Type | Graph instantiated as `nx.MultiDiGraph` | `isinstance(G, nx.MultiDiGraph) == True` | **PASS** |
+| **S21-TC03** | Total Node Count | Node count equals 705,903 unique accounts | `number_of_nodes() == 705,903` | **PASS** |
+| **S21-TC04** | Total Edge Count | Edge count equals 6,924,049 transactions | `number_of_edges() == 6,924,049` | **PASS** |
+| **S21-TC05** | Multi-Edge Preservation | Multiple txns between same A → B preserved | Multiple edge keys in `get_edge_data()` | **PASS** |
+| **S21-TC06** | Node Null Checks | Zero `None` or `nan` node keys | `null_node_count == 0` | **PASS** |
+| **S21-TC07** | Disk Persistence | Saved to `transaction_network.gpickle` | `File size ~997 MB` | **PASS** |
+| **S21-TC08** | Fast Runtime Load | Instant `builder.load()` from disk | Load time < 10 seconds | **PASS** |
+| **S21-TC09** | Validation Report | `network_validation_report.json` generated | Status = `PASSED` | **PASS** |
+| **S21-TC10** | Topology Profile | `network_profile.json` generated | All 11 metrics computed | **PASS** |
 
 ---
 
 ## 5. Verification Sign-Off
 
-- **Phase B.4 Status**: **VERIFIED & PASSED**
+- **Stage 2.1 Status**: **VERIFIED & PASSED**
 - **Verified Artifacts**:
   - `tribunal/investigation/transaction_network_builder.py`
   - `tribunal/scripts/build_network.py`

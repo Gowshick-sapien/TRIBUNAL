@@ -1,7 +1,7 @@
-# Phase B.5 — Feature Store Builder: Manual Verification Plan
+# Stage 2.2 — Feature Store Builder: Manual Verification Plan
 
 **Document Classification:** Verification & Testing Specification  
-**Phase:** B.5 (Feature Store Builder)  
+**Stage:** Stage 2.2 (Feature Store Builder)  
 **Target System:** TRIBUNAL — Core Engine  
 **Version:** 1.0  
 
@@ -9,7 +9,7 @@
 
 ## 1. Overview & Purpose
 
-This document specifies the **Manual & Automated Verification Plan** for Phase B.5 (Feature Store Builder). 
+This document specifies the **Manual & Automated Verification Plan** for Stage 2.2 (Feature Store Builder). 
 
 The Feature Store Builder transforms raw transaction records (`transactions.parquet`) and the Transaction Network (`transaction_network.gpickle`) into a reusable, persistent collection of 44 account-level AML analytical features (`feature_store.parquet`). It provides instant, zero-overhead loading via `DataLoader.load_feature_store()` and generates structural validation (`feature_validation_report.json`) and analytical profiling metrics (`feature_store_profile.json`).
 
@@ -224,22 +224,22 @@ Get-Content tribunal/datasets/processed/feature_store_profile.json
 
 | Test Case ID | Description | Acceptance Criteria | Expected Result | Status |
 |---|---|---|---|---|
-| **B5-TC01** | Unit Test Suite | All 4 pytest cases pass | `4 passed in 0.41s` | **PASS** |
-| **B5-TC02** | Total Account Rows | 705,903 unique account feature vectors | `len(df) == 705,903` | **PASS** |
-| **B5-TC03** | Total Feature Columns | 44 feature columns across 6 categories | `len(df.columns) == 44` | **PASS** |
-| **B5-TC04** | Structuring Signal | `structuring_score > 0.5` for sub-threshold txns | `1,678 high-risk accounts` | **PASS** |
-| **B5-TC05** | Network Feature Match | `fan_in` / `fan_out` match MultiDiGraph | Matches `in_degree` / `out_degree` | **PASS** |
-| **B5-TC06** | Null Value Integrity | Zero missing values in critical features | `missing_counts == 0` | **PASS** |
-| **B5-TC07** | Parquet Persistence | Saved to `feature_store.parquet` | File size ~65.5 MB | **PASS** |
-| **B5-TC08** | DataLoader Query | Single account lookup via `load_feature_store()` | Returns 1 row in < 0.1s | **PASS** |
-| **B5-TC09** | Validation Report | `feature_validation_report.json` generated | Status = `PASSED` | **PASS** |
-| **B5-TC10** | Feature Store Profile | `feature_store_profile.json` generated | 44 feature stats logged | **PASS** |
+| **S22-TC01** | Unit Test Suite | All 4 pytest cases pass | `4 passed in 0.41s` | **PASS** |
+| **S22-TC02** | Total Account Rows | 705,903 unique account feature vectors | `len(df) == 705,903` | **PASS** |
+| **S22-TC03** | Total Feature Columns | 44 feature columns across 6 categories | `len(df.columns) == 44` | **PASS** |
+| **S22-TC04** | Structuring Signal | `structuring_score > 0.5` for sub-threshold txns | `1,678 high-risk accounts` | **PASS** |
+| **S22-TC05** | Network Feature Match | `fan_in` / `fan_out` match MultiDiGraph | Matches `in_degree` / `out_degree` | **PASS** |
+| **S22-TC06** | Null Value Integrity | Zero missing values in critical features | `missing_counts == 0` | **PASS** |
+| **S22-TC07** | Parquet Persistence | Saved to `feature_store.parquet` | File size ~65.5 MB | **PASS** |
+| **S22-TC08** | DataLoader Query | Single account lookup via `load_feature_store()` | Returns 1 row in < 0.1s | **PASS** |
+| **S22-TC09** | Validation Report | `feature_validation_report.json` generated | Status = `PASSED` | **PASS** |
+| **S22-TC10** | Feature Store Profile | `feature_store_profile.json` generated | 44 feature stats logged | **PASS** |
 
 ---
 
 ## 5. Verification Sign-Off
 
-- **Phase B.5 Status**: **VERIFIED & PASSED**
+- **Stage 2.2 Status**: **VERIFIED & PASSED**
 - **Verified Artifacts**:
   - `tribunal/tools/feature_store_builder.py`
   - `tribunal/scripts/build_feature_store.py`

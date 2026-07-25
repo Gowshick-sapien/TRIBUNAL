@@ -1,4 +1,4 @@
-"""Unit tests for FeatureStoreBuilder (Phase B.5)."""
+"""Unit tests for FeatureStoreBuilder (Stage 2.2)."""
 
 import sys
 from pathlib import Path

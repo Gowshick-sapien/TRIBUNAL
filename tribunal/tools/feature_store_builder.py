@@ -1,4 +1,4 @@
-"""Feature Store Builder for TRIBUNAL (Phase B.5).
+"""Feature Store Builder for TRIBUNAL (Stage 2.2).
 
 Transforms raw transactions and the Transaction Network into a reusable,
 persistent collection of account-level AML analytical features (feature_store.parquet).

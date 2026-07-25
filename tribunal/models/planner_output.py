@@ -1,14 +1,8 @@
-"""Planner output contract."""
+"""Planner output contract — alias for PlanningResult for backward compatibility."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from tribunal.models.planning_result import PlanningResult
 
-from tribunal.models.execution_plan import ExecutionPlan
-from tribunal.models.investigation_plan import InvestigationPlan
-
-
-@dataclass
-class PlannerOutput:
-    investigation_plan: InvestigationPlan
-    execution_plan: ExecutionPlan
+# PlannerOutput serves as a backward-compatible wrapper/alias for PlanningResult
+PlannerOutput = PlanningResult

@@ -1,4 +1,4 @@
-"""Unit tests for TransactionNetworkBuilder (Phase B.4)."""
+"""Unit tests for TransactionNetworkBuilder (Stage 2.1)."""
 
 import sys
 from pathlib import Path

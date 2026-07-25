@@ -1,4 +1,4 @@
-"""Transaction Network Builder for TRIBUNAL (Phase B.4).
+"""Transaction Network Builder for TRIBUNAL (Stage 2.1).
 
 Constructs an in-memory NetworkX MultiDiGraph representing the full transaction
 network from transactions.parquet and accounts.parquet.
