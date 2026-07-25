@@ -193,3 +193,28 @@ class DataLoader:
             )
             accounts.append(acc)
         return accounts
+
+    def load_feature_store(
+        self,
+        account_id: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> pd.DataFrame:
+        """Load persisted Feature Store DataFrame.
+        
+        Args:
+            account_id: Optional account filter
+            limit: Maximum number of rows to load
+        """
+        fs_path = self.processed_dir / "feature_store.parquet"
+        if not fs_path.exists():
+            raise FileNotFoundError(
+                f"Feature store not found at {fs_path}. Run FeatureStoreBuilder.build() first."
+            )
+        logger.info(f"Loading feature store from {fs_path}")
+        df = pd.read_parquet(fs_path)
+
+        if account_id:
+            df = df[df["account_id"] == account_id].copy()
+        if limit:
+            df = df.head(limit)
+        return df

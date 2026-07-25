@@ -112,6 +112,28 @@
 
 ---
 
+### Stage 2.2 — Phase B.5 Feature Store Builder
+
+> Reusable collection of 44 AML analytical features across 705,903 accounts. Persisted to disk (`feature_store.parquet`).
+
+- [x] **`tools/feature_store_builder.py`** — `FeatureStoreBuilder` class
+  - [x] `compute_financial_features()` — Amounts, quantiles, rolling 7d/30d sums, threshold proximity
+  - [x] `compute_behaviour_features()` — Velocity, active days, preferred currency/formats, deviation
+  - [x] `compute_network_features()` — Fan-in, fan-out, unique senders/receivers, degree, repeated counterparties
+  - [x] `compute_temporal_features()` — Weekend ratio, hour of day mode, rapid successive txns count
+  - [x] `compute_statistical_features()` — Z-score amount, IQR outlier score
+  - [x] `compute_rule_ready_features()` — Structuring score, rapid cashout indicator, high frequency deposit indicator
+  - [x] `validate()` — Completeness and type integrity (`feature_validation_report.json`)
+  - [x] `get_feature_profile()` — Analytical profile stats (`feature_store_profile.json`)
+  - [x] `save()` — Persists Parquet (`datasets/processed/feature_store.parquet`)
+- [x] **`data/loader.py` Integration** — Added `load_feature_store()` canonical data access method.
+- [x] **CLI Script (`scripts/build_feature_store.py`)** — One-command execution to compute, validate, profile, and save feature store.
+- [x] **Verification Manual Plan (`docs/B.5_Verification_Plan.md`)** — Step-by-step verification protocol & 10-point test matrix.
+
+**Verify:** Feature Store built (705,903 accounts x 44 features), validated (`Status: PASSED`), and persisted (`feature_store.parquet` - 65.5 MB). All unit tests passing. Refer `docs/B.5_Verification_Plan.md`.
+
+---
+
 ### Stage 3 — Planner
 
 - [ ] `planner/query_parser.py` — Ollama extraction + regex fallback
