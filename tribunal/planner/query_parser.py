@@ -71,17 +71,22 @@ class QueryParser:
             raise ValidationError("Query text cannot be empty")
 
         # Intent detection
-        intent = PATTERN_DETECTION
         if "eda" in text_lower or "distribution" in text_lower or "statistics" in text_lower:
             intent = EDA_REQUEST
         elif "summary" in text_lower or "summarize" in text_lower:
             intent = CASE_SUMMARY
         elif "network" in text_lower or "graph" in text_lower or "topology" in text_lower:
             intent = NETWORK_ANALYSIS
+        elif ("structuring" in text_lower or "velocity" in text_lower or "transfer" in text_lower) and ("behaviour" in text_lower or "behavior" in text_lower):
+            intent = PATTERN_DETECTION
+        elif "structuring" in text_lower or "pattern" in text_lower:
+            intent = PATTERN_DETECTION
         elif "behaviour" in text_lower or "behavior" in text_lower or "dormant" in text_lower:
             intent = BEHAVIOUR_ANALYSIS
         elif "investigate account" in text_lower or "investigate customer" in text_lower or "customer" in text_lower:
             intent = CUSTOMER_LOOKUP
+        else:
+            intent = PATTERN_DETECTION
 
         # Pattern detection
         pattern = None

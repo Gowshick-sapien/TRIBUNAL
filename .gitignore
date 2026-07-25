@@ -30,13 +30,18 @@ Thumbs.db
 temp/
 scratch/
 
-# Large Datasets & Generated Graph Artifacts
+# Large Datasets & Generated Artifacts
 tribunal/datasets/*.csv
 tribunal/datasets/*.txt
 tribunal/datasets/raw/
 tribunal/datasets/processed/*.parquet
 tribunal/datasets/processed/*.gpickle
 tribunal/datasets/processed/*.pkl
+tribunal/datasets/processed/report.md
+tribunal/datasets/processed/report.html
+tribunal/datasets/processed/report.json
+tribunal/datasets/processed/*.json
+tribunal/datasets/processed/*.html
 *.gpickle
 *.parquet
 
