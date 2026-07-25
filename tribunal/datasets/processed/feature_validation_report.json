@@ -1,0 +1,28 @@
+{
+  "account_count": 705903,
+  "feature_count": 44,
+  "checks": {
+    "account_id_validity": {
+      "passed": true,
+      "null_count": 0,
+      "duplicate_count": 0
+    },
+    "no_missing_critical_features": {
+      "passed": true,
+      "missing_counts": {
+        "transaction_count": 0,
+        "average_amount": 0,
+        "rolling_sum_7d": 0,
+        "fan_in": 0,
+        "fan_out": 0,
+        "structuring_score": 0
+      }
+    },
+    "numeric_features_typed": {
+      "passed": true,
+      "numeric_feature_count": 41
+    }
+  },
+  "issues": [],
+  "status": "PASSED"
+}

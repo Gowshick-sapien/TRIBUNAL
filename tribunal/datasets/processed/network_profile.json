@@ -1,0 +1,20 @@
+{
+  "total_nodes": 705903,
+  "total_edges": 6924049,
+  "weakly_connected_components_count": 160031,
+  "strongly_connected_components_count": 683526,
+  "largest_weak_component_size": 504391,
+  "largest_strong_component_size": 17827,
+  "average_degree": 19.617565019556512,
+  "max_in_degree": {
+    "account_id": "10042B660",
+    "in_degree": 1553
+  },
+  "max_out_degree": {
+    "account_id": "10042B660",
+    "out_degree": 222037
+  },
+  "network_density": 1.3895388467206858e-05,
+  "self_loops_count": 804477,
+  "repeated_transaction_pairs_count": 768139
+}

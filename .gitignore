@@ -1,0 +1,51 @@
+# Environment & Configuration
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Logs & Temporary files
+*.log
+*.tmp
+temp/
+scratch/
+
+# Large Datasets & Generated Artifacts
+tribunal/datasets/*.csv
+tribunal/datasets/*.txt
+tribunal/datasets/raw/
+tribunal/datasets/processed/*.parquet
+tribunal/datasets/processed/*.gpickle
+tribunal/datasets/processed/*.pkl
+tribunal/datasets/processed/report.md
+tribunal/datasets/processed/report.html
+tribunal/datasets/processed/report.json
+tribunal/datasets/processed/*.json
+tribunal/datasets/processed/*.html
+*.gpickle
+*.parquet
+
+# Keep directory structure preserved via .gitkeep
+!**/datasets/.gitkeep
+!**/datasets/raw/.gitkeep
+!**/datasets/processed/.gitkeep

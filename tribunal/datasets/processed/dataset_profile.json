@@ -1,0 +1,115 @@
+{
+  "general": {
+    "total_transactions": 6924049,
+    "total_accounts": 712688,
+    "unique_sender_accounts": 681281,
+    "unique_receiver_accounts": 576176,
+    "unique_total_active_accounts": 705903,
+    "laundering_transactions_count": 3565,
+    "laundering_ratio_pct": 0.051487215067368815
+  },
+  "timestamps": {
+    "start_date": "2022-09-01 00:00:00",
+    "end_date": "2022-09-17 15:28:00",
+    "span_days": 16.644444444444446
+  },
+  "payment_formats": {
+    "Cheque": 2503158,
+    "Credit Card": 1780389,
+    "ACH": 796581,
+    "Cash": 655688,
+    "Reinvestment": 650458,
+    "Bitcoin": 309208,
+    "Wire": 228567
+  },
+  "currencies": {
+    "US Dollar": 2553887,
+    "Euro": 1595859,
+    "Yuan": 483603,
+    "Rupee": 340641,
+    "Bitcoin": 309240,
+    "Saudi Riyal": 257948,
+    "Australian Dollar": 211155,
+    "Yen": 210125,
+    "Brazil Real": 199840,
+    "Canadian Dollar": 176069,
+    "Shekel": 174530,
+    "Swiss Franc": 138251,
+    "UK Pound": 99668,
+    "Ruble": 88492,
+    "Mexican Peso": 84741
+  },
+  "amount_stats": {
+    "min": 1e-06,
+    "max": 3644853662746.95,
+    "mean": 4676035.972670781,
+    "median": 1399.44,
+    "std": 1544098395.1815488,
+    "p25": 175.38,
+    "p75": 12226.87,
+    "p90": 131045.13,
+    "p95": 600085.3239999946,
+    "p99": 12364829.02,
+    "sub_threshold_9k_10k_count": 69891
+  },
+  "top_originating_banks": {
+    "70": 609991,
+    "11": 123456,
+    "20": 120114,
+    "14": 64681,
+    "12": 64465,
+    "18": 49932,
+    "216": 36502,
+    "224": 34009,
+    "1217": 33649,
+    "1": 33245
+  },
+  "degree_stats": {
+    "max_fan_out_degree": 222037,
+    "top_fan_out_accounts": [
+      {
+        "account": "10042B660",
+        "out_degree": 222037
+      },
+      {
+        "account": "10042B6A8",
+        "out_degree": 138777
+      },
+      {
+        "account": "10042B6F0",
+        "out_degree": 42385
+      },
+      {
+        "account": "10042B780",
+        "out_degree": 30802
+      },
+      {
+        "account": "10042BA51",
+        "out_degree": 28932
+      }
+    ],
+    "max_fan_in_degree": 1553,
+    "top_fan_in_accounts": [
+      {
+        "account": "10042B660",
+        "in_degree": 1553
+      },
+      {
+        "account": "10042B6A8",
+        "in_degree": 951
+      },
+      {
+        "account": "10042B6F0",
+        "in_degree": 345
+      },
+      {
+        "account": "10042B780",
+        "in_degree": 223
+      },
+      {
+        "account": "10042BA08",
+        "in_degree": 170
+      }
+    ]
+  }
+}

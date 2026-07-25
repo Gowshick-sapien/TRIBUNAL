@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TRIBUNAL Investigation Report — rpt_case_c_consolidated_001_d49793</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        h1 { font-size: 28px; margin-top: 0; color: #38bdf8; }
+        h2 { font-size: 20px; border-bottom: 2px solid #334155; padding-bottom: 8px; margin-top: 32px; color: #94a3b8; }
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            background-color: #f59e0b;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .card .title { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+        .card .val { font-size: 20px; font-weight: bold; margin-top: 6px; color: #f8fafc; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            font-size: 14px;
+        }
+        th { background-color: #0f172a; color: #38bdf8; }
+        code { background: #0f172a; padding: 2px 6px; border-radius: 4px; color: #38bdf8; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TRIBUNAL Investigation Report</h1>
+        <p><strong>Report ID:</strong> <code>rpt_case_c_consolidated_001_d49793</code> | <strong>Date:</strong> 2026-07-25T17:06:19.965846+00:00 | <strong>Case:</strong> <code>case_c_consolidated_001</code></p>
+        
+        <h2>1. Executive Summary</h2>
+        <p><span class="badge">POSSIBLY_MALICIOUS</span></p>
+        <div class="grid">
+            <div class="card">
+                <div class="title">Primary Hypothesis</div>
+                <div class="val" style="font-size: 14px;">Multiple Behavioural Anomalies (Behaviour Drift, Dormancy Reactivation, Currency Change, Payment Pattern Change) for Account ACC_8000A94C0</div>
+            </div>
+            <div class="card">
+                <div class="title">Primary Score</div>
+                <div class="val">0.7596</div>
+            </div>
+            <div class="card">
+                <div class="title">Calibrated Confidence</div>
+                <div class="val">0.58</div>
+            </div>
+            <div class="card">
+                <div class="title">Risk Level</div>
+                <div class="val">MEDIUM</div>
+            </div>
+        </div>
+        <p><strong>Recommendation:</strong> Verdict: POSSIBLY_MALICIOUS for primary hypothesis &#x27;Multiple Behavioural Anomalies (Behaviour Drift, Dormancy Reactivation, Currency Change, Payment Pattern Change) for Account ACC_8000A94C0&#x27; (confidence: 0.58)</p>
+
+        <h2>2. Query Interpretation & Pipeline Timeline</h2>
+        <p><strong>Original Query:</strong> <em>"Find structuring and unusual behaviour during the last month for account ACC_8000A94C0"</em></p>
+        <table>
+            <thead>
+                <tr><th>Stage #</th><th>Stage Name</th><th>Action</th><th>Status</th><th>Duration</th></tr>
+            </thead>
+            <tbody>
+<tr><td>1</td><td>Planner Framework (C.1)</td><td>Query parsing &amp; deterministic execution planning</td><td><code>COMPLETED</code></td><td>8156.96 ms</td></tr>
+<tr><td>2</td><td>Financial Expert (C.2)</td><td>Execution of candidate selection &amp; financial pattern detectors</td><td><code>COMPLETED</code></td><td>12.5 ms</td></tr>
+<tr><td>3</td><td>Customer Behaviour Expert (C.3)</td><td>Baseline drift, dormancy, currency, and payment pattern detection</td><td><code>COMPLETED</code></td><td>15.2 ms</td></tr>
+<tr><td>4</td><td>Evidence Graph Synthesis (C.4)</td><td>Node inference, same-expert merging, and relationship linking</td><td><code>COMPLETED</code></td><td>8.4 ms</td></tr>
+<tr><td>5</td><td>Adversarial Review Engine (C.5)</td><td>Independent adversarial review, contradiction detection &amp; alternative explanations</td><td><code>COMPLETED</code></td><td>18.6 ms</td></tr>
+<tr><td>6</td><td>Tribunal Consensus Engine (C.6)</td><td>Multi-hypothesis deliberation, net support weighing, confidence calibration</td><td><code>COMPLETED</code></td><td>4.5 ms</td></tr>
+
+            </tbody>
+        </table>
+
+        <h2>3. Evidence Graph Topology & Findings</h2>
+        <p>Evidence Graph synthesized with 9 Nodes (1 Accounts, 5 Cards, 3 Hypotheses) and 16 Edges (0 Corroborations, 0 Contradictions).</p>
+        
+        <h2>4. Tribunal Consensus & Audit Trail</h2>
+        <p>The Tribunal determined consensus category &#x27;POSSIBLY_MALICIOUS&#x27; for primary hypothesis &#x27;Multiple Behavioural Anomalies (Behaviour Drift, Dormancy Reactivation, Currency Change, Payment Pattern Change) for Account ACC_8000A94C0&#x27; with Net Support Score of 0.7596 and calibrated confidence of 0.5796. Secondary hypothesis &#x27;Possible Structuring Activity for Account ACC_8000A94C0&#x27; scored 0.7406 (Confidence Gap Delta: 0.0190).</p>
+        <table>
+            <thead>
+                <tr><th>Step #</th><th>Stage Name</th><th>Decision ID</th><th>Duration</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+<tr><td>1</td><td>Hypothesis Extraction</td><td><code>dec_0faea4</code></td><td>0.163 ms</td><td>Extracted 3 candidate hypotheses from EvidenceGraph.</td></tr>
+<tr><td>2</td><td>Evidence Weighing</td><td><code>dec_917e3c</code></td><td>0.107 ms</td><td>Calculated raw support scores across 3 hypotheses.</td></tr>
+<tr><td>3</td><td>Contradiction Resolution</td><td><code>dec_9ea31e</code></td><td>0.048 ms</td><td>Evaluated opposing evidence penalties and calculated Net Evidence Strength.</td></tr>
+<tr><td>4</td><td>Consensus Formation</td><td><code>dec_d50f65</code></td><td>0.022 ms</td><td>Ranked competing hypotheses and formed consensus category &#x27;POSSIBLY_MALICIOUS&#x27;.</td></tr>
+<tr><td>5</td><td>Confidence Calibration</td><td><code>dec_3a3e87</code></td><td>0.006 ms</td><td>Calibrated final Tribunal confidence score to 0.5796.</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
