@@ -1,0 +1,65 @@
+{
+  "transactions_count": 6924049,
+  "accounts_count": 712688,
+  "checks": {
+    "no_missing_timestamps": {
+      "passed": true,
+      "missing_count": 0
+    },
+    "account_ids_valid": {
+      "passed": true,
+      "missing_from_account": 0,
+      "missing_to_account": 0
+    },
+    "currencies_valid": {
+      "passed": false,
+      "currencies_found": [
+        "Australian Dollar",
+        "Bitcoin",
+        "Brazil Real",
+        "Canadian Dollar",
+        "Euro",
+        "Mexican Peso",
+        "Ruble",
+        "Rupee",
+        "Saudi Riyal",
+        "Shekel",
+        "Swiss Franc",
+        "UK Pound",
+        "US Dollar",
+        "Yen",
+        "Yuan"
+      ],
+      "invalid_currencies": [
+        "Bitcoin"
+      ]
+    },
+    "payment_formats_valid": {
+      "passed": false,
+      "formats_found": [
+        "ACH",
+        "Bitcoin",
+        "Cash",
+        "Cheque",
+        "Credit Card",
+        "Reinvestment",
+        "Wire"
+      ],
+      "invalid_formats": [
+        "Bitcoin"
+      ]
+    },
+    "timestamps_chronological": {
+      "passed": false,
+      "unparseable_count": 0,
+      "is_chronological_sorted": false,
+      "min_timestamp": "2022-09-01 00:00:00",
+      "max_timestamp": "2022-09-17 15:28:00"
+    }
+  },
+  "issues": [
+    "Found invalid currencies: {'Bitcoin'}",
+    "Found invalid payment formats: {'Bitcoin'}"
+  ],
+  "status": "FAILED_WITH_WARNINGS"
+}

@@ -135,7 +135,7 @@ Experts do not operate in isolation. They investigate sequentially, each reading
 
 ### Principle 5 — Query-Aware Execution
 
-TRIBUNAL does not run the same pipeline for every query. The Planner analyses the user's intent, extracts entities and parameters, and constructs a tailored execution plan. A broad exploratory query activates different experts and tools than a targeted single-entity investigation. The system adapts its investigative strategy to the question being asked.
+TRIBUNAL does not run the same pipeline for every query. The Query Understanding & Planning Agent analyses the user's intent, extracts entities and parameters, and constructs a tailored investigation plan. A broad exploratory query activates different experts and tools than a targeted single-entity investigation. The system adapts its investigative strategy to the question being asked.
 
 ### Principle 6 — Full Evidence Provenance
 
@@ -145,26 +145,29 @@ Every Investigation Card records which expert generated it, which transactions c
 
 ## 5. High-Level Architecture
 
-TRIBUNAL is composed of eight conceptual components arranged in a directed investigation pipeline. The user's query enters at the top and an explainable investigation report exits at the bottom.
+TRIBUNAL is composed of nine conceptual components arranged in a directed investigation pipeline. A natural-language query enters at the top and an explainable investigation report exits at the bottom.
 
 ```
-                            ┌─────────────┐
-                            │  User Query │
-                            └──────┬──────┘
+                        ┌─────────────────────┐
+                        │ Natural Language     │
+                        │ Query                │
+                        └──────────┬──────────┘
                                    │
-                            ┌──────▼──────┐
-                            │   Planner   │
-                            │  (Intent &  │
-                            │  Execution  │
-                            │   Planning) │
-                            └──────┬──────┘
+                        ┌──────────▼──────────┐
+                        │ Query Understanding  │
+                        │ & Planning           │
+                        └──────────┬──────────┘
                                    │
-                            ┌──────▼──────┐
-                            │  Case File  │
-                            │  (Shared    │
-                            │   Working   │
-                            │   Memory)   │
-                            └──────┬──────┘
+                        ┌──────────▼──────────┐
+                        │ Structured           │
+                        │ Investigation Plan   │
+                        └──────────┬──────────┘
+                                   │
+                        ┌──────────▼──────────┐
+                        │  Case File           │
+                        │  (Shared Working     │
+                        │   Memory)            │
+                        └──────────┬──────────┘
                                    │
                      ┌─────────────▼─────────────┐
                      │  Expert Investigation     │
@@ -180,32 +183,30 @@ TRIBUNAL is composed of eight conceptual components arranged in a directed inves
                                    │
                           Investigation Cards
                                    │
-                            ┌──────▼──────┐
-                            │  Evidence   │
-                            │  Graph      │
-                            └──────┬──────┘
+                        ┌──────────▼──────────┐
+                        │  Evidence Graph      │
+                        └──────────┬──────────┘
                                    │
-                            ┌──────▼──────┐
-                            │  Defense    │
-                            │  Agent      │
-                            └──────┬──────┘
+                        ┌──────────▼──────────┐
+                        │  Defense Agent       │
+                        └──────────┬──────────┘
                                    │
-                            ┌──────▼──────┐
-                            │  Tribunal   │
-                            │  (Consensus │
-                            │   Engine)   │
-                            └──────┬──────┘
+                        ┌──────────▼──────────┐
+                        │  Tribunal            │
+                        │  (Consensus Engine)  │
+                        └──────────┬──────────┘
                                    │
-                            ┌──────▼──────┐
-                            │Investigation│
-                            │   Report    │
-                            └─────────────┘
+                        ┌──────────▼──────────┐
+                        │  Investigation       │
+                        │  Report              │
+                        └─────────────────────┘
 ```
 
 | Component | Role |
 |---|---|
-| **User Query** | The natural-language question that initiates the investigation. |
-| **Planner** | Parses intent and entities, decides which experts to invoke and in what order. |
+| **Natural Language Query** | The unrestricted natural-language question that initiates the investigation. |
+| **Query Understanding & Planning** | Accepts natural language queries, extracts investigation intent, entities, filters and AML patterns using a lightweight language understanding layer, then constructs a structured investigation plan that determines which analytical components should be executed. |
+| **Structured Investigation Plan** | The deterministic output of query understanding — contains intent, target pattern, filters, expert sequence, and EDA decision. All downstream processing consumes this plan, not the original query. |
 | **Case File** | Shared working memory — carries the dominant hypothesis, confidence, and open questions between sequential experts. |
 | **Expert Investigation Board** | A sequential panel of domain-specific investigators, each contributing structured evidence to the Case File. |
 | **Evidence Graph** | A directed graph where nodes are Investigation Cards and edges represent support, contradiction, or missing-evidence relationships. |
@@ -219,13 +220,13 @@ TRIBUNAL is composed of eight conceptual components arranged in a directed inves
 
 Every query that enters TRIBUNAL follows a structured investigation lifecycle. This section walks through the complete journey from question to recommendation.
 
-### Stage 1 — User Query
+### Stage 1 — Natural Language Query
 
-The user poses a natural-language question. This may be a targeted investigation (*"Find structuring in the last 30 days for customer 541"*), an exploratory scan (*"Show unusual patterns across all high-risk accounts"*), or a compliance check (*"Has customer 1023 been flagged before?"*). The query's nature determines the investigation plan.
+The user poses an unrestricted natural-language question. This may be a targeted investigation (*"Find structuring in the last 30 days for customer 541"*), an exploratory scan (*"Show unusual patterns across all high-risk accounts"*), or a compliance check (*"Has customer 1023 been flagged before?"*). The query's nature determines the investigation plan.
 
-### Stage 2 — Planner
+### Stage 2 — Query Understanding & Planning
 
-The Planner extracts structured parameters from the query — intent, entity identifiers, date ranges, target patterns, and filters. It then constructs an execution plan: which experts to invoke, in what order, and whether exploratory data analysis is needed. The Planner initializes an empty Case File and hands control to the Expert Investigation Board.
+The Query Understanding & Planning Agent accepts the natural-language query and extracts structured parameters — intent, entity identifiers, date ranges, target AML patterns, and filters. It then constructs a Structured Investigation Plan: which experts to invoke, in what order, and whether exploratory data analysis is needed. Once the plan is generated, the agent initializes an empty Case File and hands control to the Expert Investigation Board. From this point forward, all processing is deterministic.
 
 ### Stage 3 — Expert Investigation
 
@@ -255,23 +256,24 @@ The Report Generator produces the final output: a structured document that recap
 
 ## 7. Core Components
 
-### 7.1 Planner
+### 7.1 Query Understanding & Planning Agent
 
 **Purpose**
-The Planner is the entry point of every investigation. It translates a natural-language query into a structured execution plan that determines what the system investigates and how.
+The Query Understanding & Planning Agent is the entry point of every investigation. It accepts natural language queries, extracts investigation intent, entities, filters and AML patterns using a lightweight language understanding layer, then constructs a structured investigation plan that determines which analytical components should be executed.
 
 **Responsibilities**
-- Parse user queries to extract intent, entity identifiers, date ranges, geographic filters, transaction types, and target AML patterns.
+- Accept unrestricted natural-language queries and extract intent, entity identifiers, date ranges, geographic filters, transaction types, and target AML patterns.
 - Classify the query type (single-entity investigation, broad pattern scan, compliance check).
 - Determine which experts to invoke and in what order, based on the query's requirements.
 - Decide whether exploratory data analysis is needed (broad queries) or can be skipped (targeted queries).
+- Produce a Structured Investigation Plan consumed by all downstream components.
 - Initialize the Case File with an empty state.
 
 **Inputs**
 - Natural-language user query.
 
 **Outputs**
-- Structured execution plan: `{intent, filters, target_pattern, expert_sequence, eda_required}`.
+- Structured Investigation Plan: `{intent, filters, target_pattern, expert_sequence, eda_required}`.
 - Initialized Case File.
 
 ---
@@ -471,21 +473,27 @@ Recommendation: Review
 
 ## 8. Adaptive Agentic Behaviour
 
+### Language Understanding Layer
+
+TRIBUNAL separates language understanding from analytical reasoning. A lightweight language understanding layer converts natural-language queries into a Structured Investigation Plan containing intent, entities, filters, and execution objectives. Once the investigation plan is generated, all subsequent analytical processing — including feature engineering, expert investigation, evidence graph construction, and tribunal reasoning — is performed deterministically.
+
+This separation is one of the strongest architectural decisions in the system. It means that the non-deterministic component (natural language interpretation) is confined to a single, well-bounded entry point. Every component downstream of the investigation plan operates on structured data, produces traceable artefacts, and executes predictably. The investigation is reproducible given the same plan — regardless of how the plan was produced.
+
 ### Why Static Pipelines Fail
 
 A system that runs the same sequence of operations for every query is a pipeline, not an agent. AML investigations are inherently varied — a broad scan across all high-risk customers demands different analytical tools and expert combinations than a targeted investigation of a single entity's recent transactions.
 
-TRIBUNAL's Planner is the system's agentic core. It does not follow a fixed script. It analyses the query, understands the intent, and constructs a tailored execution plan.
+TRIBUNAL's Query Understanding & Planning Agent is the system's agentic core. It does not follow a fixed script. It analyses the query, understands the intent, and constructs a tailored execution plan.
 
 ### Query-Driven Expert Selection
 
-The Planner evaluates each incoming query and makes active decisions about what to investigate and how.
+The Query Understanding & Planning Agent evaluates each incoming query and makes active decisions about what to investigate and how.
 
 **Example 1 — Targeted Entity Investigation**
 
 > *"Find structuring in the last 30 days for customer 541"*
 
-Planner extracts: `{intent: pattern_detection, target_pattern: structuring, customer_id: 541, date_range: last_30_days}`
+Query Understanding & Planning extracts: `{intent: pattern_detection, target_pattern: structuring, customer_id: 541, date_range: last_30_days}`
 
 Execution plan:
 - Skip exploratory data analysis — single entity, specific pattern.
@@ -497,7 +505,7 @@ Execution plan:
 
 > *"Show me unusual activity across high-risk accounts this quarter"*
 
-Planner extracts: `{intent: broad_scan, target_pattern: anomaly, filters: {risk_level: high, date_range: current_quarter}}`
+Query Understanding & Planning extracts: `{intent: broad_scan, target_pattern: anomaly, filters: {risk_level: high, date_range: current_quarter}}`
 
 Execution plan:
 - Run exploratory data analysis — broad scope requires profiling before expert invocation.
@@ -596,29 +604,29 @@ TRIBUNAL is intentionally scoped. The full architectural vision defines a compre
 
 | Component | Status | Notes |
 |---|---|---|
-| Planner (Intent & Execution Planning) | ✅ Built | Query-aware expert selection with visible branching |
-| Financial Pattern Expert | ✅ Built | Structuring, velocity, threshold-adjacent detection |
-| Customer Behaviour Expert | ✅ Built | Historical deviation, case-file-aware investigation |
-| Evidence Graph (NetworkX) | ✅ Built | In-memory directed graph with weighted edges |
-| Defense Agent | ✅ Built | Single targeted pass against dominant hypothesis |
-| Tribunal (Consensus Engine) | ✅ Built | Graph traversal, winner/runner-up identification |
-| Investigation Report Generator | ✅ Built | Full structured output with evidence chain |
-| Adaptive Re-investigation Cycle | ✅ Built | Bounded single-shot, not an open loop |
+| Query Understanding & Planning Agent | Planned (v1.0) | Query-aware expert selection with visible branching |
+| Financial Pattern Expert | Planned (v1.0)| Structuring, velocity, threshold-adjacent detection |
+| Customer Behaviour Expert | Planned (v1.0) | Historical deviation, case-file-aware investigation |
+| Evidence Graph (NetworkX) | Planned (v1.0) | In-memory directed graph with weighted edges |
+| Defense Agent | Planned (v1.0) | Single targeted pass against dominant hypothesis |
+| Tribunal (Consensus Engine) | Planned (v1.0) | Graph traversal, winner/runner-up identification |
+| Investigation Report Generator | Planned (v1.0) | Full structured output with evidence chain |
+| Adaptive Re-investigation Cycle | Planned (v1.0) | Bounded single-shot, not an open loop |
 
 ### Architected for Future Work
 
 | Component | Design Status | Rationale |
 |---|---|---|
-| Network Intelligence Expert | Architected | Counterparty fan-out and money-flow tracing |
-| Regulatory Rule Expert | Architected | Jurisdiction-specific rule matching |
-| Geographic / Temporal Experts | Architected | Cross-border and time-series pattern analysis |
-| Multi-round Adversarial Debate | Architected | Prosecutor and Defense in structured exchange |
-| Continuous Investigation Memory | Architected | Cross-query learning for repeat entities |
-| Confidence-Budget Planner | Architected | Expected-gain scoring for expert invocation |
-| Graph Database Backend | Architected | Persistent evidence storage for large-scale deployment |
-| Domain Generalization | Architected | Extension to fraud, insider trading, insurance claims |
+| Network Intelligence Expert | Future Architecture | Counterparty fan-out and money-flow tracing |
+| Regulatory Rule Expert | Future Architecture | Jurisdiction-specific rule matching |
+| Geographic / Temporal Experts | Future Architecture | Cross-border and time-series pattern analysis |
+| Multi-round Adversarial Debate | Future Architecture | Prosecutor and Defense in structured exchange |
+| Continuous Investigation Memory | Future Architecture | Cross-query learning for repeat entities |
+| Confidence-Budget Planner | Future Architecture | Expected-gain scoring for expert invocation |
+| Graph Database Backend | Future Architecture | Persistent evidence storage for large-scale deployment |
+| Domain Generalization | Future Architecture | Extension to fraud, insider trading, insurance claims |
 
-The boundary between implemented and architected is a deliberate engineering decision. The current system demonstrates every architectural principle end-to-end. Future work extends coverage and scale — it does not change the fundamental design.
+Implementation Scope. This document defines the architecture of TRIBUNAL Version 1.0. At the time of writing, the architecture has been finalized and ready for implementation. The components listed under Version 1.0 Implementation Scope represent the functionality that will be implemented during the development phase. Components listed under Future Architecture are intentionally excluded from Version 1.0 to maintain a focused and achievable scope while preserving a clear evolution path for future releases.
 
 ---
 
@@ -628,11 +636,11 @@ The boundary between implemented and architected is a deliberate engineering dec
 
 | Layer | Technology | Rationale |
 |---|---|---|
-| Language | Python | Unified ecosystem for data processing, graph operations, ML, and LLM integration |
+| Language | Python | Unified ecosystem for data processing, graph operations, ML, and language understanding integration |
+| Natural Language Query Understanding | Ollama | Local inference runtime for converting natural-language queries into structured investigation plans |
 | Graph Engine | NetworkX | In-memory directed graph — zero infrastructure overhead, sufficient for investigation-scale graphs (~20 nodes) |
 | Statistical / ML | scikit-learn, NumPy | Isolation Forest for outlier detection, z-score computation, well-established with minimal tuning |
 | Data Processing | pandas | Transaction data manipulation, filtering, aggregation |
-| LLM Integration | Single provider, single wrapper | Defense Agent reasoning and Report phrasing — no multi-provider abstraction |
 | Demo Interface | Streamlit | Interactive chat-style interface for live investigation demonstrations |
 
 ### Project Structure
@@ -643,8 +651,9 @@ TRIBUNAL/
 ├── app.py                          # Streamlit application entry point
 │
 ├── planner/
-│   ├── intent_parser.py            # Query → structured parameters
-│   └── execution_planner.py        # Parameters → expert sequence + configuration
+│   ├── planner.py                  # Orchestrates query understanding and plan construction
+│   ├── query_parser.py             # Natural language → structured investigation plan
+│   └── execution_planner.py        # Investigation plan → expert sequence + configuration
 │
 ├── experts/
 │   ├── base_expert.py              # Abstract expert interface

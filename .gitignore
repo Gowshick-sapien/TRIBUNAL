@@ -1,1 +1,11 @@
 AML Investigation Board — Final.txt
+
+# Bytecode & pytest
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Datasets & processed data
+tribunal/datasets/*.csv
+tribunal/datasets/raw/*.csv
+tribunal/datasets/processed/*.parquet
