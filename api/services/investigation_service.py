@@ -12,8 +12,18 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 
 from api.schemas.graph import EdgeSchema, GraphResponse, GraphStatsSchema, NodeSchema, VerdictResponse
-from api.schemas.investigation import InvestigationRequest, InvestigationResponse, QueryRequest, QueryResponse
+from api.schemas.investigation import (
+    InvestigationDetailResponse,
+    InvestigationListResponse,
+    InvestigationRecordSchema,
+    InvestigationRequest,
+    InvestigationResponse,
+    QueryRequest,
+    QueryResponse,
+)
 from api.schemas.report import ReportResponse, ReportSectionSchema
+from storage.models import InvestigationRecord, VerdictRecord
+from storage.sqlite.sqlite_repository import SQLiteRepository, StorageNotFoundError
 from tribunal.adversarial.defense_agent import DefenseAgent
 from tribunal.consensus.tribunal import Tribunal
 from tribunal.data.loader import DataLoader
@@ -44,7 +54,7 @@ class InvalidQueryError(ServiceError):
 
 
 class InvestigationNotFoundError(ServiceError):
-    """Raised when requesting an investigation ID that does not exist in store."""
+    """Raised when requesting an investigation ID that does not exist in store or database."""
 
 
 class InvestigationExecutionError(ServiceError):
@@ -52,13 +62,13 @@ class InvestigationExecutionError(ServiceError):
 
 
 class InvestigationService:
-    """Central Investigation Service encapsulating Phase C engine orchestration.
-    
-    Acts as the single entry point between REST endpoints (and future CLI/Dashboard clients)
-    and internal domain modules.
-    """
+    """Central Investigation Service encapsulating Phase C engine orchestration & Phase D.2 repository persistence."""
 
-    def __init__(self, data_loader: Optional[DataLoader] = None) -> None:
+    def __init__(
+        self,
+        data_loader: Optional[DataLoader] = None,
+        repository: Optional[SQLiteRepository] = None,
+    ) -> None:
         from pathlib import Path
         if data_loader is not None:
             self.data_loader = data_loader
@@ -67,6 +77,7 @@ class InvestigationService:
         else:
             self.data_loader = DataLoader()
 
+        self.repository = repository or SQLiteRepository()
         self.planner = Planner()
         self.financial_expert = FinancialExpert()
         self.behaviour_expert = BehaviourExpert()
@@ -75,13 +86,13 @@ class InvestigationService:
         self.tribunal = Tribunal()
         self.report_generator = ReportGenerator()
 
-        # In-memory store for investigation execution artifacts
+        # In-memory transient cache for active execution artifacts
         self._store: Dict[str, Dict[str, Any]] = {}
         self._store_lock = threading.Lock()
         self._created_at = datetime.datetime.now(datetime.timezone.utc)
 
     def run_investigation(self, request: InvestigationRequest) -> InvestigationResponse:
-        """Execute full end-to-end investigation workflow."""
+        """Execute full end-to-end investigation workflow and persist results atomically."""
         start_time = time.perf_counter()
         if not request.query or len(request.query.strip()) < 3:
             raise InvalidQueryError("Query must be at least 3 characters long.")
@@ -147,7 +158,7 @@ class InvestigationService:
             "total_ms": total_ms,
         }
 
-        # 7. Store investigation result artifacts
+        # 7. Transient in-memory store update
         with self._store_lock:
             self._store[investigation_id] = {
                 "request": request,
@@ -159,7 +170,43 @@ class InvestigationService:
                 "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             }
 
-        # 8. Formulate InvestigationResponse
+        # 8. Persistent Repository Save (D.2)
+        inv_record = InvestigationRecord(
+            id=investigation_id,
+            query=request.query,
+            dataset=request.dataset,
+            planner_intent=getattr(execution_plan, "target_pattern", None) or "pattern_detection",
+            risk_level=verdict.risk_level,
+            confidence=round(verdict.confidence, 4),
+            recommendation=verdict.recommendation,
+            status="COMPLETED",
+            duration_ms=total_ms,
+        )
+
+        verdict_rec = VerdictRecord(
+            investigation_id=investigation_id,
+            winning_hypothesis=verdict.primary_hypothesis,
+            runner_up=verdict.secondary_hypothesis,
+            confidence=round(verdict.confidence, 4),
+            recommendation=verdict.recommendation,
+        )
+
+        case_dict = {
+            "case_id": case_file.case_id,
+            "dominant_confidence": case_file.dominant_confidence,
+            "dominant_hypothesis": case_file.dominant_hypothesis,
+            "evidence_cards_count": len(case_file.evidence_cards),
+        }
+
+        self.repository.save_full_investigation(
+            record=inv_record,
+            markdown_report=report.markdown_content or report.full_text,
+            json_report=report.json_payload,
+            graph_dict=augmented_graph.to_dict(),
+            verdict_record=verdict_rec,
+            case_file_dict=case_dict,
+        )
+
         summary = (
             f"Investigation concluded verdict '{verdict.verdict}' with confidence {verdict.confidence:.2f}. "
             f"Primary hypothesis: {verdict.primary_hypothesis}"
@@ -209,69 +256,125 @@ class InvestigationService:
         )
 
     def get_report(self, investigation_id: str) -> ReportResponse:
-        """Retrieve stored investigation report by ID."""
-        record = self._get_record(investigation_id)
-        report: InvestigationReport = record["report"]
+        """Retrieve investigation report by ID (memory or persistent repository)."""
+        # Try transient memory first
+        with self._store_lock:
+            record = self._store.get(investigation_id)
+
+        if record:
+            report: InvestigationReport = record["report"]
+            markdown_content = report.markdown_content or report.full_text
+            html_content = report.html_content
+            json_payload = report.json_payload
+            generated_at = report.generated_at
+            risk_level = report.risk_level
+            recommendation = report.recommendation
+            executive_summary = str(report.executive_summary)
+            query_interpretation = str(report.query_interpretation)
+            timeline = str(report.timeline)
+            expert_findings = str(report.expert_findings)
+            evidence_summary = str(report.evidence_summary)
+            graph_summary = str(report.graph_summary)
+            defense_summary = str(report.defense_summary)
+            tribunal_summary = str(report.tribunal_summary)
+            provenance_details = str(report.provenance_details)
+            audit_trail = str(report.audit_trail)
+        else:
+            # Fallback to persistent repository
+            loaded = self.repository.load(investigation_id)
+            if not loaded:
+                raise InvestigationNotFoundError(f"Investigation report with ID '{investigation_id}' not found.")
+            markdown_content = loaded.get("markdown_content", "")
+            json_payload = loaded.get("json_payload", {})
+            html_content = None
+            generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+            exec_sum = json_payload.get("executive_summary", {})
+            risk_level = exec_sum.get("risk_level", "MEDIUM")
+            recommendation = exec_sum.get("recommendation", "")
+            executive_summary = str(exec_sum)
+            query_interpretation = str(json_payload.get("query_interpretation", {}))
+            timeline = str(json_payload.get("timeline", []))
+            expert_findings = str(json_payload.get("expert_findings", []))
+            evidence_summary = str(json_payload.get("evidence_summary", {}))
+            graph_summary = str(json_payload.get("graph_summary", {}))
+            defense_summary = str(json_payload.get("defense_summary", {}))
+            tribunal_summary = str(json_payload.get("tribunal_summary", {}))
+            provenance_details = str(json_payload.get("provenance_details", []))
+            audit_trail = str(json_payload.get("audit_trail", []))
 
         sections = [
-            ReportSectionSchema(title="Executive Summary", order=1, content=str(report.executive_summary)),
-            ReportSectionSchema(title="Query Interpretation", order=2, content=str(report.query_interpretation)),
-            ReportSectionSchema(title="Timeline", order=3, content=str(report.timeline)),
-            ReportSectionSchema(title="Expert Findings", order=4, content=str(report.expert_findings)),
-            ReportSectionSchema(title="Evidence Summary", order=5, content=str(report.evidence_summary)),
-            ReportSectionSchema(title="Graph Summary", order=6, content=str(report.graph_summary)),
-            ReportSectionSchema(title="Defense Summary", order=7, content=str(report.defense_summary)),
-            ReportSectionSchema(title="Tribunal Summary", order=8, content=str(report.tribunal_summary)),
-            ReportSectionSchema(title="Provenance", order=9, content=str(report.provenance_details)),
-            ReportSectionSchema(title="Audit Trail", order=10, content=str(report.audit_trail)),
+            ReportSectionSchema(title="Executive Summary", order=1, content=executive_summary),
+            ReportSectionSchema(title="Query Interpretation", order=2, content=query_interpretation),
+            ReportSectionSchema(title="Timeline", order=3, content=timeline),
+            ReportSectionSchema(title="Expert Findings", order=4, content=expert_findings),
+            ReportSectionSchema(title="Evidence Summary", order=5, content=evidence_summary),
+            ReportSectionSchema(title="Graph Summary", order=6, content=graph_summary),
+            ReportSectionSchema(title="Defense Summary", order=7, content=defense_summary),
+            ReportSectionSchema(title="Tribunal Summary", order=8, content=tribunal_summary),
+            ReportSectionSchema(title="Provenance", order=9, content=provenance_details),
+            ReportSectionSchema(title="Audit Trail", order=10, content=audit_trail),
         ]
 
+        self.repository.record(investigation_id, "RETRIEVED", {"artifact": "report"})
+
         return ReportResponse(
-            report_id=report.report_id,
+            report_id=f"rpt_{investigation_id}",
             investigation_id=investigation_id,
-            generated_at=report.generated_at,
+            generated_at=generated_at,
             version="1.0.0",
-            markdown_content=report.markdown_content or report.full_text,
-            html_content=report.html_content,
+            markdown_content=markdown_content,
+            html_content=html_content,
             sections=sections,
-            json_payload=report.json_payload,
-            risk_level=report.risk_level,
-            recommendation=report.recommendation,
+            json_payload=json_payload,
+            risk_level=risk_level,
+            recommendation=recommendation,
         )
 
     def get_graph(self, investigation_id: str) -> GraphResponse:
-        """Retrieve stored Evidence Graph by ID."""
-        record = self._get_record(investigation_id)
-        graph: EvidenceGraph = record["graph"]
+        """Retrieve Evidence Graph by ID (memory or persistent repository)."""
+        with self._store_lock:
+            record = self._store.get(investigation_id)
+
+        if record:
+            graph: EvidenceGraph = record["graph"]
+            graph_dict = graph.to_dict()
+        else:
+            graph_dict = self.repository.load_graph(investigation_id)
+            if not graph_dict:
+                raise InvestigationNotFoundError(f"Evidence Graph with ID '{investigation_id}' not found.")
 
         nodes = [
             NodeSchema(
-                id=n.node_id,
-                label=n.label,
-                type=n.node_type,
-                risk_score=n.confidence,
-                attributes=n.metadata or {},
+                id=n.get("node_id", n.get("id", "node")),
+                label=n.get("label", n.get("node_id", "node")),
+                type=n.get("node_type", n.get("type", "generic")),
+                risk_score=float(n.get("confidence", n.get("risk_score", 0.0))),
+                attributes=n.get("metadata", n.get("attributes", {})),
             )
-            for n in graph.nodes
+            for n in graph_dict.get("nodes", [])
         ]
 
         edges = [
             EdgeSchema(
-                source=e.source,
-                target=e.target,
-                relation=e.relationship,
-                weight=e.weight,
-                attributes=e.metadata or {},
+                source=e.get("source", ""),
+                target=e.get("target", ""),
+                relation=e.get("relationship", e.get("relation", "CONNECTED")),
+                weight=float(e.get("weight", 1.0)),
+                attributes=e.get("metadata", e.get("attributes", {})),
             )
-            for e in graph.edges
+            for e in graph_dict.get("edges", [])
         ]
 
+        metrics = graph_dict.get("metrics", {})
         stats = GraphStatsSchema(
-            node_count=len(graph.nodes),
-            edge_count=len(graph.edges),
-            density=float(graph.metrics.get("density", 0.0)) if isinstance(graph.metrics, dict) else 0.0,
-            pattern_clusters=int(graph.metrics.get("pattern_clusters", 0)) if isinstance(graph.metrics, dict) else 0,
+            node_count=len(nodes),
+            edge_count=len(edges),
+            density=float(metrics.get("density", 0.0)) if isinstance(metrics, dict) else 0.0,
+            pattern_clusters=int(metrics.get("pattern_clusters", 0)) if isinstance(metrics, dict) else 0,
         )
+
+        self.repository.record(investigation_id, "RETRIEVED", {"artifact": "graph"})
 
         return GraphResponse(
             investigation_id=investigation_id,
@@ -281,31 +384,116 @@ class InvestigationService:
         )
 
     def get_verdict(self, investigation_id: str) -> VerdictResponse:
-        """Retrieve stored Tribunal Verdict by ID."""
-        record = self._get_record(investigation_id)
-        verdict: TribunalVerdict = record["verdict"]
+        """Retrieve Tribunal Verdict by ID (memory or persistent repository)."""
+        with self._store_lock:
+            record = self._store.get(investigation_id)
+
+        if record:
+            verdict: TribunalVerdict = record["verdict"]
+            verdict_type = verdict.verdict
+            winning_hypothesis = verdict.primary_hypothesis
+            winning_score = verdict.primary_score
+            confidence = verdict.confidence
+            confidence_gap = verdict.confidence_gap
+            runner_up = verdict.secondary_hypothesis
+            runner_up_confidence = verdict.secondary_score
+            recommendation = verdict.recommendation
+            deliberation_trace = verdict.deliberation_trace
+            reasoning_metadata = verdict.reasoning_metadata
+        else:
+            verdict_rec = self.repository.load_verdict(investigation_id)
+            if not verdict_rec:
+                raise InvestigationNotFoundError(f"Tribunal Verdict with ID '{investigation_id}' not found.")
+            verdict_type = "COMPLETED"
+            winning_hypothesis = verdict_rec.winning_hypothesis
+            winning_score = verdict_rec.confidence
+            confidence = verdict_rec.confidence
+            confidence_gap = 0.0
+            runner_up = verdict_rec.runner_up
+            runner_up_confidence = None
+            recommendation = verdict_rec.recommendation
+            deliberation_trace = []
+            reasoning_metadata = {}
+
+        self.repository.record(investigation_id, "RETRIEVED", {"artifact": "verdict"})
 
         return VerdictResponse(
             investigation_id=investigation_id,
-            verdict=verdict.verdict,
-            winning_hypothesis=verdict.primary_hypothesis,
-            winning_score=verdict.primary_score,
-            confidence=round(verdict.confidence, 4),
-            confidence_gap=verdict.confidence_gap,
-            runner_up_hypothesis=verdict.secondary_hypothesis,
-            runner_up_confidence=verdict.secondary_score,
-            recommendation=verdict.recommendation,
-            deliberation_trace=verdict.deliberation_trace,
-            reasoning_metadata=verdict.reasoning_metadata,
+            verdict=verdict_type,
+            winning_hypothesis=winning_hypothesis,
+            winning_score=winning_score,
+            confidence=round(confidence, 4),
+            confidence_gap=confidence_gap,
+            runner_up_hypothesis=runner_up,
+            runner_up_confidence=runner_up_confidence,
+            recommendation=recommendation,
+            deliberation_trace=deliberation_trace,
+            reasoning_metadata=reasoning_metadata,
         )
 
-    def _get_record(self, investigation_id: str) -> Dict[str, Any]:
-        """Internal helper to fetch investigation record or raise InvestigationNotFoundError."""
-        with self._store_lock:
-            record = self._store.get(investigation_id)
-        if not record:
+    def list_investigations(self, limit: int = 50, offset: int = 0) -> InvestigationListResponse:
+        """List historical persistent investigations."""
+        records = self.repository.list(limit=limit, offset=offset)
+        schemas = [
+            InvestigationRecordSchema(
+                id=r.id,
+                query=r.query,
+                dataset=r.dataset,
+                created_at=r.created_at,
+                planner_intent=r.planner_intent,
+                risk_level=r.risk_level,
+                confidence=r.confidence,
+                recommendation=r.recommendation,
+                status=r.status,
+                duration_ms=r.duration_ms,
+                version=r.version,
+            )
+            for r in records
+        ]
+        return InvestigationListResponse(
+            total=len(schemas),
+            limit=limit,
+            offset=offset,
+            investigations=schemas,
+        )
+
+    def get_investigation_detail(self, investigation_id: str) -> InvestigationDetailResponse:
+        """Fetch complete investigation record metadata and artifact links."""
+        r = self.repository.get(investigation_id)
+        if not r:
             raise InvestigationNotFoundError(f"Investigation with ID '{investigation_id}' not found.")
-        return record
+
+        schema = InvestigationRecordSchema(
+            id=r.id,
+            query=r.query,
+            dataset=r.dataset,
+            created_at=r.created_at,
+            planner_intent=r.planner_intent,
+            risk_level=r.risk_level,
+            confidence=r.confidence,
+            recommendation=r.recommendation,
+            status=r.status,
+            duration_ms=r.duration_ms,
+            version=r.version,
+        )
+
+        return InvestigationDetailResponse(
+            record=schema,
+            report_url=f"/api/v1/report/{investigation_id}",
+            graph_url=f"/api/v1/graph/{investigation_id}",
+            verdict_url=f"/api/v1/verdict/{investigation_id}",
+            has_case_file=r.case_path is not None,
+        )
+
+    def delete_investigation(self, investigation_id: str) -> bool:
+        """Delete investigation record, artifacts, and in-memory cache entry."""
+        with self._store_lock:
+            self._store.pop(investigation_id, None)
+
+        deleted = self.repository.delete(investigation_id)
+        if not deleted:
+            raise InvestigationNotFoundError(f"Investigation with ID '{investigation_id}' not found.")
+        return True
 
     def _load_dataset_transactions(self, dataset_ref: str) -> pd.DataFrame:
         """Helper to load transactions from dataset reference."""

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "PERSISTED",
+    "timestamp": "2026-07-25T18:15:42.861079+00:00",
+    "details": {
+      "status": "Successfully persisted all artifacts"
+    }
+  },
+  {
+    "id": 2,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-25T18:15:42.870661+00:00",
+    "details": {
+      "artifact": "report"
+    }
+  },
+  {
+    "id": 3,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-25T18:15:42.888194+00:00",
+    "details": {
+      "artifact": "report"
+    }
+  },
+  {
+    "id": 4,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-25T18:15:42.915807+00:00",
+    "details": {
+      "artifact": "graph"
+    }
+  },
+  {
+    "id": 5,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-25T18:15:42.940189+00:00",
+    "details": {
+      "artifact": "verdict"
+    }
+  }
+]

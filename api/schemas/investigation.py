@@ -53,3 +53,35 @@ class QueryResponse(BaseModel):
     recommendation: str = Field(..., description="Actionable advice")
     short_answer: str = Field(..., description="Concise investigation answer")
     invoked_experts: List[str] = Field(default_factory=list, description="Experts invoked during query processing")
+
+
+class InvestigationRecordSchema(BaseModel):
+    """Schema representing an investigation record item in list responses."""
+    id: str = Field(..., description="Unique investigation ID")
+    query: str = Field(..., description="Original query")
+    dataset: str = Field(..., description="Dataset reference")
+    created_at: str = Field(..., description="ISO creation timestamp")
+    planner_intent: str = Field(..., description="Parsed planner intent")
+    risk_level: str = Field(..., description="Risk level")
+    confidence: float = Field(..., description="Confidence score")
+    recommendation: str = Field(..., description="Recommendation")
+    status: str = Field(..., description="Execution status")
+    duration_ms: float = Field(..., description="Execution duration in milliseconds")
+    version: str = Field("1.0.0", description="Record schema version")
+
+
+class InvestigationListResponse(BaseModel):
+    """Paginated list of persistent investigation records."""
+    total: int = Field(..., description="Total count of items returned")
+    limit: int = Field(..., description="Page limit")
+    offset: int = Field(..., description="Page offset")
+    investigations: List[InvestigationRecordSchema] = Field(default_factory=list, description="List of investigation records")
+
+
+class InvestigationDetailResponse(BaseModel):
+    """Detailed investigation record response including artifact URLs."""
+    record: InvestigationRecordSchema = Field(..., description="Core investigation record metadata")
+    report_url: str = Field(..., description="URL path to report artifact")
+    graph_url: str = Field(..., description="URL path to graph artifact")
+    verdict_url: str = Field(..., description="URL path to verdict artifact")
+    has_case_file: bool = Field(False, description="Whether case file artifact is persisted")
