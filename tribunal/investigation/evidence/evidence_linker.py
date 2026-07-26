@@ -55,7 +55,7 @@ class EvidenceLinker:
                 severity=card.severity,
                 timestamp=card.generated_at,
                 metadata={
-                    "card": card,
+                    "card": card.to_dict(),
                     "affected_accounts": card.affected_accounts,
                     "supporting_features": card.supporting_features,
                     "supporting_metrics": card.supporting_metrics,

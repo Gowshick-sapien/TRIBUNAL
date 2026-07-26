@@ -7,12 +7,15 @@ import {
   Layers,
   ArrowLeft,
   Download,
+  Share2,
+  Maximize2,
 } from 'lucide-react';
 import { api } from '../services/api';
-import type { GraphResponse, ReportResponse, VerdictResponse } from '../types';
+import type { ReportResponse, VerdictResponse } from '../types';
 import { VerdictBadge } from '../components/common/VerdictBadge';
 import { RiskChip } from '../components/common/RiskChip';
 import { ConfidenceMeter } from '../components/common/ConfidenceMeter';
+import { EvidenceGraph } from '../components/graph/EvidenceGraph';
 
 export const ViewerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +25,6 @@ export const ViewerPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'summary';
 
   const [report, setReport] = useState<ReportResponse | null>(null);
-  const [graph, setGraph] = useState<GraphResponse | null>(null);
   const [verdict, setVerdict] = useState<VerdictResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,9 +35,8 @@ export const ViewerPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const [rep, gr, ver] = await Promise.all([
+        const [rep, ver] = await Promise.all([
           api.getReport(id, 'json').catch(() => null),
-          api.getGraph(id).catch(() => null),
           api.getVerdict(id).catch(() => null),
         ]);
 
@@ -43,7 +44,6 @@ export const ViewerPage: React.FC = () => {
           setError(`Investigation '${id}' not found in memory or persistent storage.`);
         } else {
           setReport(rep as ReportResponse);
-          setGraph(gr);
           setVerdict(ver);
         }
       } catch (err: any) {
@@ -193,47 +193,22 @@ export const ViewerPage: React.FC = () => {
       {/* Tab 2: Evidence & Topology */}
       {activeTab === 'evidence' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="glass-card p-5 rounded-xl border border-slate-800">
-              <span className="text-xs font-mono text-slate-400 uppercase">Graph Node Count</span>
-              <div className="text-2xl font-mono font-bold text-cyan-400 mt-1">
-                {graph?.statistics?.node_count || graph?.nodes?.length || 0} Nodes
-              </div>
-            </div>
-            <div className="glass-card p-5 rounded-xl border border-slate-800">
-              <span className="text-xs font-mono text-slate-400 uppercase">Graph Edge Count</span>
-              <div className="text-2xl font-mono font-bold text-cyan-400 mt-1">
-                {graph?.statistics?.edge_count || graph?.edges?.length || 0} Edges
-              </div>
-            </div>
-            <div className="glass-card p-5 rounded-xl border border-slate-800">
-              <span className="text-xs font-mono text-slate-400 uppercase">Pattern Density</span>
-              <div className="text-2xl font-mono font-bold text-emerald-400 mt-1">
-                {graph?.statistics?.density ? graph.statistics.density.toFixed(3) : '0.045'}
-              </div>
-            </div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Share2 className="w-4 h-4 text-cyan-400" />
+              Interactive Evidence Graph Canvas (D.4)
+            </h2>
+            <button
+              onClick={() => navigate(`/graph/${id}`)}
+              className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono font-bold text-xs transition flex items-center gap-1.5"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              Open Fullscreen Studio
+            </button>
           </div>
 
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">
-              Evidence Graph Node Topology Summary
-            </h3>
-            <div className="divide-y divide-slate-800/80 text-xs font-mono">
-              {(graph?.nodes || []).slice(0, 10).map((node, i) => (
-                <div key={i} className="py-2.5 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                    <span className="font-bold text-slate-200">{node.label || node.id}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-900 text-slate-400 uppercase">
-                      {node.type}
-                    </span>
-                  </div>
-                  <span className="text-cyan-400 font-bold">
-                    Risk Score: {(node.risk_score * 100).toFixed(0)}%
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="h-[600px] w-full">
+            <EvidenceGraph investigationId={id} />
           </div>
         </div>
       )}

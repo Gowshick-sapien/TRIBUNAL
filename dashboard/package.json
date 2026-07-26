@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xyflow/react": "^12.11.2",
     "autoprefixer": "^10.5.4",
     "axios": "^1.18.1",
+    "dagre": "^0.8.5",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^1.27.0",
     "postcss": "^8.5.23",
     "react": "^19.2.7",
@@ -20,6 +23,7 @@
     "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.54",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { HistoryPage } from './pages/HistoryPage';
 import { ViewerPage } from './pages/ViewerPage';
+import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { SystemPage } from './pages/SystemPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
               <Route path="/investigate" element={<WorkspacePage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/investigation/:id" element={<ViewerPage />} />
+              <Route path="/graph/:id" element={<EvidenceGraphPage />} />
               <Route path="/system" element={<SystemPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>

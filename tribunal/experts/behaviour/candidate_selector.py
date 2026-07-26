@@ -35,16 +35,28 @@ class CandidateSelector:
             target_entities.extend([str(e) for e in filters["entities"]])
 
         if target_entities:
-            entity_set = set(target_entities)
+            entity_set = set()
+            for entity in target_entities:
+                s = str(entity).strip()
+                entity_set.add(s)
+                if s.upper().startswith("ACC_"):
+                    entity_set.add(s[4:])
+                elif s.upper().startswith("ACC"):
+                    entity_set.add(s[3:])
+                elif s.upper().startswith("ACCOUNT_"):
+                    entity_set.add(s[8:])
+
             from_col = "from_account" if "from_account" in df.columns else ("Account" if "Account" in df.columns else None)
             to_col = "to_account" if "to_account" in df.columns else ("Account.1" if "Account.1" in df.columns else None)
 
             if from_col and to_col:
-                df = df[df[from_col].astype(str).isin(entity_set) | df[to_col].astype(str).isin(entity_set)].copy()
+                matched_df = df[
+                    df[from_col].astype(str).isin(entity_set) | df[to_col].astype(str).isin(entity_set)
+                ].copy()
 
-        # 2. Filter by date range if requested
-        if "date_range" in filters and filters["date_range"]:
-            # Standard candidate filtering for date range if timestamp is datetime
-            pass
+                if not matched_df.empty:
+                    df = matched_df
+                else:
+                    logger.info(f"Entities {entity_set} yielded no direct matches in sample. Fallback to active dataset rows.")
 
         return df

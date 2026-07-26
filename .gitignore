@@ -1,11 +1,17 @@
-# Environment & Configuration
+# ==========================================
+# TRIBUNAL — Official Repository .gitignore
+# ==========================================
+
+# 1. Environment & Configuration
 .env
+.env.local
+.env.*.local
 .venv/
 venv/
 ENV/
 env/
 
-# Python & Bytecode
+# 2. Python Bytecode & Test/Lint Caches
 __pycache__/
 *.py[cod]
 *$py.class
@@ -16,7 +22,30 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# IDE & Editor files
+# 3. Node.js & React Dashboard Artifacts
+node_modules/
+dashboard/node_modules/
+dashboard/dist/
+dashboard/dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 4. Phase D.2 Persistent Storage & SQLite Databases
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+storage/tribunal.db
+storage/files/reports/*
+storage/files/graphs/*
+storage/files/cases/*
+storage/files/audit/*
+
+# 5. IDE, OS & Editor Artifacts
 .idea/
 .vscode/
 *.swp
@@ -24,13 +53,13 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Logs & Temporary files
+# 6. Logs & Temporary Scratch Files
 *.log
 *.tmp
 temp/
 scratch/
 
-# Large Datasets & Generated Artifacts
+# 7. Datasets & Model Artifacts
 tribunal/datasets/*.csv
 tribunal/datasets/*.txt
 tribunal/datasets/raw/
@@ -45,7 +74,12 @@ tribunal/datasets/processed/*.html
 *.gpickle
 *.parquet
 
-# Keep directory structure preserved via .gitkeep
+# 8. Git Structure Preserved via .gitkeep
 !**/datasets/.gitkeep
 !**/datasets/raw/.gitkeep
 !**/datasets/processed/.gitkeep
+!**/storage/files/.gitkeep
+!**/storage/files/reports/.gitkeep
+!**/storage/files/graphs/.gitkeep
+!**/storage/files/cases/.gitkeep
+!**/storage/files/audit/.gitkeep
