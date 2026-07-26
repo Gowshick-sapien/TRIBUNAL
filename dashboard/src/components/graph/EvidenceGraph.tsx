@@ -79,7 +79,7 @@ const EvidenceGraphInner: React.FC<EvidenceGraphInnerProps> = ({ investigationId
   // Export handlers
   const handleExportPng = useCallback(() => {
     if (flowWrapperRef.current === null) return;
-    toPng(flowWrapperRef.current, { backgroundColor: '#090d16', quality: 0.95 })
+    toPng(flowWrapperRef.current, { backgroundColor: '#ffffff', quality: 0.95 })
       .then((dataUrl) => {
         const a = document.createElement('a');
         a.download = `evidence_graph_${investigationId}.png`;
@@ -91,8 +91,8 @@ const EvidenceGraphInner: React.FC<EvidenceGraphInnerProps> = ({ investigationId
 
   if (loading) {
     return (
-      <div className="w-full h-full glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-slate-500 font-mono text-sm gap-3">
-        <span className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+      <div className="w-full h-full surface-card rounded-lg p-12 flex flex-col items-center justify-center text-slate-500 font-sans text-xs gap-3 border border-slate-200">
+        <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
         Rendering Evidence Graph canvas for '{investigationId}'...
       </div>
     );
@@ -100,14 +100,14 @@ const EvidenceGraphInner: React.FC<EvidenceGraphInnerProps> = ({ investigationId
 
   if (error || !payload) {
     return (
-      <div className="w-full h-full glass-panel rounded-2xl p-8 flex items-center justify-center text-rose-400 font-mono text-xs">
+      <div className="w-full h-full surface-card rounded-lg p-8 flex items-center justify-center text-rose-700 font-sans text-xs border border-rose-200 bg-rose-50">
         {error || 'Evidence Graph structure missing or unparseable.'}
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full relative flex overflow-hidden glass-panel rounded-2xl border border-slate-800" ref={flowWrapperRef}>
+    <div className="w-full h-full relative flex overflow-hidden surface-card rounded-lg border border-slate-200 shadow-xs" ref={flowWrapperRef}>
       {/* Graph Canvas Workspace */}
       <div className="flex-1 h-full relative">
         <ReactFlow
@@ -118,16 +118,16 @@ const EvidenceGraphInner: React.FC<EvidenceGraphInnerProps> = ({ investigationId
           onEdgeClick={handleEdgeClick}
           onPaneClick={handlePaneClick}
           fitView
-          colorMode="dark"
+          colorMode="light"
           proOptions={{ hideAttribution: true }}
         >
-          <Background color="#334155" variant={BackgroundVariant.Dots} gap={20} size={1} />
+          <Background color="#cbd5e1" variant={BackgroundVariant.Dots} gap={20} size={1} />
           <MiniMap
-            style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '12px' }}
+            style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px' }}
             nodeColor={(n: any) => {
-              if (n.type === 'tribunal') return '#38bdf8';
-              if (n.type === 'defense') return '#10b981';
-              return '#06b6d4';
+              if (n.type === 'tribunal') return '#2563eb';
+              if (n.type === 'defense') return '#16a34a';
+              return '#3b82f6';
             }}
           />
         </ReactFlow>

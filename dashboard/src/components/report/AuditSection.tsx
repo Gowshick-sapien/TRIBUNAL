@@ -12,20 +12,20 @@ export const AuditSection: React.FC = () => {
   ];
 
   return (
-    <div id="sec-audit" className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 scroll-mt-6">
-      <div className="text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-        <Activity className="w-4 h-4" /> Section 9: Audit Trail & Pipeline Execution Timeline
+    <div id="sec-audit" className="surface-card p-6 rounded-lg border border-slate-200 space-y-4 scroll-mt-6 shadow-xs font-sans">
+      <div className="text-blue-600 font-sans text-xs font-semibold uppercase tracking-wider border-b border-slate-200 pb-2.5 flex items-center gap-2">
+        <Activity className="w-4 h-4 text-blue-600" /> Section 9: Audit Trail & Pipeline Execution Timeline
       </div>
 
-      <div className="space-y-3 font-mono text-xs">
+      <div className="space-y-2 font-sans text-xs">
         {steps.map((step, idx) => (
-          <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+          <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">
               <Check className="w-3 h-3" />
             </div>
             <div>
-              <span className="font-bold text-slate-200 block">{step.title}</span>
-              <span className="text-[11px] text-slate-400 font-sans">{step.desc}</span>
+              <span className="font-semibold text-slate-900 block">{step.title}</span>
+              <span className="text-[11px] text-slate-600 font-sans">{step.desc}</span>
             </div>
           </div>
         ))}

@@ -22,50 +22,50 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-6 font-sans">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-black text-slate-100 font-sans tracking-tight flex items-center gap-2">
-          <Settings className="w-6 h-6 text-cyan-400" />
+      <div className="border-b border-slate-200 pb-4">
+        <h1 className="text-2xl font-bold text-slate-900 font-sans tracking-tight flex items-center gap-2">
+          <Settings className="w-5 h-5 text-blue-600" />
           Workstation & Connection Settings
         </h1>
-        <p className="text-xs font-mono text-slate-400 mt-1">
+        <p className="text-xs font-sans text-slate-500 mt-1">
           Configure REST API base endpoints, default datasets, and dashboard preferences.
         </p>
       </div>
 
       {savedMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-mono flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-sans flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           Settings saved successfully!
         </div>
       )}
 
-      <form onSubmit={handleSave} className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+      <form onSubmit={handleSave} className="surface-card p-6 rounded-lg border border-slate-200 space-y-6 bg-white shadow-xs">
         <div className="space-y-2">
-          <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-            <Server className="w-4 h-4 text-cyan-400" />
+          <label className="block text-xs font-sans font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+            <Server className="w-4 h-4 text-blue-600" />
             Backend REST API Base URL
           </label>
           <input
             type="text"
             value={apiUrl}
             onChange={(e) => setApiUrl(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-xl py-2.5 px-4 text-sm font-mono text-slate-100"
+            className="w-full bg-white border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-md py-2 px-3 text-xs font-sans text-slate-900"
           />
-          <span className="text-[11px] font-mono text-slate-500">
-            Default endpoint: <code className="text-cyan-400">{DEFAULT_API_BASE}</code>
+          <span className="text-[11px] font-sans text-slate-500">
+            Default endpoint: <code className="text-blue-600 font-mono">{DEFAULT_API_BASE}</code>
           </span>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider">
+          <label className="block text-xs font-sans font-semibold text-slate-700 uppercase tracking-wider">
             Default Dataset Reference
           </label>
           <select
             value={defaultDataset}
             onChange={(e) => setDefaultDataset(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-xl py-2.5 px-4 text-sm font-mono text-slate-200"
+            className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-md py-2 px-3 text-xs font-sans text-slate-900"
           >
             <option value="default">default (LI-Small_Trans.csv)</option>
             <option value="datasets/processed/transactions.parquet">processed/transactions.parquet</option>
@@ -73,11 +73,11 @@ export const SettingsPage: React.FC = () => {
           </select>
         </div>
 
-        <div className="pt-4 border-t border-slate-800 flex justify-between items-center">
+        <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
           <button
             type="button"
             onClick={handleReset}
-            className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-slate-400 hover:text-slate-200 font-mono text-xs transition flex items-center gap-2"
+            className="px-4 py-2 rounded-md bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-sans font-medium text-xs transition-colors flex items-center gap-2 shadow-xs"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Reset to Defaults
@@ -85,7 +85,7 @@ export const SettingsPage: React.FC = () => {
 
           <button
             type="submit"
-            className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2"
+            className="px-5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-xs flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             Save Preferences

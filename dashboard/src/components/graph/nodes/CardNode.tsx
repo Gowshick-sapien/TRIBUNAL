@@ -13,54 +13,54 @@ export const CardNode: React.FC<CardNodeProps> = memo(({ data, selected }) => {
   const confidence = Math.round((data.confidence || 0.5) * 100);
 
   const getBorderColor = () => {
-    if (data.isWinningPath) return 'border-cyan-400 ring-2 ring-cyan-400/50 shadow-lg shadow-cyan-500/30';
-    if (severity === 'CRITICAL') return 'border-rose-500/80 shadow-rose-500/20';
-    if (severity === 'HIGH') return 'border-orange-500/80 shadow-orange-500/20';
-    return 'border-slate-700 hover:border-cyan-500/50';
+    if (data.isWinningPath) return 'border-blue-600 ring-2 ring-blue-500/20 shadow-sm';
+    if (severity === 'CRITICAL') return 'border-rose-300 shadow-xs';
+    if (severity === 'HIGH') return 'border-amber-300 shadow-xs';
+    return 'border-slate-200 hover:border-blue-300';
   };
 
   const getBadgeStyle = () => {
-    if (isFinancial) return 'bg-cyan-950/80 border-cyan-800 text-cyan-300';
-    return 'bg-purple-950/80 border-purple-800 text-purple-300';
+    if (isFinancial) return 'bg-blue-50 border-blue-200 text-blue-700';
+    return 'bg-slate-100 border-slate-200 text-slate-700';
   };
 
   return (
     <div
-      className={`w-64 glass-panel rounded-xl p-3.5 border transition-all duration-300 ${getBorderColor()} ${
-        selected ? 'ring-2 ring-cyan-400 scale-[1.02]' : ''
-      } ${data.isDimmed ? 'opacity-30 blur-[0.5px]' : 'opacity-100'}`}
+      className={`w-64 bg-white rounded-lg p-3.5 border transition-colors shadow-xs ${getBorderColor()} ${
+        selected ? 'ring-2 ring-blue-500' : ''
+      } ${data.isDimmed ? 'opacity-30' : 'opacity-100'}`}
     >
-      <Handle type="target" position={Position.Left} className="w-2.5 h-2.5 bg-cyan-400 border-2 border-slate-900" />
+      <Handle type="target" position={Position.Left} className="w-2.5 h-2.5 bg-blue-600 border-2 border-white" />
 
       <div className="flex items-center justify-between gap-2 mb-2">
-        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${getBadgeStyle()}`}>
+        <span className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${getBadgeStyle()}`}>
           {isFinancial ? 'Financial Expert' : 'Behaviour Expert'}
         </span>
-        <span className="text-[10px] font-mono text-cyan-400 font-bold bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-800">
+        <span className="text-[10px] font-mono text-slate-700 font-semibold bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
           {confidence}%
         </span>
       </div>
 
-      <div className="font-sans font-bold text-xs text-slate-100 line-clamp-2 leading-tight mb-2">
+      <div className="font-sans font-semibold text-xs text-slate-900 line-clamp-2 leading-tight mb-2">
         {data.hypothesis || data.label}
       </div>
 
-      <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-2 border-t border-slate-800/80">
-        <span className="truncate max-w-[120px]">ID: {data.id}</span>
+      <div className="flex items-center justify-between text-[10px] font-sans text-slate-500 pt-2 border-t border-slate-200">
+        <span className="truncate max-w-[120px] font-mono">ID: {data.id}</span>
         <span
-          className={`font-semibold uppercase ${
+          className={`font-semibold uppercase font-mono ${
             severity === 'CRITICAL'
-              ? 'text-rose-400'
+              ? 'text-rose-700'
               : severity === 'HIGH'
-              ? 'text-orange-400'
-              : 'text-amber-400'
+              ? 'text-amber-700'
+              : 'text-slate-700'
           }`}
         >
           {severity}
         </span>
       </div>
 
-      <Handle type="source" position={Position.Right} className="w-2.5 h-2.5 bg-cyan-400 border-2 border-slate-900" />
+      <Handle type="source" position={Position.Right} className="w-2.5 h-2.5 bg-blue-600 border-2 border-white" />
     </div>
   );
 });

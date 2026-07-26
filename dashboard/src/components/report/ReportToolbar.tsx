@@ -19,21 +19,21 @@ export const ReportToolbar: React.FC<ReportToolbarProps> = ({
   annotationCount,
 }) => {
   return (
-    <div className="glass-panel p-3.5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs no-print">
+    <div className="surface-card p-3 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 font-sans text-xs shadow-xs no-print">
       {/* Search Input */}
       <div className="relative flex-1 w-full max-w-md">
-        <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none" />
+        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2 pointer-events-none" />
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search text, transaction IDs, or accounts in report..."
-          className="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl py-1.5 pl-9 pr-8 text-slate-100 placeholder-slate-500 text-xs"
+          className="w-full bg-white border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-md py-1.5 pl-9 pr-8 text-slate-900 placeholder-slate-400 text-xs font-sans"
         />
         {searchTerm && (
           <button
             onClick={() => onSearchChange('')}
-            className="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300 transition"
+            className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -44,18 +44,18 @@ export const ReportToolbar: React.FC<ReportToolbarProps> = ({
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={onPrint}
-          className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold transition flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-medium transition-colors flex items-center gap-1.5 shadow-xs"
         >
-          <Printer className="w-3.5 h-3.5 text-purple-400" />
+          <Printer className="w-3.5 h-3.5 text-slate-600" />
           Print / PDF
         </button>
 
         <button
           onClick={onToggleAnnotations}
-          className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 border ${
+          className={`px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5 border shadow-xs ${
             showAnnotations
-              ? 'bg-amber-500 text-slate-950 border-amber-400'
-              : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+              ? 'bg-amber-50 text-amber-700 border-amber-200'
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
           <MessageSquare className="w-3.5 h-3.5" />

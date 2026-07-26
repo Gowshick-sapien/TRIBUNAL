@@ -23,11 +23,11 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-64 border-r border-slate-800 glass-panel flex flex-col justify-between p-4 shrink-0 hidden md:flex">
+    <aside className="w-60 border-r border-slate-200 bg-white flex flex-col justify-between p-4 shrink-0 hidden md:flex">
       <div className="space-y-6">
         {/* Section Header */}
         <div>
-          <div className="text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wider px-3 mb-3">
+          <div className="text-[10px] font-sans font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">
             Navigation Console
           </div>
           <nav className="space-y-1">
@@ -38,16 +38,16 @@ export const Sidebar: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }: { isActive: boolean }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono font-medium transition-all duration-200 ${
+                    `flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-sans transition-colors ${
                       isActive
-                        ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/10'
+                        ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/60'
                         : item.highlight
-                        ? 'text-cyan-400 hover:bg-slate-800/80 hover:text-cyan-300 border border-cyan-950'
-                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                        ? 'text-blue-600 font-medium hover:bg-slate-50 hover:text-blue-700 border border-slate-200/80 bg-slate-50/50'
+                        : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900 border border-transparent'
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.label}</span>
                 </NavLink>
               );
@@ -56,17 +56,17 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Quick Launch Card */}
-        <div className="p-3.5 rounded-xl bg-gradient-to-br from-cyan-950/40 to-slate-900 border border-cyan-800/40">
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold mb-1">
-            <Sparkles className="w-4 h-4" />
+        <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+          <div className="flex items-center gap-1.5 text-slate-900 text-xs font-sans font-semibold">
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
             Agentic Engine Platform
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
             Exposes multi-expert reasoning, evidence graphs, repository search, and tribunal consensus.
           </p>
           <NavLink
             to="/investigate"
-            className="block text-center w-full py-1.5 px-3 rounded bg-cyan-500 text-slate-950 font-mono font-bold text-xs hover:bg-cyan-400 transition shadow-md shadow-cyan-500/20"
+            className="block text-center w-full py-1.5 px-3 rounded-md bg-blue-600 text-white font-sans font-medium text-xs hover:bg-blue-700 transition-colors shadow-xs"
           >
             + Run Query
           </NavLink>
@@ -74,14 +74,14 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Footer Info */}
-      <div className="border-t border-slate-800/80 pt-3 text-[11px] font-mono text-slate-500 flex flex-col gap-1 px-1">
+      <div className="border-t border-slate-200 pt-3 text-[11px] font-sans text-slate-500 flex flex-col gap-1 px-1">
         <div className="flex justify-between">
           <span>Platform Phase</span>
-          <span className="text-slate-300 font-bold">Phase D.5</span>
+          <span className="text-slate-700 font-medium">Phase D.5</span>
         </div>
         <div className="flex justify-between">
           <span>Backend REST API</span>
-          <span className="text-emerald-400 font-bold">Online</span>
+          <span className="text-emerald-700 font-semibold">Online</span>
         </div>
       </div>
     </aside>

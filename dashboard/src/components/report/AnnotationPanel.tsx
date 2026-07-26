@@ -28,78 +28,78 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[400px] z-50 glass-panel border-l border-slate-800 p-6 overflow-y-auto space-y-6 shadow-2xl animate-slideInRight backdrop-blur-xl no-print">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[400px] z-50 bg-white border-l border-slate-200 p-6 overflow-y-auto space-y-6 shadow-2xl font-sans no-print">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4 font-mono">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4 font-sans">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-amber-400" />
-          <span className="font-bold text-slate-100 text-sm">Investigator Annotations</span>
+          <MessageSquare className="w-4.5 h-4.5 text-amber-600" />
+          <span className="font-semibold text-slate-900 text-sm">Investigator Annotations</span>
         </div>
         <button
           onClick={onClose}
-          className="p-1 rounded-lg bg-slate-900 text-slate-400 hover:text-slate-200 transition"
+          className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
-      <p className="text-xs font-mono text-slate-400 leading-relaxed">
-        Attach review notes to Case <strong className="text-cyan-400">{reportId}</strong>. Annotations are stored independently without mutating the immutable investigation report.
+      <p className="text-xs font-sans text-slate-500 leading-relaxed">
+        Attach review notes to Case <strong className="text-blue-600 font-mono font-semibold">{reportId}</strong>. Annotations are stored independently without mutating the immutable investigation report.
       </p>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-3 font-mono text-xs">
+      <form onSubmit={handleSubmit} className="space-y-3 font-sans text-xs">
         <div>
-          <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Author / Role</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">Author / Role</label>
           <input
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 font-sans"
           />
         </div>
         <div>
-          <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Note Annotation</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">Note Annotation</label>
           <textarea
             rows={3}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="e.g. Needs SAR review for velocity anomaly..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 placeholder-slate-500 font-sans text-xs"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 placeholder-slate-400 font-sans text-xs"
           />
         </div>
         <button
           type="submit"
           disabled={!text.trim()}
-          className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition flex items-center justify-center gap-1.5 disabled:opacity-40"
+          className="w-full py-2 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-medium transition-colors flex items-center justify-center gap-1.5 disabled:opacity-40 shadow-xs"
         >
           <Send className="w-3.5 h-3.5" /> Attach Annotation
         </button>
       </form>
 
       {/* List */}
-      <div className="space-y-3 pt-4 border-t border-slate-800 font-mono text-xs">
-        <span className="text-[10px] text-slate-500 uppercase font-bold block">
+      <div className="space-y-3 pt-4 border-t border-slate-200 font-sans text-xs">
+        <span className="text-[10px] text-slate-500 uppercase font-semibold block">
           Attached Annotations ({annotations.length})
         </span>
 
         {annotations.length === 0 ? (
-          <div className="text-slate-500 text-center py-6 text-xs">No annotations attached yet.</div>
+          <div className="text-slate-400 text-center py-6 text-xs font-sans">No annotations attached yet.</div>
         ) : (
           annotations.map((note) => (
-            <div key={note.id} className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+            <div key={note.id} className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between text-[11px]">
-                <span className="font-bold text-amber-400">{note.author}</span>
+                <span className="font-semibold text-amber-700 font-sans">{note.author}</span>
                 <button
                   onClick={() => onDeleteAnnotation(note.id)}
-                  className="text-slate-500 hover:text-rose-400 transition"
+                  className="text-slate-400 hover:text-rose-600 transition-colors"
                   title="Remove Annotation"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-              <p className="text-slate-200 font-sans text-xs">{note.text}</p>
-              <span className="text-[9px] text-slate-500 block">
+              <p className="text-slate-800 font-sans text-xs leading-relaxed">{note.text}</p>
+              <span className="text-[10px] text-slate-400 font-mono block">
                 {new Date(note.created_at).toLocaleString()}
               </span>
             </div>

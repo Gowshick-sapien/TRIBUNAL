@@ -16,7 +16,7 @@ import { SettingsPage } from './pages/SettingsPage';
 export const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans">
         <Navbar />
 
         <div className="flex-1 flex overflow-hidden">

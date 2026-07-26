@@ -28,10 +28,10 @@ export const GraphToolbar: React.FC<GraphToolbarProps> = ({
   showWinningPathOnly,
 }) => {
   return (
-    <div className="glass-panel rounded-xl p-1.5 border border-slate-800 flex items-center gap-1 shadow-lg backdrop-blur-md">
+    <div className="surface-card rounded-md p-1 border border-slate-200 flex items-center gap-1 shadow-xs bg-white font-sans text-xs">
       <button
         onClick={onZoomIn}
-        className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition"
+        className="p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
         title="Zoom In"
       >
         <ZoomIn className="w-4 h-4" />
@@ -39,7 +39,7 @@ export const GraphToolbar: React.FC<GraphToolbarProps> = ({
 
       <button
         onClick={onZoomOut}
-        className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition"
+        className="p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
         title="Zoom Out"
       >
         <ZoomOut className="w-4 h-4" />
@@ -47,7 +47,7 @@ export const GraphToolbar: React.FC<GraphToolbarProps> = ({
 
       <button
         onClick={onFitView}
-        className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition"
+        className="p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
         title="Fit to Screen"
       >
         <Maximize2 className="w-4 h-4" />
@@ -55,21 +55,21 @@ export const GraphToolbar: React.FC<GraphToolbarProps> = ({
 
       <button
         onClick={onReset}
-        className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition"
+        className="p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
         title="Reset View"
       >
         <RotateCcw className="w-4 h-4" />
       </button>
 
-      <div className="w-px h-5 bg-slate-800 mx-1" />
+      <div className="w-px h-4 bg-slate-200 mx-1" />
 
       {/* Winning Path Toggle Button */}
       <button
         onClick={onToggleWinningPath}
-        className={`px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition flex items-center gap-1.5 ${
+        className={`px-2.5 py-1 rounded-md font-sans text-xs font-medium transition-colors flex items-center gap-1.5 border shadow-xs ${
           showWinningPathOnly
-            ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30'
-            : 'bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-slate-800'
+            ? 'bg-blue-600 text-white border-blue-600'
+            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
         }`}
         title="Highlight Tribunal Winning Reasoning Chain"
       >
@@ -77,14 +77,14 @@ export const GraphToolbar: React.FC<GraphToolbarProps> = ({
         {showWinningPathOnly ? 'Winning Chain Active' : 'Highlight Winning Chain'}
       </button>
 
-      <div className="w-px h-5 bg-slate-800 mx-1" />
+      <div className="w-px h-4 bg-slate-200 mx-1" />
 
       <button
         onClick={onExportPng}
-        className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1 text-xs font-mono"
+        className="p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-1 text-xs font-sans font-medium"
         title="Export Graph to PNG Image"
       >
-        <Download className="w-4 h-4" />
+        <Download className="w-4 h-4 text-slate-600" />
         <span className="hidden sm:inline">PNG</span>
       </button>
     </div>

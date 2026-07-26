@@ -8,32 +8,46 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: '#090d16',
-          panel: '#0f172a',
-          card: '#1e293b',
-          border: '#334155',
-          accent: '#06b6d4',
-          cyan: '#38bdf8',
-          emerald: '#10b981',
-          amber: '#f59e0b',
-          rose: '#f43f5e',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          // Legacy aliases mapped to clean enterprise tokens for backwards compatibility
+          dark: '#0f172a',
+          panel: '#ffffff',
+          card: '#ffffff',
+          border: '#e2e8f0',
+          accent: '#2563eb',
+          cyan: '#2563eb',
+          emerald: '#16a34a',
+          amber: '#d97706',
+          rose: '#dc2626',
+        },
+        surface: {
+          ground: '#f8fafc',
+          card: '#ffffff',
+          subtle: '#f1f5f9',
+          hover: '#f8fafc',
+          active: '#eff6ff',
+        },
+        border: {
+          subtle: '#e2e8f0',
+          default: '#cbd5e1',
+          focus: '#3b82f6',
         }
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
-        sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Segoe UI', 'system-ui', '-apple-system', 'sans-serif'],
       },
-      animation: {
-        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-      },
-      keyframes: {
-        glow: {
-          '0%': { boxShadow: '0 0 10px rgba(56, 189, 248, 0.2)' },
-          '100%': { boxShadow: '0 0 25px rgba(56, 189, 248, 0.6)' },
-        }
+      boxShadow: {
+        'xs': '0 1px 2px 0 rgba(15, 23, 42, 0.03)',
+        'sm': '0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04)',
+        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
       }
     },
   },
   plugins: [],
 }
+

@@ -9,22 +9,22 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({ confidence, sh
   const percentage = Math.round((confidence || 0) * 100);
 
   const getColor = () => {
-    if (percentage >= 80) return 'from-cyan-500 to-emerald-400';
-    if (percentage >= 50) return 'from-amber-500 to-yellow-400';
-    return 'from-slate-500 to-slate-400';
+    if (percentage >= 80) return 'bg-blue-600';
+    if (percentage >= 50) return 'bg-amber-600';
+    return 'bg-slate-500';
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-1">
       {showLabel && (
-        <div className="flex justify-between items-center text-xs font-mono mb-1.5">
-          <span className="text-slate-400">Calibrated Confidence</span>
-          <span className="text-cyan-400 font-bold">{percentage}%</span>
+        <div className="flex justify-between items-center text-xs font-sans">
+          <span className="text-slate-500">Calibrated Confidence</span>
+          <span className="text-slate-900 font-semibold font-mono">{percentage}%</span>
         </div>
       )}
-      <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800 p-0.5">
+      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
         <div
-          className={`h-full rounded-full bg-gradient-to-r ${getColor()} transition-all duration-700 ease-out`}
+          className={`h-full rounded-full ${getColor()} transition-all duration-500 ease-out`}
           style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}
         />
       </div>

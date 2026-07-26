@@ -69,19 +69,19 @@ export const ReportViewerPage: React.FC = () => {
 
   if (loading || !report) {
     return (
-      <div className="p-8 max-w-7xl mx-auto font-mono text-xs text-slate-500 text-center py-20">
-        <span className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin inline-block mb-3" />
+      <div className="p-8 max-w-7xl mx-auto font-sans text-xs text-slate-500 text-center py-20">
+        <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin inline-block mb-3" />
         <p>Loading interactive investigation report workstation for Case {id}...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
       {/* Top Back Navigation */}
       <button
         onClick={() => navigate('/history')}
-        className="text-xs font-mono text-cyan-400 flex items-center gap-1.5 hover:underline no-print"
+        className="text-xs font-sans text-blue-600 font-medium flex items-center gap-1.5 hover:underline no-print"
       >
         <ArrowLeft className="w-3.5 h-3.5" /> Back to Investigation History
       </button>
@@ -135,11 +135,11 @@ export const ReportViewerPage: React.FC = () => {
           <AuditSection />
 
           {/* Markdown Full Text Backup */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3 font-mono text-xs">
-            <span className="text-slate-400 uppercase font-bold block border-b border-slate-800 pb-2">
+          <div className="surface-card p-6 rounded-lg border border-slate-200 space-y-3 font-sans text-xs bg-white shadow-xs">
+            <span className="text-slate-500 uppercase font-semibold block border-b border-slate-200 pb-2 text-[10px] tracking-wider">
               Full Document Text
             </span>
-            <pre className="whitespace-pre-wrap font-sans text-xs text-slate-300 leading-relaxed max-h-96 overflow-y-auto p-4 bg-slate-950/60 rounded-xl border border-slate-800">
+            <pre className="whitespace-pre-wrap font-mono text-xs text-slate-800 leading-relaxed max-h-96 overflow-y-auto p-4 bg-slate-50 rounded-lg border border-slate-200">
               {report.markdown_content}
             </pre>
           </div>

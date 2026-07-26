@@ -14,27 +14,27 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   onReset,
 }) => {
   return (
-    <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4 animate-fadeIn font-mono text-xs">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-        <span className="font-bold text-slate-300 uppercase tracking-wider text-[11px]">
+    <div className="surface-card p-5 rounded-lg border border-slate-200 space-y-4 font-sans text-xs">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+        <span className="font-semibold text-slate-900 uppercase tracking-wider text-[10px]">
           Multi-Criteria Repository Filters
         </span>
         <button
           onClick={onReset}
-          className="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1 text-[11px]"
+          className="text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-1 text-xs font-medium"
         >
-          <RotateCcw className="w-3 h-3" /> Reset
+          <RotateCcw className="w-3.5 h-3.5" /> Reset Filters
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {/* Risk Filter */}
         <div className="space-y-1.5">
-          <label className="text-[10px] text-slate-400 uppercase font-bold">Risk Classification</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold">Risk Classification</label>
           <select
             value={filters.risk_level}
             onChange={(e) => onChange({ ...filters, risk_level: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 font-sans"
           >
             <option value="ALL">ALL RISKS</option>
             <option value="CRITICAL">CRITICAL</option>
@@ -46,11 +46,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Dataset Alias Filter */}
         <div className="space-y-1.5">
-          <label className="text-[10px] text-slate-400 uppercase font-bold">Dataset Reference</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold">Dataset Reference</label>
           <select
             value={filters.dataset}
             onChange={(e) => onChange({ ...filters, dataset: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 font-sans"
           >
             <option value="ALL">ALL DATASETS</option>
             <option value="default">Default Dataset</option>
@@ -62,11 +62,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Status Filter */}
         <div className="space-y-1.5">
-          <label className="text-[10px] text-slate-400 uppercase font-bold">Status</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold">Status</label>
           <select
             value={filters.status}
             onChange={(e) => onChange({ ...filters, status: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 font-sans"
           >
             <option value="ALL">ALL STATUSES</option>
             <option value="COMPLETED">COMPLETED</option>
@@ -76,11 +76,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Sort By */}
         <div className="space-y-1.5">
-          <label className="text-[10px] text-slate-400 uppercase font-bold">Sort Order</label>
+          <label className="text-[10px] text-slate-500 uppercase font-semibold">Sort Order</label>
           <select
             value={filters.sort_by}
             onChange={(e) => onChange({ ...filters, sort_by: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 font-bold text-cyan-400"
+            className="w-full bg-white border border-slate-200 rounded-md p-2 text-slate-900 font-sans font-medium"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -92,11 +92,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       </div>
 
       {/* Confidence Range Slider & Bookmarks Checkbox */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-800/80 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-200 items-center">
         <div className="space-y-1">
-          <div className="flex justify-between text-[10px] text-slate-400 uppercase font-bold">
+          <div className="flex justify-between text-[10px] text-slate-500 uppercase font-semibold">
             <span>Min Confidence Threshold</span>
-            <span className="text-cyan-400 font-bold">{(filters.min_confidence * 100).toFixed(0)}%</span>
+            <span className="text-blue-600 font-mono font-semibold">{(filters.min_confidence * 100).toFixed(0)}%</span>
           </div>
           <input
             type="range"
@@ -105,7 +105,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             step="0.05"
             value={filters.min_confidence}
             onChange={(e) => onChange({ ...filters, min_confidence: parseFloat(e.target.value) })}
-            className="w-full accent-cyan-400 bg-slate-800"
+            className="w-full accent-blue-600 bg-slate-200 h-1.5 rounded-md"
           />
         </div>
 
@@ -113,10 +113,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           <button
             type="button"
             onClick={() => onChange({ ...filters, only_bookmarked: !filters.only_bookmarked })}
-            className={`px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1.5 border ${
+            className={`px-3 py-1.5 rounded-md font-sans text-xs font-medium transition-colors flex items-center gap-1.5 border shadow-xs ${
               filters.only_bookmarked
-                ? 'bg-amber-500 text-slate-950 border-amber-400'
-                : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
             }`}
           >
             <Bookmark className="w-3.5 h-3.5" />

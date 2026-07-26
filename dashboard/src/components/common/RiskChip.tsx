@@ -8,19 +8,21 @@ export const RiskChip: React.FC<RiskChipProps> = ({ risk }) => {
   const getStyle = () => {
     switch ((risk || '').toUpperCase()) {
       case 'CRITICAL':
-        return 'bg-rose-950/80 text-rose-300 border-rose-600/50';
+        return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'HIGH':
-        return 'bg-orange-950/80 text-orange-300 border-orange-600/50';
+        return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'MEDIUM':
-        return 'bg-amber-950/80 text-amber-300 border-amber-600/50';
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'LOW':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       default:
-        return 'bg-slate-800/80 text-slate-300 border-slate-600/50';
+        return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
 
   return (
     <span
-      className={`px-2.5 py-0.5 rounded text-xs font-mono font-semibold border uppercase tracking-wider ${getStyle()}`}
+      className={`px-2 py-0.5 rounded text-[11px] font-mono font-medium border uppercase tracking-wider inline-flex items-center gap-1 ${getStyle()}`}
     >
       {risk || 'LOW'} RISK
     </span>

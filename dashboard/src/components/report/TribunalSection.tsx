@@ -15,29 +15,29 @@ export const TribunalSection: React.FC<TribunalSectionProps> = ({
   supportMargin = 0.65,
 }) => {
   return (
-    <div id="sec-tribunal" className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 scroll-mt-6">
-      <div className="text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-        <Gavel className="w-4 h-4" /> Section 7: Tribunal Deliberation & Verdict Consensus
+    <div id="sec-tribunal" className="surface-card p-6 rounded-lg border border-slate-200 space-y-4 scroll-mt-6 shadow-xs font-sans">
+      <div className="text-blue-600 font-sans text-xs font-semibold uppercase tracking-wider border-b border-slate-200 pb-2.5 flex items-center gap-2">
+        <Gavel className="w-4 h-4 text-blue-600" /> Section 7: Tribunal Deliberation & Verdict Consensus
       </div>
 
-      <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-3 font-mono text-xs">
-        <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm">
-          <CheckCircle2 className="w-5 h-5 text-cyan-400" />
-          Winning Consensus Hypothesis: {winningHypothesis}
+      <div className="p-4 rounded-lg bg-blue-50/60 border border-blue-200 space-y-3 font-sans text-xs">
+        <div className="flex items-center gap-2 text-slate-900 font-semibold text-sm">
+          <CheckCircle2 className="w-5 h-5 text-blue-600" />
+          Winning Consensus Hypothesis: <span className="text-blue-700">{winningHypothesis}</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2.5 border-t border-blue-200/80">
           <div>
-            <span className="text-[10px] text-slate-500 block">Runner-Up Hypothesis</span>
-            <span className="text-slate-300 font-bold">{runnerUp}</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-medium">Runner-Up Hypothesis</span>
+            <span className="text-slate-900 font-semibold">{runnerUp}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 block">Confidence Gap Margin</span>
-            <span className="text-cyan-400 font-bold">{(confidenceGap * 100).toFixed(0)}%</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-medium">Confidence Gap Margin</span>
+            <span className="text-blue-600 font-mono font-semibold">{(confidenceGap * 100).toFixed(0)}%</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 block">Support Score</span>
-            <span className="text-emerald-400 font-bold">{(supportMargin * 100).toFixed(0)}%</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-medium">Support Score</span>
+            <span className="text-emerald-700 font-mono font-semibold">{(supportMargin * 100).toFixed(0)}%</span>
           </div>
         </div>
       </div>

@@ -91,15 +91,15 @@ export const ExplorerPage: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-100 font-sans tracking-tight flex items-center gap-2">
-            <Database className="w-6 h-6 text-cyan-400" />
+          <h1 className="text-2xl font-bold text-slate-900 font-sans tracking-tight flex items-center gap-2">
+            <Database className="w-5 h-5 text-blue-600" />
             Repository Explorer & Advanced Search Platform
           </h1>
-          <p className="text-xs font-mono text-slate-400 mt-1">
+          <p className="text-xs font-sans text-slate-500 mt-1">
             Discover, filter, rank by similarity, compare, bookmark, and export historical investigation metadata (Phase D.5).
           </p>
         </div>
@@ -110,7 +110,7 @@ export const ExplorerPage: React.FC = () => {
             onClick={() =>
               navigate(`/compare?left=${selectedForCompare[0]}&right=${selectedForCompare[1] || ''}`)
             }
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-2 hover:brightness-110 transition"
+            className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-xs flex items-center gap-2 transition-colors shrink-0"
           >
             <ArrowLeftRight className="w-4 h-4" />
             Compare Selected ({selectedForCompare.length}/2) &rarr;

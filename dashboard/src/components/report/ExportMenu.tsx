@@ -20,26 +20,26 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ reportId, onPrint }) => 
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold font-mono text-xs transition flex items-center gap-1.5 shadow-md shadow-cyan-500/20"
+        className="px-3.5 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium font-sans text-xs transition-colors flex items-center gap-1.5 shadow-xs"
       >
-        <Download className="w-4 h-4" />
+        <Download className="w-3.5 h-3.5" />
         Export Report
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-48 glass-panel border border-slate-700 rounded-xl p-1.5 shadow-2xl z-50 font-mono text-xs space-y-1">
+        <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg p-1 shadow-lg z-50 font-sans text-xs space-y-0.5">
           <button
             onClick={() => handleDownload('markdown')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 transition flex items-center gap-2"
+            className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-2 font-medium"
           >
-            <FileText className="w-4 h-4 text-cyan-400" />
+            <FileText className="w-3.5 h-3.5 text-blue-600" />
             Markdown (.md)
           </button>
           <button
             onClick={() => handleDownload('html')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 transition flex items-center gap-2"
+            className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-2 font-medium"
           >
-            <FileCode className="w-4 h-4 text-emerald-400" />
+            <FileCode className="w-3.5 h-3.5 text-emerald-600" />
             HTML Document
           </button>
           <button
@@ -47,16 +47,16 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ reportId, onPrint }) => 
               onPrint();
               setOpen(false);
             }}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 transition flex items-center gap-2"
+            className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-2 font-medium"
           >
-            <Printer className="w-4 h-4 text-purple-400" />
+            <Printer className="w-3.5 h-3.5 text-slate-600" />
             Print / Save PDF
           </button>
           <button
             onClick={() => handleDownload('json')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 transition flex items-center gap-2 border-t border-slate-800 pt-2"
+            className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-2 font-medium border-t border-slate-100 pt-2"
           >
-            <Code className="w-4 h-4 text-amber-400" />
+            <Code className="w-3.5 h-3.5 text-amber-600" />
             Structured JSON
           </button>
         </div>

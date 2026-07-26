@@ -33,8 +33,8 @@ export const ReportSidebar: React.FC<ReportSidebarProps> = ({
   ];
 
   return (
-    <div className="glass-panel p-4 rounded-2xl border border-slate-800 space-y-3 font-mono text-xs w-64 shrink-0 hidden lg:block sticky top-6">
-      <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider px-2">
+    <div className="surface-card p-4 rounded-lg border border-slate-200 space-y-3 font-sans text-xs w-60 shrink-0 hidden lg:block sticky top-6 shadow-xs">
+      <div className="text-[10px] text-slate-500 uppercase font-semibold tracking-wider px-2">
         Report Navigator
       </div>
 
@@ -46,10 +46,10 @@ export const ReportSidebar: React.FC<ReportSidebarProps> = ({
             <button
               key={sec.id}
               onClick={() => onSelectSection(sec.id)}
-              className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl transition font-medium ${
+              className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors font-medium text-xs ${
                 isActive
-                  ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold'
-                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                  ? 'bg-blue-50 text-blue-700 border border-blue-200/60 font-semibold'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />

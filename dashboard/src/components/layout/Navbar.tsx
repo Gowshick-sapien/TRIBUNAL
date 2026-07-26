@@ -22,44 +22,44 @@ export const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <header className="h-16 border-b border-slate-800 glass-panel sticky top-0 z-50 px-6 flex items-center justify-between">
-      {/* Brand & Terminal Designation */}
+    <header className="h-14 border-b border-slate-200 bg-white sticky top-0 z-50 px-6 flex items-center justify-between shadow-xs">
+      {/* Brand & Platform Title */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 flex items-center justify-center">
-          <Shield className="w-6 h-6 text-slate-950 stroke-[2.5]" />
+        <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+          <Shield className="w-4 h-4 stroke-[2.2]" />
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-mono font-black text-lg tracking-wider text-slate-100">
+            <span className="font-sans font-bold text-base tracking-tight text-slate-900">
               TRIBUNAL
             </span>
-            <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-cyan-950 border border-cyan-800 text-cyan-300 rounded">
+            <span className="px-2 py-0.5 text-[10px] font-mono font-medium bg-slate-100 border border-slate-200 text-slate-600 rounded">
               v1.0.0
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 font-mono tracking-tight flex items-center gap-1">
-            <Terminal className="w-3 h-3 text-cyan-400" />
+          <p className="text-xs text-slate-500 font-sans tracking-tight flex items-center gap-1">
+            <Terminal className="w-3 h-3 text-slate-400" />
             AML Investigation Workstation Platform
           </p>
         </div>
       </div>
 
       {/* Center Indicator */}
-      <div className="hidden md:flex items-center gap-6 text-xs font-mono">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
-          <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-          <span className="text-slate-400">ENGINE STATUS:</span>
-          <span className={health?.status === 'healthy' ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+      <div className="hidden md:flex items-center gap-6 text-xs">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-slate-50 border border-slate-200">
+          <Activity className="w-3.5 h-3.5 text-blue-600" />
+          <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Engine Status:</span>
+          <span className={health?.status === 'healthy' ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}>
             {health?.status ? health.status.toUpperCase() : 'CONNECTING...'}
           </span>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <Link
           to="/settings"
-          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-800/50 transition"
+          className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
           title="Platform Settings"
         >
           <SettingsIcon className="w-4 h-4" />

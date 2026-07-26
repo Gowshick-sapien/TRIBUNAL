@@ -53,17 +53,17 @@ export const ComparePage: React.FC = () => {
   }, [leftId, rightId]);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
       <button
         onClick={() => navigate('/explorer')}
-        className="text-xs font-mono text-cyan-400 flex items-center gap-1.5 hover:underline"
+        className="text-xs font-sans text-blue-600 font-medium flex items-center gap-1.5 hover:underline"
       >
         <ArrowLeft className="w-3.5 h-3.5" /> Back to Repository Explorer
       </button>
 
       {loading ? (
-        <div className="glass-panel p-12 rounded-2xl border border-slate-800 text-center font-mono text-xs text-slate-500 flex flex-col items-center gap-3">
-          <span className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+        <div className="surface-card p-12 rounded-lg border border-slate-200 text-center font-sans text-xs text-slate-500 flex flex-col items-center gap-3 bg-white shadow-xs">
+          <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
           Loading comparison data for {leftId || 'A'} vs {rightId || 'B'}...
         </div>
       ) : (
