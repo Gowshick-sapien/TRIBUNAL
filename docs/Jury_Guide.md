@@ -4,7 +4,7 @@ Welcome to the **TRIBUNAL** Jury Evaluation Guide. This document provides hackat
 
 ---
 
-## 🏛️ Executive Walkthrough Flow
+## Executive Walkthrough Flow
 
 Follow this 6-step evaluation protocol to test the complete multi-expert reasoning engine:
 
@@ -24,7 +24,7 @@ Follow this 6-step evaluation protocol to test the complete multi-expert reasoni
 
 ---
 
-## 🔍 Detailed Jury Evaluation Protocol
+## Detailed Jury Evaluation Protocol
 
 ### Step 1: Launch System & Open Dashboard
 - Follow the [Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md) or launch backend (`http://localhost:8000`) and frontend (`http://localhost:5173`).
@@ -49,21 +49,21 @@ Click **Investigate**.
 
 As the investigation finishes, observe the three domain expert cards in the main workspace:
 
-#### 1. Financial Expert Card 💳
+#### 1. Financial Expert Card
 - **What to look for**: Structuring detection metrics, total transfer volume, and transaction velocity.
 - **Verification Point**: Verify that transactions hovering between $9,000 and $9,900 within short time windows are flagged with `Structuring Suspicion = HIGH`.
 
-#### 2. Behavioral Expert Card 📈
+#### 2. Behavioral Expert Card
 - **What to look for**: Historical account baseline comparisons, account dormancy reactivation alerts, and payment format changes.
 - **Verification Point**: Check the `Dormancy Reactivation` alert for accounts that were inactive for >180 days and suddenly initiated high-volume transfers.
 
-#### 3. Defense Agent Rebuttal Card 🛡️
+#### 3. Defense Agent Rebuttal Card
 - **What to look for**: Adversarial evaluation of alternative hypotheses.
 - **Verification Point**: The Defense Agent cross-examines findings against known business logic (checking for registered payroll patterns or recurring vendor contracts) to challenge false positive assumptions.
 
 ---
 
-### Step 4: Navigate Interactive Evidence Graph 🕸️
+### Step 4: Navigate Interactive Evidence Graph
 - Locate the central **Evidence Graph** component powered by React Flow.
 - **Node Inspection**: Click on any account node (`ACC-90812`) or transaction edge to open the **Node Metadata Drawer**.
 - **Graph Metrics**: Observe calculated PageRank score, degree centrality, and evidence weighting.
@@ -71,7 +71,7 @@ As the investigation finishes, observe the three domain expert cards in the main
 
 ---
 
-### Step 5: Audit Tribunal Consensus & Final Verdict ⚖️
+### Step 5: Audit Tribunal Consensus & Final Verdict
 - Examine the top **Tribunal Verdict Banner**.
 - **Verdict Categories**:
   - `GUILTY / HIGH RISK` (Multi-expert consensus with strong un-rebutted evidence)
@@ -81,7 +81,7 @@ As the investigation finishes, observe the three domain expert cards in the main
 
 ---
 
-### Step 6: Download Audit Reports 📥
+### Step 6: Download Audit Reports
 - Navigate to the **Export & Audit** section.
 - Click on each export format button to test multi-format rendering:
   - **Download HTML Report**: Full standalone, styled HTML report with inline charts.
@@ -90,7 +90,7 @@ As the investigation finishes, observe the three domain expert cards in the main
 
 ---
 
-## 🎯 Verification Matrix & Expected Results
+## Verification Matrix & Expected Results
 
 | Scenario | Target Entity | Key Expert Trigger | Defense Outcome | Expected Final Verdict |
 | :--- | :--- | :--- | :--- | :--- |

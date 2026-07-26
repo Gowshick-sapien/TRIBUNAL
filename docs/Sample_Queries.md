@@ -4,7 +4,7 @@ This catalog provides 15 domain-specific, high-impact queries tailored to evalua
 
 ---
 
-## 💳 Category 1: Account Investigation & Structuring Evasion
+## Category 1: Account Investigation & Structuring Evasion
 
 ### Query 1.1: Structuring Threshold Sweep
 > `"Investigate account ACC-90812 for structured transfers below the $10,000 reporting threshold over the last 30 days."`
@@ -23,7 +23,7 @@ This catalog provides 15 domain-specific, high-impact queries tailored to evalua
 
 ---
 
-## 📈 Category 2: Behavioral Drift & Dormancy Reactivation
+## Category 2: Behavioral Drift & Dormancy Reactivation
 
 ### Query 2.1: Account Dormancy Reactivation
 > `"Detect dormancy reactivation and sudden volume spikes for account ACC-10492."`
@@ -42,7 +42,7 @@ This catalog provides 15 domain-specific, high-impact queries tailored to evalua
 
 ---
 
-## 🕸️ Category 3: Network Analysis & Shell Counterparties
+## Category 3: Network Analysis & Shell Counterparties
 
 ### Query 3.1: Shell Company Counterparty Sweep
 > `"Sweep all counterparty accounts connected to high-risk shell entity ACC-44910 and build evidence graph."`
@@ -61,7 +61,7 @@ This catalog provides 15 domain-specific, high-impact queries tailored to evalua
 
 ---
 
-## 🛡️ Category 4: Defense Agent & False Positive Rebuttal
+## Category 4: Defense Agent & False Positive Rebuttal
 
 ### Query 4.1: Legitimate Corporate Payroll Audit
 > `"Investigate high-volume monthly outbound transfers from corporate account ACC-77102."`
@@ -80,7 +80,7 @@ This catalog provides 15 domain-specific, high-impact queries tailored to evalua
 
 ---
 
-## ⚖️ Category 5: Executive Risk Summaries & Reports
+## Category 5: Executive Risk Summaries & Reports
 
 ### Query 5.1: High-Risk Account Executive Audit
 > `"Generate full tribunal summary and executive audit report for top 5 suspicious accounts."`

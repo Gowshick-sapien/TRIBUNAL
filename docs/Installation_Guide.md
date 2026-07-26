@@ -6,7 +6,7 @@ This guide provides end-to-end instructions for deploying **TRIBUNAL** from scra
 
 ---
 
-## 💻 1. System Requirements
+## 1. System Requirements
 
 Before installing TRIBUNAL, ensure your system meets the following specifications:
 
@@ -20,7 +20,7 @@ Before installing TRIBUNAL, ensure your system meets the following specification
 
 ---
 
-## 🦙 2. Local LLM Setup (Optional: Ollama & Qwen)
+## 2. Local LLM Setup (Optional: Ollama & Qwen)
 
 TRIBUNAL includes a built-in mock LLM caller for instant out-of-the-box operation. However, to evaluate full generative query planning with local LLMs:
 
@@ -42,7 +42,7 @@ Verify Ollama service is active at `http://localhost:11434`.
 
 ---
 
-## 🐍 3. Backend Setup (FastAPI & Engine)
+## 3. Backend Setup (FastAPI & Engine)
 
 ### Step 3.1: Create Virtual Environment
 
@@ -100,7 +100,7 @@ OLLAMA_MODEL=qwen2.5-coder:7b
 
 ---
 
-## ⚛️ 4. Frontend Setup (React/Vite Dashboard)
+## 4. Frontend Setup (React/Vite Dashboard)
 
 Navigate to the dashboard directory and install packages:
 
@@ -112,7 +112,7 @@ cd ..
 
 ---
 
-## 🏃 5. Running the Application
+## 5. Running the Application
 
 ### Step 5.1: Launch Backend API Server
 
@@ -120,7 +120,7 @@ In Terminal 1:
 
 ```bash
 # Ensure virtualenv is activated
-uvicorn api.main:app --reload --port 8000
+uvicorn api.app:app --reload --port 8000
 ```
 
 - **API Base URL**: `http://localhost:8000`
@@ -139,7 +139,7 @@ npm run dev
 
 ---
 
-## 🧪 6. System Verification
+## 6. System Verification
 
 Verify system integrity by executing the automated test suite and dashboard build check:
 
@@ -154,11 +154,11 @@ pytest tribunal/tests/unit tribunal/tests/integration
 cd dashboard
 npm run build
 ```
-*Expected Output*: `✓ built in 1.xxs`
+*Expected Output*: `built in 1.xxs`
 
 ---
 
-## 🔧 7. Troubleshooting & FAQ
+## 7. Troubleshooting & FAQ
 
 ### Issue 1: `npm : File cannot be loaded because running scripts is disabled`
 - **Cause**: PowerShell execution policy restricted script execution.
@@ -171,5 +171,5 @@ npm run build
 ### Issue 3: Port 8000 or 5173 is already in use
 - **Solution**: Kill the occupying process or specify custom ports:
   ```bash
-  uvicorn api.main:app --port 8080
+  uvicorn api.app:app --port 8080
   ```

@@ -4,7 +4,7 @@ Get **TRIBUNAL** up and running in under 2 minutes.
 
 ---
 
-## ⚡ Execution Flow (60-Second Overview)
+## Execution Flow (60-Second Overview)
 
 ```
 Extract / Clone ZIP
@@ -13,7 +13,7 @@ Install Python Dependencies (pip install -r requirements.txt)
        ↓
 Install Dashboard Packages (cd dashboard && npm install)
        ↓
-Run Backend (uvicorn api.main:app --port 8000)
+Run Backend (uvicorn api.app:app --port 8000)
        ↓
 Run Frontend (npm run dev in /dashboard)
        ↓
@@ -24,7 +24,7 @@ Paste Query & Observe Multi-Expert Pipeline & Evidence Graph
 
 ---
 
-## 🚀 1-Command Automated Launch (Windows PowerShell)
+## 1-Command Automated Launch (Windows PowerShell)
 
 Run the automated launcher from the project root:
 
@@ -34,14 +34,14 @@ Run the automated launcher from the project root:
 
 ---
 
-## 💻 Manual Commands Cheatsheet
+## Manual Commands Cheatsheet
 
 ### Terminal 1: Backend API
 ```bash
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn api.main:app --reload --port 8000
+uvicorn api.app:app --reload --port 8000
 ```
 
 ### Terminal 2: Frontend Dashboard
@@ -53,7 +53,7 @@ npm run dev
 
 ---
 
-## 🎯 Quick Verification Query
+## Quick Verification Query
 
 Once `http://localhost:5173` opens in your browser, select **"ACC-90812 — Structuring Sweep"** from the top query selector and click **Investigate**.
 

@@ -1,4 +1,4 @@
-# 🏛️ TRIBUNAL — Autonomous Multi-Expert Legal & Financial Investigative AI Framework
+# TRIBUNAL — Autonomous Multi-Expert Legal & Financial Investigative AI Framework
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0%2B-009688.svg)](https://fastapi.tiangolo.com/)
@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 Executive Summary & Problem Statement
+## Executive Summary & Problem Statement
 
 Financial crime investigations, Anti-Money Laundering (AML) sweeps, and forensic transaction audits suffer from three critical bottlenecks:
 1. **Siloed Analysis**: Financial transaction volume spikes, counterparty network shifts, and account dormancy drift are typically analyzed by separate tools or isolated manual teams.
@@ -27,17 +27,17 @@ TRIBUNAL addresses these challenges by orchestrating a **Panel of Specialized AI
 
 ---
 
-## 🌟 Key Features & Innovations
+## Key Features & Innovations
 
-- 🧠 **Multi-Expert DAG Pipeline**: Asynchronous, directed execution pipeline coordinating domain experts.
-- 🛡️ **Adversarial Defense Review**: Built-in Defense Agent that challenges prosecution hypotheses and flags false positives.
-- 🕸️ **Dynamic Evidence Graph**: Interactive node-link graph (React Flow) rendering accounts, transactions, anomaly findings, and PageRank metrics.
-- ⚖️ **Calibrated Confidence Scoring**: Mathematical evidence weighing and contradiction resolution returning transparent verdict confidence scores.
-- 📊 **Multi-Format Export Engine**: One-click export of executive audit reports into interactive **HTML**, **Markdown**, and **JSON** formats.
+- **Multi-Expert DAG Pipeline**: Asynchronous, directed execution pipeline coordinating domain experts.
+- **Adversarial Defense Review**: Built-in Defense Agent that challenges prosecution hypotheses and flags false positives.
+- **Dynamic Evidence Graph**: Interactive node-link graph (React Flow) rendering accounts, transactions, anomaly findings, and PageRank metrics.
+- **Calibrated Confidence Scoring**: Mathematical evidence weighing and contradiction resolution returning transparent verdict confidence scores.
+- **Multi-Format Export Engine**: One-click export of executive audit reports into interactive **HTML**, **Markdown**, and **JSON** formats.
 
 ---
 
-## 🏗️ System Architecture & Data Flow
+## System Architecture & Data Flow
 
 ```
                                 +-----------------------------------+
@@ -76,7 +76,7 @@ TRIBUNAL addresses these challenges by orchestrating a **Panel of Specialized AI
 
 ---
 
-## 💻 Technology Stack
+## Technology Stack
 
 | Component | Technologies Used |
 | :--- | :--- |
@@ -88,7 +88,7 @@ TRIBUNAL addresses these challenges by orchestrating a **Panel of Specialized AI
 
 ---
 
-## ⚡ Quick Start (Running in 2 Minutes)
+## Quick Start (Running in 2 Minutes)
 
 ### Prerequisites
 - Python 3.10+ installed
@@ -108,7 +108,7 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # Launch FastAPI Server (Port 8000)
-uvicorn api.main:app --reload --port 8000
+uvicorn api.app:app --reload --port 8000
 ```
 
 ### 2. Frontend Dashboard Setup
@@ -123,7 +123,7 @@ Open your browser to `http://localhost:5173`.
 
 ---
 
-## 🔍 Sample Investigative Queries
+## Sample Investigative Queries
 
 Try pasting these queries into the TRIBUNAL Dashboard search header:
 
@@ -138,58 +138,58 @@ For 15+ curated test scenarios, see the complete [Sample Queries Guide](file:///
 
 ---
 
-## 📂 Repository Directory Structure
+## Repository Directory Structure
 
 ```
 D:\TRIBUNAL_RELEASE
-├── api/                       ← FastAPI REST routes, schemas, and dependencies
-│   ├── routes/                ← Endpoint handlers (/investigate, /reports, /search)
-│   ├── schemas/               ← Pydantic API request & response schemas
-│   └── services/              ← Business logic & service bridges
-├── assets/                    ← Media assets for jury evaluation
-│   ├── screenshots/           ← Dashboard & evidence graph screenshots
-│   ├── ppt/                   ← Pitch deck & slides
-│   ├── video/                 ← Demonstration video
-│   ├── logo/                  ← Project branding
-│   └── diagrams/              ← Architecture diagrams
-├── dashboard/                 ← React / Vite web dashboard application
-│   ├── src/components/        ← React Flow graphs, cards, & report viewers
-│   └── src/pages/             ← Workspace, Explorer, & History pages
-├── docs/                      ← Comprehensive Jury & Technical Documentation
-│   ├── Architecture_Overview.md ← System architecture specification
-│   ├── Installation_Guide.md  ← Step-by-step installation instructions
-│   ├── Jury_Guide.md          ← Complete Jury evaluation walkthrough
-│   ├── Quick_Start.md         ← 1-page quick start cheatsheet
-│   └── Sample_Queries.md      ← 15+ curated test queries
-├── scripts/                   ← Demo execution launcher scripts
-├── storage/                   ← Audit databases & JSON report stores
-├── submission_checklist.md    ← Hackathon progress & deliverables checklist
-├── tribunal/                  ← Core multi-expert reasoning engine
-│   ├── experts/               ← Financial, Behavioral, & Defense expert engines
-│   ├── consensus/             ← Contradiction resolver & calibrated verdict engine
-│   ├── investigation/         ← Evidence graph builder & provenance manager
-│   ├── planner/               ← Query parser & execution planner
-│   ├── report/                ← HTML, Markdown, & JSON report generators
-│   └── tests/                 ← 142 automated unit & integration tests
-├── .env.example               ← Environment configuration template
-├── requirements.txt           ← Minimal Python dependencies
-└── README.md                  ← Master Repository README
+├── api/                       (FastAPI REST routes, schemas, and dependencies)
+│   ├── routes/                (Endpoint handlers: /investigate, /reports, /search)
+│   ├── schemas/               (Pydantic API request & response schemas)
+│   └── services/              (Business logic & service bridges)
+├── assets/                    (Media assets for jury evaluation)
+│   ├── screenshots/           (Dashboard & evidence graph screenshots)
+│   ├── ppt/                   (Pitch deck & slides)
+│   ├── video/                 (Demonstration video)
+│   ├── logo/                  (Project branding)
+│   └── diagrams/              (Architecture diagrams)
+├── dashboard/                 (React / Vite web dashboard application)
+│   ├── src/components/        (React Flow graphs, cards, & report viewers)
+│   └── src/pages/             (Workspace, Explorer, & History pages)
+├── docs/                      (Comprehensive Jury & Technical Documentation)
+│   ├── Architecture_Overview.md (System architecture specification)
+│   ├── Installation_Guide.md  (Step-by-step installation instructions)
+│   ├── Jury_Guide.md          (Complete Jury evaluation walkthrough)
+│   ├── Quick_Start.md         (1-page quick start cheatsheet)
+│   └── Sample_Queries.md      (15+ curated test queries)
+├── scripts/                   (Demo execution launcher scripts)
+├── storage/                   (Audit databases & JSON report stores)
+├── submission_checklist.md    (Hackathon progress & deliverables checklist)
+├── tribunal/                  (Core multi-expert reasoning engine)
+│   ├── experts/               (Financial, Behavioral, & Defense expert engines)
+│   ├── consensus/             (Contradiction resolver & calibrated verdict engine)
+│   ├── investigation/         (Evidence graph builder & provenance manager)
+│   ├── planner/               (Query parser & execution planner)
+│   ├── report/                (HTML, Markdown, & JSON report generators)
+│   └── tests/                 (142 automated unit & integration tests)
+├── .env.example               (Environment configuration template)
+├── requirements.txt           (Minimal Python dependencies)
+└── README.md                  (Master Repository README)
 ```
 
 ---
 
-## 📖 Complete Documentation Index
+## Complete Documentation Index
 
-- 🏛️ [Jury Evaluation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Jury_Guide.md)
-- 🛠️ [Detailed Installation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md)
-- ⚡ [1-Page Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md)
-- 📐 [Architecture Overview](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md)
-- 🔍 [Curated Sample Queries](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md)
-- 📋 [Submission Checklist](file:///D:/TRIBUNAL_RELEASE/submission_checklist.md)
+- [Jury Evaluation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Jury_Guide.md)
+- [Detailed Installation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md)
+- [1-Page Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md)
+- [Architecture Overview](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md)
+- [Curated Sample Queries](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md)
+- [Submission Checklist](file:///D:/TRIBUNAL_RELEASE/submission_checklist.md)
 
 ---
 
-## 🧪 Automated Testing & Quality
+## Automated Testing & Quality
 
 Run the complete 142-test automated suite:
 
@@ -199,6 +199,6 @@ pytest tribunal/tests/unit tribunal/tests/integration
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
