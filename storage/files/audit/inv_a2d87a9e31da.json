@@ -43,5 +43,41 @@
     "details": {
       "artifact": "verdict"
     }
+  },
+  {
+    "id": 24,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-26T04:14:26.100822+00:00",
+    "details": {
+      "artifact": "graph"
+    }
+  },
+  {
+    "id": 25,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-26T04:14:26.100822+00:00",
+    "details": {
+      "artifact": "verdict"
+    }
+  },
+  {
+    "id": 26,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-26T04:14:26.116828+00:00",
+    "details": {
+      "artifact": "report"
+    }
+  },
+  {
+    "id": 29,
+    "investigation_id": "inv_a2d87a9e31da",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-26T04:14:26.162716+00:00",
+    "details": {
+      "artifact": "report"
+    }
   }
-]
+]]

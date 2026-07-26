@@ -14,6 +14,7 @@ from api.routes.health import router as health_router
 from api.routes.investigate import router as investigate_router
 from api.routes.metadata import router as metadata_router
 from api.routes.reports import router as reports_router
+from api.routes.search import router as search_router
 
 logger = logging.getLogger("tribunal.api")
 
@@ -56,6 +57,7 @@ def create_app() -> FastAPI:
     v1_router.include_router(graph_router)
     v1_router.include_router(health_router)
     v1_router.include_router(metadata_router)
+    v1_router.include_router(search_router)
 
     app.include_router(v1_router)
 

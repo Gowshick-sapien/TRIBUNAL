@@ -1,9 +1,12 @@
-"""Metadata router exposing /metadata endpoint."""
+"""Metadata router exposing /metadata and /datasets endpoints."""
 
 import datetime
 from typing import Any, Dict, List
 from fastapi import APIRouter, status
 from pydantic import BaseModel, Field
+
+from api.schemas.common import DatasetItemSchema, DatasetListResponse
+from tribunal.data.dataset_resolver import DatasetResolver
 
 router = APIRouter(prefix="", tags=["System & Health"])
 
@@ -36,7 +39,7 @@ class MetadataResponse(BaseModel):
         default_factory=lambda: {
             "environment": "production",
             "framework": "FastAPI",
-            "phase": "D.1 — Investigation Service Layer & REST API",
+            "phase": "D.3 — User Experience & Dataset Resolver",
         },
         description="Build metadata"
     )
@@ -56,3 +59,26 @@ class MetadataResponse(BaseModel):
 def get_metadata() -> MetadataResponse:
     """Retrieve platform metadata capabilities."""
     return MetadataResponse()
+
+
+@router.get(
+    "/datasets",
+    response_model=DatasetListResponse,
+    status_code=status.HTTP_200_OK,
+    summary="List available dataset references",
+    description="Returns list of registered dataset alias IDs, display names, and default selections.",
+)
+def list_datasets() -> DatasetListResponse:
+    """Retrieve registered dataset metadata."""
+    resolver = DatasetResolver()
+    raw_list = resolver.list_datasets()
+    items = [
+        DatasetItemSchema(
+            id=d.id,
+            name=d.name,
+            description=d.description,
+            default=d.default,
+        )
+        for d in raw_list
+    ]
+    return DatasetListResponse(datasets=items, total=len(items))

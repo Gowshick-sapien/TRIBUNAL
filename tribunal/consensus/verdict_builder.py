@@ -7,6 +7,7 @@ from typing import Any
 from tribunal.consensus.confidence_calibrator import ConfidenceCalibrator
 from tribunal.consensus.consensus_engine import ConsensusResult
 from tribunal.consensus.deliberation_trace import DeliberationTrace
+from tribunal.consensus.risk_calibrator import RiskCalibrator
 from tribunal.models.case_file import CaseFile
 from tribunal.models.evidence_graph import EvidenceGraph
 from tribunal.models.tribunal_verdict import TribunalVerdict
@@ -14,6 +15,9 @@ from tribunal.models.tribunal_verdict import TribunalVerdict
 
 class VerdictBuilder:
     """Constructs the comprehensive TribunalVerdict domain object."""
+
+    def __init__(self) -> None:
+        self.risk_calibrator = RiskCalibrator()
 
     def build_verdict(
         self,
@@ -51,16 +55,13 @@ class VerdictBuilder:
         # Supporting experts
         supporting_experts = [e for e in winner.expert_sources if e != "system"]
 
-        # Risk level mapping
-        risk_level = "LOW"
-        if cat == "LIKELY_MALICIOUS":
-            risk_level = "HIGH" if calibrated_confidence >= 0.80 else "MEDIUM"
-        elif cat == "POSSIBLY_MALICIOUS":
-            risk_level = "MEDIUM"
-        elif cat == "INCONCLUSIVE":
-            risk_level = "MEDIUM" if calibrated_confidence >= 0.50 else "LOW"
-        elif cat == "LIKELY_LEGITIMATE":
-            risk_level = "LOW"
+        # Delegate multi-dimensional risk calibration to RiskCalibrator
+        risk_level = self.risk_calibrator.calibrate_risk(
+            consensus_result=consensus_result,
+            calibrated_confidence=calibrated_confidence,
+            graph=graph,
+            case_file=case_file,
+        )
 
         # Evidence summary metrics
         evidence_summary = {
@@ -84,6 +85,7 @@ class VerdictBuilder:
             "opposing_penalty": winner.opposing_score,
             "rejection_reason": consensus_result.rejection_reason,
             "case_id": getattr(case_file, "case_id", "default_case") if case_file else "default_case",
+            "risk_level": risk_level,
         }
 
         verdict = TribunalVerdict(
@@ -107,7 +109,7 @@ class VerdictBuilder:
             winning_confidence=calibrated_confidence,
             winning_chain=supporting_cards,
             risk_level=risk_level,
-            recommendation=f"Verdict: {cat} for primary hypothesis '{primary_title}' (confidence: {calibrated_confidence:.2f})",
+            recommendation=f"Verdict: {cat} ({risk_level} RISK) for primary hypothesis '{primary_title}' (confidence: {calibrated_confidence:.2f})",
             runner_up_hypothesis=secondary_title,
             runner_up_confidence=secondary_score,
             rejection_reason=consensus_result.rejection_reason,

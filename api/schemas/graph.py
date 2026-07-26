@@ -11,8 +11,10 @@ class NodeSchema(BaseModel):
     id: str = Field(..., description="Unique node identifier")
     label: str = Field(..., description="Display label")
     type: str = Field(..., description="Node category (account, entity, pattern, card)")
+    expert: Optional[str] = Field(default="system", description="Source expert identifier (financial, behaviour, defense, system, tribunal)")
     risk_score: float = Field(default=0.0, description="Risk or confidence score (0.0 - 1.0)")
     attributes: Dict[str, Any] = Field(default_factory=dict, description="Custom node attributes")
+
 
 
 class EdgeSchema(BaseModel):

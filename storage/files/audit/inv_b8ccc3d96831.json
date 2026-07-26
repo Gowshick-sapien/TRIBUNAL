@@ -1,0 +1,11 @@
+[
+  {
+    "id": 43,
+    "investigation_id": "inv_b8ccc3d96831",
+    "event": "RETRIEVED",
+    "timestamp": "2026-07-26T04:21:43.199102+00:00",
+    "details": {
+      "artifact": "verdict"
+    }
+  }
+]

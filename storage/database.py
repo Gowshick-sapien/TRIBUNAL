@@ -65,8 +65,42 @@ CREATE TABLE IF NOT EXISTS audit (
     details TEXT
 );
 
+CREATE TABLE IF NOT EXISTS bookmarks (
+    investigation_id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    notes TEXT,
+    FOREIGN KEY(investigation_id) REFERENCES investigations(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    investigation_id TEXT NOT NULL,
+    tag TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY(investigation_id) REFERENCES investigations(id) ON DELETE CASCADE,
+    UNIQUE(investigation_id, tag)
+);
+
+CREATE TABLE IF NOT EXISTS saved_searches (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    params_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS report_annotations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    investigation_id TEXT NOT NULL,
+    author TEXT NOT NULL,
+    text TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY(investigation_id) REFERENCES investigations(id) ON DELETE CASCADE
+);
+
 CREATE INDEX IF NOT EXISTS idx_investigations_created_at ON investigations(created_at);
 CREATE INDEX IF NOT EXISTS idx_audit_investigation_id ON audit(investigation_id);
+CREATE INDEX IF NOT EXISTS idx_tags_investigation_id ON tags(investigation_id);
+CREATE INDEX IF NOT EXISTS idx_report_annotations_investigation_id ON report_annotations(investigation_id);
 """
 
 
