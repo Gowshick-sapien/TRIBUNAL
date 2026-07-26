@@ -27,7 +27,7 @@ Follow this 6-step evaluation protocol to test the complete multi-expert reasoni
 ## Detailed Investigation Evaluation Protocol
 
 ### Step 1: Launch System & Open Dashboard
-- Follow the [Quick Start Guide](file:///D:/TRIBUNAL_Submission/docs/Quick_Start.md) or launch backend (`http://localhost:8000`) and frontend (`http://localhost:5173`).
+- Follow the [Quick Start Guide](Quick_Start.md) or launch backend (`http://localhost:8000`) and frontend (`http://localhost:5173`).
 - Open `http://localhost:5173` in Google Chrome or Microsoft Edge.
 - Verify the header status indicator reads `API Connected`.
 

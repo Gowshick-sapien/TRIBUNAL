@@ -1,0 +1,73 @@
+graph TB
+    subgraph UI ["1. Presentation Layer (Dashboard)"]
+        UI_Dash["React 19 / Vite Dashboard"]
+        UI_Graph["Interactive Evidence Graph (React Flow)"]
+        UI_Cards["Multi-Expert Findings Cards"]
+        UI_Report["Multi-Format Report Viewer (HTML / MD / JSON)"]
+    end
+
+    subgraph API ["2. REST API Service Layer"]
+        API_Gate["FastAPI Gateway"]
+        API_Route["Endpoints (/investigate, /reports, /search)"]
+        API_Svc["Investigation Service Controller"]
+    end
+
+    subgraph PLAN ["3. Query Ingestion & LLM Planning"]
+        PLAN_Parse["Natural Language Query Parser"]
+        PLAN_LLM["LLM Client (Ollama / Qwen 2.5 Coder 7B)"]
+        PLAN_Exec["Execution Planner & DAG Builder"]
+    end
+
+    subgraph EXPERTS ["4. Multi-Expert Investigation Panel"]
+        subgraph FIN ["Financial Expert"]
+            F_Struct["Structuring Detector ($10k Threshold)"]
+            F_Vel["Rapid Velocity Spike Detector"]
+            F_Pay["Payment Pattern & Currency Swap Detector"]
+        end
+
+        subgraph BEH ["Behavioral Expert"]
+            B_Drift["Baseline Drift Detector"]
+            B_Dorm["Account Dormancy Reactivation"]
+            B_Risk["Counterparty Risk Sweeper"]
+        end
+
+        subgraph DEF ["Defense Agent Engine"]
+            D_Hypo["Alternative Hypothesis Extractor"]
+            D_Rebut["Legitimate Business Rebuttal (Payroll/Invoices)"]
+        end
+    end
+
+    subgraph GRAPH ["5. Graph & Evidence Linker"]
+        G_Build["Dynamic Evidence Graph Builder"]
+        G_Prov["Provenance & Node-Edge Manager"]
+        G_Metrics["PageRank & Centrality Calculator"]
+    end
+
+    subgraph CONSENSUS ["6. Consensus & Verdict Engine"]
+        C_Contradict["Contradiction Resolver"]
+        C_Calib["Calibrated Confidence Engine"]
+        C_Verdict["Final Verdict Generator (Guilty / Suspicious / Innocent)"]
+    end
+
+    subgraph STORAGE ["7. Persistence & Audit Layer"]
+        S_DB[("SQLite Audit Store (tribunal.db)")]
+        S_Files["JSON Case Files & Evidence Store"]
+        S_Render["Report Exporter (HTML / MD / JSON)"]
+    end
+
+    %% Flow Connections
+    UI_Dash -->|User Query| API_Gate
+    API_Gate --> API_Route --> API_Svc
+    API_Svc --> PLAN_Parse
+    PLAN_Parse --> PLAN_LLM --> PLAN_Exec
+
+    PLAN_Exec --> F_Struct & F_Vel & F_Pay
+    PLAN_Exec --> B_Drift & B_Dorm & B_Risk
+    PLAN_Exec --> D_Hypo & D_Rebut
+
+    FIN & BEH & DEF --> G_Build
+    G_Build --> G_Prov --> G_Metrics
+    G_Metrics --> C_Contradict --> C_Calib --> C_Verdict
+
+    C_Verdict --> S_DB & S_Files --> S_Render
+    S_Render -->|Rendered Report & Graph Data| UI_Graph & UI_Cards & UI_Report
