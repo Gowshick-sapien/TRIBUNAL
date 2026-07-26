@@ -11,6 +11,27 @@
 
 ---
 
+## Submission Navigator & Quick Asset Map
+
+Use the map below to locate all project deliverables, media assets, architecture specifications, and evaluation guides:
+
+| Deliverable / Asset | File Path / Location | Description |
+| :--- | :--- | :--- |
+| **Presentation Slides (PPT/PDF)** | [`assets/ppt/`](file:///D:/TRIBUNAL_RELEASE/assets/ppt/) | Hackathon pitch deck and presentation slides |
+| **Demonstration Video** | [`assets/video/`](file:///D:/TRIBUNAL_RELEASE/assets/video/) | Full video demonstration and system walkthrough |
+| **Proposed Architecture Spec (Full)** | [`docs/Architecture_Design_Specification.md`](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Design_Specification.md) | Canonical 1,300+ line architecture design specification (v2.0) |
+| **System Architecture Summary** | [`docs/Architecture_Overview.md`](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md) | High-level topology diagram and component breakdown |
+| **Architecture Diagrams & Visuals** | [`assets/diagrams/`](file:///D:/TRIBUNAL_RELEASE/assets/diagrams/) | Multi-expert DAG, consensus engine & system topology diagrams |
+| **End-to-End Evaluation Walkthrough** | [`docs/End_to_End_Investigation_Walkthrough.md`](file:///D:/TRIBUNAL_RELEASE/docs/End_to_End_Investigation_Walkthrough.md) | Step-by-step investigation walkthrough protocol |
+| **Installation & Setup Guide** | [`docs/Installation_Guide.md`](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md) | Comprehensive "ZIP downloaded, now what?" setup guide |
+| **1-Page Quick Start Cheatsheet** | [`docs/Quick_Start.md`](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md) | 60-second setup cheatsheet and 1-command launcher |
+| **Curated Sample Test Queries** | [`docs/Sample_Queries.md`](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md) | 15 domain-specific test scenarios for evaluation |
+| **Submission Deliverables Checklist** | [`submission_checklist.md`](file:///D:/TRIBUNAL_RELEASE/submission_checklist.md) | Interactive progress and deliverables tracking matrix |
+| **Screenshots & UI Showcase** | [`assets/screenshots/`](file:///D:/TRIBUNAL_RELEASE/assets/screenshots/) | High-resolution UI screenshots of dashboard and graph |
+| **Branding & Logos** | [`assets/logo/`](file:///D:/TRIBUNAL_RELEASE/assets/logo/) | High-resolution project logo and banner assets |
+
+---
+
 ## Executive Summary & Problem Statement
 
 Financial crime investigations, Anti-Money Laundering (AML) sweeps, and forensic transaction audits suffer from three critical bottlenecks:
@@ -138,43 +159,32 @@ For 15+ curated test scenarios, see the complete [Sample Queries Guide](file:///
 
 ---
 
-## Repository Directory Structure
+## Complete Directory Structure & Asset Map
 
 ```
 D:\TRIBUNAL_RELEASE
-├── api/                       (FastAPI REST routes, schemas, and dependencies)
-│   ├── routes/                (Endpoint handlers: /investigate, /reports, /search)
-│   ├── schemas/               (Pydantic API request & response schemas)
-│   └── services/              (Business logic & service bridges)
-├── assets/                    (Media assets for jury evaluation)
-│   ├── screenshots/           (Dashboard & evidence graph screenshots)
-│   ├── ppt/                   (Pitch deck & slides)
-│   ├── video/                 (Demonstration video)
-│   ├── logo/                  (Project branding)
-│   └── diagrams/              (Architecture diagrams)
-├── dashboard/                 (React / Vite web dashboard application)
-│   ├── src/components/        (React Flow graphs, cards, & report viewers)
-│   └── src/pages/             (Workspace, Explorer, & History pages)
-├── docs/                      (Comprehensive End-to-End & Technical Documentation)
+├── assets/                    (Media & Presentation Assets)
+│   ├── ppt/                   (Presentation slides & pitch deck)
+│   ├── video/                 (Screen demonstration walkthrough video)
+│   ├── diagrams/              (System topology & DAG architecture diagrams)
+│   ├── screenshots/           (High-resolution UI screenshots)
+│   └── logo/                  (Project logos & branding assets)
+├── docs/                      (Comprehensive Documentation Suite)
 │   ├── Architecture_Design_Specification.md (Canonical architecture specification v2.0)
-│   ├── Architecture_Overview.md (System architecture specification summary)
-│   ├── Installation_Guide.md  (Step-by-step installation instructions)
-│   ├── End_to_End_Investigation_Walkthrough.md (Complete end-to-end investigation walkthrough)
+│   ├── Architecture_Overview.md (System architecture topology summary)
+│   ├── End_to_End_Investigation_Walkthrough.md (Complete evaluation walkthrough)
+│   ├── Installation_Guide.md  (Step-by-step deployment instructions)
 │   ├── Quick_Start.md         (1-page quick start cheatsheet)
 │   └── Sample_Queries.md      (15+ curated test queries)
+├── api/                       (FastAPI REST service layer)
+├── dashboard/                 (React / Vite web dashboard frontend)
+├── tribunal/                  (Core multi-expert reasoning engine)
 ├── scripts/                   (Demo execution launcher scripts)
 ├── storage/                   (Audit databases & JSON report stores)
-├── submission_checklist.md    (Hackathon progress & deliverables checklist)
-├── tribunal/                  (Core multi-expert reasoning engine)
-│   ├── experts/               (Financial, Behavioral, & Defense expert engines)
-│   ├── consensus/             (Contradiction resolver & calibrated verdict engine)
-│   ├── investigation/         (Evidence graph builder & provenance manager)
-│   ├── planner/               (Query parser & execution planner)
-│   ├── report/                (HTML, Markdown, & JSON report generators)
-│   └── tests/                 (142 automated unit & integration tests)
+├── submission_checklist.md    (Hackathon deliverables tracker)
 ├── .env.example               (Environment configuration template)
 ├── requirements.txt           (Minimal Python dependencies)
-└── README.md                  (Master Repository README)
+└── README.md                  (Master Submission README)
 ```
 
 ---
