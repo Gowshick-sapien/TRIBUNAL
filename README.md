@@ -156,7 +156,8 @@ D:\TRIBUNAL_RELEASE
 │   ├── src/components/        (React Flow graphs, cards, & report viewers)
 │   └── src/pages/             (Workspace, Explorer, & History pages)
 ├── docs/                      (Comprehensive End-to-End & Technical Documentation)
-│   ├── Architecture_Overview.md (System architecture specification)
+│   ├── Architecture_Design_Specification.md (Canonical architecture specification v2.0)
+│   ├── Architecture_Overview.md (System architecture specification summary)
 │   ├── Installation_Guide.md  (Step-by-step installation instructions)
 │   ├── End_to_End_Investigation_Walkthrough.md (Complete end-to-end investigation walkthrough)
 │   ├── Quick_Start.md         (1-page quick start cheatsheet)
@@ -180,6 +181,7 @@ D:\TRIBUNAL_RELEASE
 
 ## Complete Documentation Index
 
+- [Canonical Architecture Design Specification](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Design_Specification.md)
 - [TRIBUNAL End-to-End Investigation Walkthrough](file:///D:/TRIBUNAL_RELEASE/docs/End_to_End_Investigation_Walkthrough.md)
 - [Detailed Installation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md)
 - [1-Page Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md)
