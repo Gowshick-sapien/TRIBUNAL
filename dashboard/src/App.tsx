@@ -8,6 +8,7 @@ import { HistoryPage } from './pages/HistoryPage';
 import { ExplorerPage } from './pages/ExplorerPage';
 import { ComparePage } from './pages/ComparePage';
 import { ViewerPage } from './pages/ViewerPage';
+import { ReportViewerPage } from './pages/ReportViewerPage';
 import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { SystemPage } from './pages/SystemPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
               <Route path="/explorer" element={<ExplorerPage />} />
               <Route path="/compare" element={<ComparePage />} />
               <Route path="/investigation/:id" element={<ViewerPage />} />
+              <Route path="/report/:id" element={<ReportViewerPage />} />
               <Route path="/graph/:id" element={<EvidenceGraphPage />} />
               <Route path="/system" element={<SystemPage />} />
               <Route path="/settings" element={<SettingsPage />} />
