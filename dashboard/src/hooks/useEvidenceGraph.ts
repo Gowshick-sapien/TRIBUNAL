@@ -89,8 +89,21 @@ export const useEvidenceGraph = (investigationId: string) => {
 
     // 1. Filter Nodes
     let filteredNodes = payload.nodes.filter((node) => {
-      if (filters.expertFilter !== 'ALL' && (node.expert || '').toLowerCase() !== filters.expertFilter.toLowerCase()) {
-        return false;
+      if (filters.expertFilter !== 'ALL') {
+        const sel = filters.expertFilter.toLowerCase();
+        const exp = (node.expert || '').toLowerCase();
+
+        const isExactMatch =
+          exp === sel ||
+          (sel.includes('beh') && (exp.includes('beh') || exp.includes('behavior'))) ||
+          (sel.includes('fin') && exp.includes('fin'));
+
+        // Account & Tribunal nodes provide topological context for expert evidence chains
+        const isContextNode = node.type === 'account' || node.type === 'tribunal';
+
+        if (!isExactMatch && !isContextNode) {
+          return false;
+        }
       }
       if (filters.severityFilter !== 'ALL' && (node.severity || 'MEDIUM').toUpperCase() !== filters.severityFilter.toUpperCase()) {
         return false;

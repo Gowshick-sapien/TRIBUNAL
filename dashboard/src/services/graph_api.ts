@@ -25,7 +25,7 @@ export const graphApi = {
         id: n.id,
         label: n.label || n.id,
         type: nodeType,
-        expert: attrs.expert || attrs.source_expert || (n.id.includes('beh') ? 'behaviour' : 'financial'),
+        expert: (n as any).expert || attrs.expert || attrs.source_expert || (n.id.includes('beh') ? 'behaviour' : 'financial'),
         hypothesis: attrs.hypothesis || n.label,
         confidence: n.risk_score,
         risk_score: n.risk_score,

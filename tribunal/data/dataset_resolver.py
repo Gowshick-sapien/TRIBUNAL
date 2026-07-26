@@ -115,12 +115,27 @@ class DatasetResolver:
         dataset_ref_clean = dataset_ref.strip()
         searched_locations: List[str] = []
 
-        # 1. Check registered alias
+        # 1. Check registered alias or matching name
         meta: Optional[DatasetMetadata] = None
         target_path_str = dataset_ref_clean
+
         if dataset_ref_clean in self.registry:
             meta = self.registry[dataset_ref_clean]
             target_path_str = meta.path
+        else:
+            ref_lower = dataset_ref_clean.lower()
+            for key, meta_obj in self.registry.items():
+                if (
+                    key.lower() == ref_lower
+                    or meta_obj.id.lower() == ref_lower
+                    or meta_obj.name.lower() == ref_lower
+                    or key.lower() in ref_lower
+                    or "default" in ref_lower and meta_obj.default
+                ):
+                    meta = meta_obj
+                    target_path_str = meta.path
+                    logger.info(f"Resolved dataset reference '{dataset_ref_clean}' to registered dataset '{meta_obj.id}'.")
+                    break
 
         # 2. Convert to Path candidates
         raw_path = Path(target_path_str)

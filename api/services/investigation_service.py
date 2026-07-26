@@ -341,16 +341,38 @@ class InvestigationService:
             if not graph_dict:
                 raise InvestigationNotFoundError(f"Evidence Graph with ID '{investigation_id}' not found.")
 
-        nodes = [
-            NodeSchema(
-                id=n.get("node_id", n.get("id", "node")),
-                label=n.get("label", n.get("node_id", "node")),
-                type=n.get("node_type", n.get("type", "generic")),
-                risk_score=float(n.get("confidence", n.get("risk_score", 0.0))),
-                attributes=n.get("metadata", n.get("attributes", {})),
+        nodes = []
+        for n in graph_dict.get("nodes", []):
+            meta = n.get("metadata", n.get("attributes", {})) or {}
+            node_expert = n.get("expert") or meta.get("expert") or meta.get("source_expert")
+            if not node_expert:
+                card_data = meta.get("card", {})
+                node_expert = card_data.get("source_expert") if isinstance(card_data, dict) else None
+            if not node_expert:
+                node_id_str = str(n.get("node_id", n.get("id", ""))).lower()
+                if "beh" in node_id_str:
+                    node_expert = "behaviour"
+                elif "fin" in node_id_str:
+                    node_expert = "financial"
+                elif "def" in node_id_str:
+                    node_expert = "defense"
+                else:
+                    node_expert = "system"
+
+            enriched_attrs = dict(meta)
+            enriched_attrs["expert"] = node_expert
+            enriched_attrs["source_expert"] = node_expert
+
+            nodes.append(
+                NodeSchema(
+                    id=n.get("node_id", n.get("id", "node")),
+                    label=n.get("label", n.get("node_id", "node")),
+                    type=n.get("node_type", n.get("type", "generic")),
+                    expert=node_expert,
+                    risk_score=float(n.get("confidence", n.get("risk_score", 0.0))),
+                    attributes=enriched_attrs,
+                )
             )
-            for n in graph_dict.get("nodes", [])
-        ]
 
         edges = [
             EdgeSchema(
