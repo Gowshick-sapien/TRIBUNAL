@@ -6,7 +6,7 @@ Track the final submission deliverables and preparation status for the **TRIBUNA
 
 ## General Submission Tracker
 
-- [x] **Repository Separation**: Separate `TRIBUNAL_RELEASE` created from development repository (`TRIBUNAL`).
+- [x] **Repository Separation**: Separate `TRIBUNAL_Submission` created from development repository (`TRIBUNAL`).
 - [x] **Documentation Cleanup**: Internal specs and phase planning moved to `TRIBUNAL/archive/`.
 - [x] **README.md**: Comprehensive pitch, architecture summary, and hackathon highlights.
 - [x] **Installation Guide**: Clear, tested backend & frontend setup commands (`docs/Installation_Guide.md`).

@@ -49,7 +49,7 @@ Verify Ollama service is active at `http://localhost:11434`.
 Navigate to the project root directory:
 
 ```bash
-cd TRIBUNAL_RELEASE
+cd TRIBUNAL_Submission
 ```
 
 Create a dedicated Python virtual environment:

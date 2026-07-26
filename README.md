@@ -17,18 +17,18 @@ Use the map below to locate all project deliverables, media assets, architecture
 
 | Deliverable / Asset | File Path / Location | Description |
 | :--- | :--- | :--- |
-| **Presentation Slides (PPT/PDF)** | [`assets/ppt/`](file:///D:/TRIBUNAL_RELEASE/assets/ppt/) | Hackathon pitch deck and presentation slides |
-| **Demonstration Video** | [`assets/video/`](file:///D:/TRIBUNAL_RELEASE/assets/video/) | Full video demonstration and system walkthrough |
-| **Proposed Architecture Spec (Full)** | [`docs/Architecture_Design_Specification.md`](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Design_Specification.md) | Canonical 1,300+ line architecture design specification (v2.0) |
-| **System Architecture Summary** | [`docs/Architecture_Overview.md`](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md) | High-level topology diagram and component breakdown |
-| **Architecture Diagrams & Visuals** | [`assets/diagrams/`](file:///D:/TRIBUNAL_RELEASE/assets/diagrams/) | Multi-expert DAG, consensus engine & system topology diagrams |
-| **End-to-End Evaluation Walkthrough** | [`docs/End_to_End_Investigation_Walkthrough.md`](file:///D:/TRIBUNAL_RELEASE/docs/End_to_End_Investigation_Walkthrough.md) | Step-by-step investigation walkthrough protocol |
-| **Installation & Setup Guide** | [`docs/Installation_Guide.md`](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md) | Comprehensive "ZIP downloaded, now what?" setup guide |
-| **1-Page Quick Start Cheatsheet** | [`docs/Quick_Start.md`](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md) | 60-second setup cheatsheet and 1-command launcher |
-| **Curated Sample Test Queries** | [`docs/Sample_Queries.md`](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md) | 15 domain-specific test scenarios for evaluation |
-| **Submission Deliverables Checklist** | [`submission_checklist.md`](file:///D:/TRIBUNAL_RELEASE/submission_checklist.md) | Interactive progress and deliverables tracking matrix |
-| **Screenshots & UI Showcase** | [`assets/screenshots/`](file:///D:/TRIBUNAL_RELEASE/assets/screenshots/) | High-resolution UI screenshots of dashboard and graph |
-| **Branding & Logos** | [`assets/logo/`](file:///D:/TRIBUNAL_RELEASE/assets/logo/) | High-resolution project logo and banner assets |
+| **Presentation Slides (PPT/PDF)** | [`assets/ppt/`](file:///D:/TRIBUNAL_Submission/assets/ppt/) | Hackathon pitch deck and presentation slides |
+| **Demonstration Video** | [`assets/video/`](file:///D:/TRIBUNAL_Submission/assets/video/) | Full video demonstration and system walkthrough |
+| **Proposed Architecture Spec (Full)** | [`docs/Architecture_Design_Specification.md`](file:///D:/TRIBUNAL_Submission/docs/Architecture_Design_Specification.md) | Canonical 1,300+ line architecture design specification (v2.0) |
+| **System Architecture Summary** | [`docs/Architecture_Overview.md`](file:///D:/TRIBUNAL_Submission/docs/Architecture_Overview.md) | High-level topology diagram and component breakdown |
+| **Architecture Diagrams & Visuals** | [`assets/diagrams/`](file:///D:/TRIBUNAL_Submission/assets/diagrams/) | Multi-expert DAG, consensus engine & system topology diagrams |
+| **End-to-End Evaluation Walkthrough** | [`docs/End_to_End_Investigation_Walkthrough.md`](file:///D:/TRIBUNAL_Submission/docs/End_to_End_Investigation_Walkthrough.md) | Step-by-step investigation walkthrough protocol |
+| **Installation & Setup Guide** | [`docs/Installation_Guide.md`](file:///D:/TRIBUNAL_Submission/docs/Installation_Guide.md) | Comprehensive "ZIP downloaded, now what?" setup guide |
+| **1-Page Quick Start Cheatsheet** | [`docs/Quick_Start.md`](file:///D:/TRIBUNAL_Submission/docs/Quick_Start.md) | 60-second setup cheatsheet and 1-command launcher |
+| **Curated Sample Test Queries** | [`docs/Sample_Queries.md`](file:///D:/TRIBUNAL_Submission/docs/Sample_Queries.md) | 15 domain-specific test scenarios for evaluation |
+| **Submission Deliverables Checklist** | [`submission_checklist.md`](file:///D:/TRIBUNAL_Submission/submission_checklist.md) | Interactive progress and deliverables tracking matrix |
+| **Screenshots & UI Showcase** | [`assets/screenshots/`](file:///D:/TRIBUNAL_Submission/assets/screenshots/) | High-resolution UI screenshots of dashboard and graph |
+| **Branding & Logos** | [`assets/logo/`](file:///D:/TRIBUNAL_Submission/assets/logo/) | High-resolution project logo and banner assets |
 
 ---
 
@@ -155,14 +155,14 @@ Try pasting these queries into the TRIBUNAL Dashboard search header:
 3. **High-Risk Shell Counterparty Sweep**:
    > *"Sweep target accounts connected to shell entity ACC-44910 and build evidence graph."*
 
-For 15+ curated test scenarios, see the complete [Sample Queries Guide](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md).
+For 15+ curated test scenarios, see the complete [Sample Queries Guide](file:///D:/TRIBUNAL_Submission/docs/Sample_Queries.md).
 
 ---
 
 ## Complete Directory Structure & Asset Map
 
 ```
-D:\TRIBUNAL_RELEASE
+D:\TRIBUNAL_Submission
 ├── assets/                    (Media & Presentation Assets)
 │   ├── ppt/                   (Presentation slides & pitch deck)
 │   ├── video/                 (Screen demonstration walkthrough video)
@@ -191,13 +191,13 @@ D:\TRIBUNAL_RELEASE
 
 ## Complete Documentation Index
 
-- [Canonical Architecture Design Specification](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Design_Specification.md)
-- [TRIBUNAL End-to-End Investigation Walkthrough](file:///D:/TRIBUNAL_RELEASE/docs/End_to_End_Investigation_Walkthrough.md)
-- [Detailed Installation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md)
-- [1-Page Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md)
-- [Architecture Overview](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md)
-- [Curated Sample Queries](file:///D:/TRIBUNAL_RELEASE/docs/Sample_Queries.md)
-- [Submission Checklist](file:///D:/TRIBUNAL_RELEASE/submission_checklist.md)
+- [Canonical Architecture Design Specification](file:///D:/TRIBUNAL_Submission/docs/Architecture_Design_Specification.md)
+- [TRIBUNAL End-to-End Investigation Walkthrough](file:///D:/TRIBUNAL_Submission/docs/End_to_End_Investigation_Walkthrough.md)
+- [Detailed Installation Guide](file:///D:/TRIBUNAL_Submission/docs/Installation_Guide.md)
+- [1-Page Quick Start Guide](file:///D:/TRIBUNAL_Submission/docs/Quick_Start.md)
+- [Architecture Overview](file:///D:/TRIBUNAL_Submission/docs/Architecture_Overview.md)
+- [Curated Sample Queries](file:///D:/TRIBUNAL_Submission/docs/Sample_Queries.md)
+- [Submission Checklist](file:///D:/TRIBUNAL_Submission/submission_checklist.md)
 
 ---
 
