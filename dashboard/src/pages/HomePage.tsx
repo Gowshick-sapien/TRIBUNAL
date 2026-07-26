@@ -79,7 +79,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium">
             <Zap className="w-3.5 h-3.5 text-blue-600" />
-            Hackathon MVP Demonstration Station
+            TRIBUNAL Multi-Expert AI Platform
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight font-sans">
