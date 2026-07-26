@@ -155,10 +155,10 @@ D:\TRIBUNAL_RELEASE
 ├── dashboard/                 (React / Vite web dashboard application)
 │   ├── src/components/        (React Flow graphs, cards, & report viewers)
 │   └── src/pages/             (Workspace, Explorer, & History pages)
-├── docs/                      (Comprehensive Jury & Technical Documentation)
+├── docs/                      (Comprehensive End-to-End & Technical Documentation)
 │   ├── Architecture_Overview.md (System architecture specification)
 │   ├── Installation_Guide.md  (Step-by-step installation instructions)
-│   ├── Jury_Guide.md          (Complete Jury evaluation walkthrough)
+│   ├── End_to_End_Investigation_Walkthrough.md (Complete end-to-end investigation walkthrough)
 │   ├── Quick_Start.md         (1-page quick start cheatsheet)
 │   └── Sample_Queries.md      (15+ curated test queries)
 ├── scripts/                   (Demo execution launcher scripts)
@@ -180,7 +180,7 @@ D:\TRIBUNAL_RELEASE
 
 ## Complete Documentation Index
 
-- [Jury Evaluation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Jury_Guide.md)
+- [TRIBUNAL End-to-End Investigation Walkthrough](file:///D:/TRIBUNAL_RELEASE/docs/End_to_End_Investigation_Walkthrough.md)
 - [Detailed Installation Guide](file:///D:/TRIBUNAL_RELEASE/docs/Installation_Guide.md)
 - [1-Page Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md)
 - [Architecture Overview](file:///D:/TRIBUNAL_RELEASE/docs/Architecture_Overview.md)

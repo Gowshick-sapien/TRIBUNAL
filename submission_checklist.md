@@ -10,7 +10,7 @@ Track the final submission deliverables and preparation status for the **TRIBUNA
 - [x] **Documentation Cleanup**: Internal specs and phase planning moved to `TRIBUNAL/archive/`.
 - [x] **README.md**: Comprehensive pitch, architecture summary, and hackathon highlights.
 - [x] **Installation Guide**: Clear, tested backend & frontend setup commands (`docs/Installation_Guide.md`).
-- [x] **Jury Guide**: Step-by-step evaluation guide and key feature walkthrough (`docs/Jury_Guide.md`).
+- [x] **End-to-End Investigation Walkthrough**: Step-by-step evaluation guide and key feature walkthrough (`docs/End_to_End_Investigation_Walkthrough.md`).
 - [x] **Quick Start Guide**: One-command execution script & verification flow (`docs/Quick_Start.md`).
 - [x] **Sample Queries**: Curated real-world financial/behavioral investigative queries.
 

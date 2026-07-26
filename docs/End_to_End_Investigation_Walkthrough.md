@@ -1,6 +1,6 @@
-# TRIBUNAL — Hackathon Jury Evaluation Guide
+# TRIBUNAL End-to-End Investigation Walkthrough
 
-Welcome to the **TRIBUNAL** Jury Evaluation Guide. This document provides hackathon judges, technical reviewers, and compliance auditors with a step-by-step evaluation protocol for testing TRIBUNAL's multi-expert legal/investigative AI framework.
+Welcome to the **TRIBUNAL End-to-End Investigation Walkthrough**. This document provides judges, technical reviewers, and compliance auditors with a step-by-step evaluation protocol for testing TRIBUNAL's multi-expert legal/investigative AI framework.
 
 ---
 
@@ -24,7 +24,7 @@ Follow this 6-step evaluation protocol to test the complete multi-expert reasoni
 
 ---
 
-## Detailed Jury Evaluation Protocol
+## Detailed Investigation Evaluation Protocol
 
 ### Step 1: Launch System & Open Dashboard
 - Follow the [Quick Start Guide](file:///D:/TRIBUNAL_RELEASE/docs/Quick_Start.md) or launch backend (`http://localhost:8000`) and frontend (`http://localhost:5173`).
