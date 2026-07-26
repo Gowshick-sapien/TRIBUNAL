@@ -117,8 +117,8 @@ TRIBUNAL addresses these challenges by orchestrating a **Panel of Specialized AI
 
 ### 1. Backend Setup
 ```bash
-# Navigate to project root
-cd TRIBUNAL
+# Ensure you are in the project root directory (TRIBUNAL_Submission)
+# cd TRIBUNAL_Submission  # (if navigating from parent folder)
 
 # Create and activate Python virtual environment
 python -m venv .venv
