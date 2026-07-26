@@ -24,7 +24,8 @@ def test_supported_intents():
     assert "network_analysis" in SUPPORTED_INTENTS
     assert "eda_request" in SUPPORTED_INTENTS
     assert "case_summary" in SUPPORTED_INTENTS
-    assert len(SUPPORTED_INTENTS) == 6
+    assert "unsupported" in SUPPORTED_INTENTS
+    assert len(SUPPORTED_INTENTS) == 7
 
 
 def test_supported_patterns():

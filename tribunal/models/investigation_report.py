@@ -50,3 +50,12 @@ class InvestigationReport:
             self.winning_hypothesis = self.tribunal_summary.get("primary_hypothesis", "")
         if self.winning_confidence == 0.0 and self.tribunal_summary:
             self.winning_confidence = self.tribunal_summary.get("confidence", 0.0)
+
+    @property
+    def confidence(self) -> float:
+        """Calibrated tribunal confidence score."""
+        return (
+            self.winning_confidence
+            or (self.executive_summary.get("calibrated_confidence", 0.0) if hasattr(self, "executive_summary") and self.executive_summary else 0.0)
+            or (self.tribunal_summary.get("confidence", 0.0) if hasattr(self, "tribunal_summary") and self.tribunal_summary else 0.0)
+        )

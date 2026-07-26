@@ -22,3 +22,5 @@ class InvestigationPlan:
     entities: list[str] = field(default_factory=list)
     filters: dict[str, Any] = field(default_factory=dict)
     requested_output: str = "investigation_report"
+    is_domain_supported: bool = True
+    rejection_reason: str | None = None

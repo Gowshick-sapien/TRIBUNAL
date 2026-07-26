@@ -21,6 +21,8 @@ class MarkdownRenderer:
         lines.append("---")
         lines.append("## 1. Executive Summary\n")
         lines.append(f"> [!IMPORTANT]\n> **Verdict:** `{es.get('verdict', 'INCONCLUSIVE')}` | **Calibrated Confidence:** `{es.get('calibrated_confidence', 0.0):.2f}` | **Risk Level:** `{es.get('risk_level', 'MEDIUM')}`\n")
+        if es.get("key_takeaway"):
+            lines.append(f"> {es.get('key_takeaway')}\n")
         lines.append(f"- **Primary Hypothesis:** {es.get('primary_hypothesis', 'N/A')} (Net Score: `{es.get('primary_score', 0.0):.4f}`)")
         if es.get("secondary_hypothesis"):
             lines.append(f"- **Secondary Hypothesis:** {es.get('secondary_hypothesis')} (Net Score: `{es.get('secondary_score', 0.0):.4f}`)")
@@ -32,6 +34,9 @@ class MarkdownRenderer:
         qi = report.query_interpretation
         lines.append(f"- **Original Query:** *\"{qi.get('raw_query', '')}\"*")
         lines.append(f"- **Parsed Intent:** `{qi.get('parsed_intent', '')}`")
+        target_str = qi.get("resolved_target_id", "N/A")
+        status_str = qi.get("target_resolution_status", "N/A")
+        lines.append(f"- **Requested Target Entity:** `{target_str}` (`{status_str}`)")
         lines.append(f"- **Experts Invoked:** `{qi.get('experts_invoked', [])}`\n")
 
         lines.append("---")

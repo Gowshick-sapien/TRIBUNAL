@@ -40,13 +40,23 @@ class LLMClient:
         if not query or not query.strip():
             raise LLMClientError("Query string cannot be empty")
 
+        prompt = f"{QUERY_PLANNER_SYSTEM_PROMPT}\n\nUser Query: {query.strip()}"
+        print("=" * 80)
+        print("PROMPT SENT TO QWEN")
+        print(prompt)
+        print("=" * 80)
+
         if self.custom_caller is not None:
             try:
-                return self.custom_caller(query)
+                res = self.custom_caller(query)
+                print("=" * 80)
+                print("RAW QWEN RESPONSE")
+                print(res)
+                print("=" * 80)
+                return res
             except Exception as e:
                 raise LLMClientError(f"Custom caller failed: {e}") from e
 
-        prompt = f"{QUERY_PLANNER_SYSTEM_PROMPT}\n\nUser Query: {query.strip()}"
         payload = json.dumps({
             "model": self.model,
             "prompt": prompt,
@@ -68,6 +78,10 @@ class LLMClient:
                         body = json.loads(resp.read().decode("utf-8"))
                         response_text = body.get("response", "").strip()
                         if response_text:
+                            print("=" * 80)
+                            print("RAW QWEN RESPONSE")
+                            print(response_text)
+                            print("=" * 80)
                             return response_text
                         raise LLMClientError("LLM returned empty response body")
             except (urllib.error.URLError, TimeoutError, OSError) as err:

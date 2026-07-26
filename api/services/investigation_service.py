@@ -50,6 +50,10 @@ class InvalidQueryError(ServiceError):
     """Raised when the input query is invalid or unparseable."""
 
 
+class UnsupportedQueryError(ServiceError):
+    """Raised when query is outside the supported AML investigation domain."""
+
+
 class InvestigationNotFoundError(ServiceError):
     """Raised when requesting an investigation ID that does not exist in store or database."""
 
@@ -94,19 +98,119 @@ class InvestigationService:
         if not request.query or len(request.query.strip()) < 3:
             raise InvalidQueryError("Query must be at least 3 characters long.")
 
-        # 1. Validate dataset loading
-        transactions_df = self._load_dataset_transactions(request.dataset)
+        # 1. Generate Execution Plan via Planner FIRST
+        print("=" * 80)
+        print("QUERY SENT TO PLANNER")
+        print(request.query)
+        print("=" * 80)
 
-        # 2. Generate Execution Plan via Planner
         t_plan_start = time.perf_counter()
         planning_result = self.planner.plan(request.query)
         execution_plan = planning_result.execution_plan
         t_plan_end = time.perf_counter()
         planner_ms = round((t_plan_end - t_plan_start) * 1000, 3)
 
+        # Domain Guard Enforcement
+        if execution_plan and (not getattr(execution_plan, "is_supported", True) or getattr(execution_plan, "intent", None) == "unsupported"):
+            reason = getattr(execution_plan, "rejection_reason", None) or (
+                f"TRIBUNAL is an autonomous AML investigation system. "
+                f"The query '{request.query}' is outside the supported financial investigation domain."
+            )
+            logger.warning(f"Domain Guard rejected off-topic query '{request.query}': {reason}")
+            raise UnsupportedQueryError(reason)
+
+        # Extract target entities from Execution Plan
+        target_entities = []
+        if hasattr(execution_plan, "target_entities") and execution_plan.target_entities:
+            target_entities.extend(execution_plan.target_entities)
+        if hasattr(execution_plan, "filters") and isinstance(execution_plan.filters, dict):
+            cust_id = execution_plan.filters.get("customer_id")
+            if cust_id and str(cust_id) not in target_entities:
+                target_entities.append(str(cust_id))
+            ents = execution_plan.filters.get("entities")
+            if isinstance(ents, list):
+                for ent in ents:
+                    if str(ent) not in target_entities:
+                        target_entities.append(str(ent))
+
+        print("=" * 80)
+        print("TARGET ENTITIES EXTRACTED BY PLANNER")
+        print(target_entities)
+        print("=" * 80)
+
+        # 2. Target-aware dataset loading
+        transactions_df = self._load_dataset_transactions(request.dataset, target_entities=target_entities)
+
+        # Handle missing target account gracefully (Fallback Hierarchy)
+        if target_entities and transactions_df.empty:
+            logger.warning(f"Target entities {target_entities} requested but not found in dataset '{request.dataset}'. Returning target not found report.")
+            investigation_id = f"inv_{uuid.uuid4().hex[:12]}"
+            case_file = CaseFile(case_id=investigation_id)
+            empty_verdict = TribunalVerdict(
+                verdict="LOW_RISK",
+                winning_hypothesis=f"Target account(s) {target_entities} not found in dataset '{request.dataset}'",
+                winning_score=0.0,
+                confidence=0.0,
+                primary_hypothesis=f"Target account(s) {target_entities} not found in dataset '{request.dataset}'",
+                primary_score=0.0,
+                secondary_hypothesis="No transaction data available for requested target account",
+                secondary_score=0.0,
+                risk_level="LOW",
+                recommendation="No further action required as account does not exist in target dataset.",
+            )
+            empty_graph = self.graph_builder.build([], case_file=case_file)
+            report = self.report_generator.generate(
+                planner_context=planning_result.planner_context,
+                case_file=case_file,
+                evidence_graph=empty_graph,
+                tribunal_verdict=empty_verdict,
+                query_text=request.query,
+            )
+            total_ms = round((time.perf_counter() - start_time) * 1000, 3)
+            metrics = {"planner_ms": planner_ms, "total_ms": total_ms}
+            summary = (
+                f"Requested Target: {target_entities} | "
+                f"Dataset Searched: '{request.dataset}' | "
+                f"Matching Transactions: 0 | "
+                f"Investigation Status: Halted | "
+                f"Reason: Requested entity does not exist in selected dataset '{request.dataset}'."
+            )
+
+            with self._store_lock:
+                self._store[investigation_id] = {
+                    "request": request,
+                    "case_file": case_file,
+                    "graph": empty_graph,
+                    "verdict": empty_verdict,
+                    "report": report,
+                    "metrics": metrics,
+                    "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                }
+
+            return InvestigationResponse(
+                investigation_id=investigation_id,
+                query=request.query,
+                risk_level=empty_verdict.risk_level,
+                confidence=0.0,
+                verdict=empty_verdict.verdict,
+                winning_hypothesis=empty_verdict.winning_hypothesis,
+                recommendation=empty_verdict.recommendation,
+                summary=summary,
+                report_url=f"/api/v1/report/{investigation_id}",
+                graph_url=f"/api/v1/graph/{investigation_id}",
+                verdict_url=f"/api/v1/verdict/{investigation_id}",
+                metrics=metrics,
+            )
+
         # 3. Instantiate Case File and execute domain experts
         investigation_id = f"inv_{uuid.uuid4().hex[:12]}"
-        case_file = CaseFile(case_id=investigation_id)
+        target_pat = getattr(execution_plan, "target_pattern", None) or (execution_plan.filters.get("pattern") if execution_plan.filters else None)
+        intent_val = execution_plan.filters.get("intent") if execution_plan.filters else None
+        case_file = CaseFile(
+            case_id=investigation_id,
+            target_pattern=target_pat,
+            intent=intent_val,
+        )
 
         t_expert_start = time.perf_counter()
         fin_result = self.financial_expert.investigate(transactions_df, case_file, execution_plan)
@@ -126,11 +230,24 @@ class InvestigationService:
         t_graph_end = time.perf_counter()
         graph_ms = round((t_graph_end - t_graph_start) * 1000, 3)
 
+        print("=" * 80)
+        print("GRAPH NODES")
+        if hasattr(augmented_graph, "nodes"):
+            for node in (augmented_graph.nodes() if callable(getattr(augmented_graph, "nodes")) else augmented_graph.nodes):
+                print(node)
+        print("=" * 80)
+
         # 5. Deliberate in Tribunal
         t_tribunal_start = time.perf_counter()
         verdict = self.tribunal.deliberate(augmented_graph, case_file)
         t_tribunal_end = time.perf_counter()
         tribunal_ms = round((t_tribunal_end - t_tribunal_start) * 1000, 3)
+
+        print("=" * 80)
+        print("Primary:", getattr(verdict, "primary_hypothesis", None))
+        print("Secondary:", getattr(verdict, "secondary_hypothesis", None))
+        print("Confidence:", getattr(verdict, "confidence_score", None))
+        print("=" * 80)
 
         # 6. Generate Report
         t_report_start = time.perf_counter()
@@ -276,6 +393,11 @@ class InvestigationService:
             tribunal_summary = str(report.tribunal_summary)
             provenance_details = str(report.provenance_details)
             audit_trail = str(report.audit_trail)
+            conf_val = (
+                getattr(report, "winning_confidence", 0.0)
+                or (report.executive_summary.get("calibrated_confidence", 0.0) if hasattr(report, "executive_summary") and report.executive_summary else 0.0)
+                or (report.json_payload.get("tribunal_summary", {}).get("confidence", 0.0) if hasattr(report, "json_payload") and report.json_payload else 0.0)
+            )
         else:
             # Fallback to persistent repository
             loaded = self.repository.load(investigation_id)
@@ -289,6 +411,10 @@ class InvestigationService:
             exec_sum = json_payload.get("executive_summary", {})
             risk_level = exec_sum.get("risk_level", "MEDIUM")
             recommendation = exec_sum.get("recommendation", "")
+            conf_val = (
+                exec_sum.get("calibrated_confidence")
+                or json_payload.get("tribunal_summary", {}).get("confidence", 0.0)
+            )
             executive_summary = str(exec_sum)
             query_interpretation = str(json_payload.get("query_interpretation", {}))
             timeline = str(json_payload.get("timeline", []))
@@ -325,6 +451,7 @@ class InvestigationService:
             sections=sections,
             json_payload=json_payload,
             risk_level=risk_level,
+            confidence=float(conf_val or 0.0),
             recommendation=recommendation,
         )
 
@@ -514,20 +641,22 @@ class InvestigationService:
             raise InvestigationNotFoundError(f"Investigation with ID '{investigation_id}' not found.")
         return True
 
-    def _load_dataset_transactions(self, dataset_ref: str) -> pd.DataFrame:
-        """Helper to load transactions from dataset reference via DatasetResolver."""
+    def _load_dataset_transactions(self, dataset_ref: str, target_entities: Optional[List[str]] = None) -> pd.DataFrame:
+        """Helper to load transactions from dataset reference via DatasetResolver with target awareness."""
         resolver = DatasetResolver()
         resolved = resolver.resolve(dataset_ref)
 
         try:
             loader = DataLoader(dataset_dir=str(resolved.resolved_path if resolved.is_file else resolved.ref_id))
-            df = loader.load_transactions(limit=500)
-            if df is None or (isinstance(df, pd.DataFrame) and df.empty):
-                raise DatasetNotFoundError(
-                    dataset_ref=dataset_ref,
-                    message=f"Dataset '{dataset_ref}' contains no transaction data.",
-                    searched_locations=[str(resolved.resolved_path)],
-                )
+            df = loader.load_transactions(target_entities=target_entities)
+            if df is None:
+                df = pd.DataFrame()
+            print("=" * 80)
+            print("ROWS LOADED")
+            print(len(df))
+            if not df.empty:
+                print(df.head())
+            print("=" * 80)
             return df
         except DatasetNotFoundError:
             raise
@@ -541,21 +670,6 @@ class InvestigationService:
             logger.warning(f"Error loading dataset '{dataset_ref}', fallback to default loader: {e}")
             try:
                 fallback_loader = DataLoader(dataset_dir="default")
-                return fallback_loader.load_transactions(limit=500)
+                return fallback_loader.load_transactions(target_entities=target_entities)
             except Exception:
-                return pd.DataFrame([
-                    {
-                        "timestamp": "2026-07-25 12:00:00",
-                        "from_bank": "1001",
-                        "from_account": "ACC_8000A94C0",
-                        "to_bank": "2002",
-                        "to_account": "ACC_9999B11C1",
-                        "amount_received": 9500.0,
-                        "receiving_currency": "USD",
-                        "amount_paid": 9500.0,
-                        "payment_currency": "USD",
-                        "payment_format": "WIRE",
-                        "is_laundering": 1,
-                        "transaction_id": "TX_D1_001",
-                    }
-                ])
+                return pd.DataFrame()

@@ -20,3 +20,6 @@ class ExecutionPlan:
     output_format: str = "investigation_report"
     schema_version: str = "1.0"
     planner_version: str = "C.1"
+    is_supported: bool = True
+    intent: str = "pattern_detection"
+    rejection_reason: str | None = None

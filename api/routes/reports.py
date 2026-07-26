@@ -69,7 +69,7 @@ def get_report(
     elif fmt == "html" or fmt == "pdf" or (accept and "text/html" in accept):
         metadata = {
             "risk_level": report_data.risk_level,
-            "confidence": 0.85,
+            "confidence": getattr(report_data, "confidence", 0.0),
             "generated_at": report_data.generated_at,
         }
         html_out = render_compliance_html(id, "TRIBUNAL Report", report_data.markdown_content, metadata)

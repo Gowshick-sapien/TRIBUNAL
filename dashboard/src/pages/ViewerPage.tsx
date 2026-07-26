@@ -165,7 +165,7 @@ export const ViewerPage: React.FC = () => {
             </div>
 
             <div className="surface-card p-5 rounded-lg border border-slate-200 space-y-4 bg-white shadow-xs">
-              <ConfidenceMeter confidence={verdict?.confidence || 0.85} />
+              <ConfidenceMeter confidence={verdict?.confidence ?? 0.0} />
               <div className="space-y-2 text-xs font-sans border-t border-slate-200 pt-3">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Risk Assessment</span>
@@ -242,14 +242,14 @@ export const ViewerPage: React.FC = () => {
                 <span className="text-[10px] font-sans text-blue-700 uppercase font-semibold">Primary Winning Hypothesis</span>
                 <p className="text-sm font-bold text-slate-900 font-sans">{verdict?.winning_hypothesis || 'Structuring Activity'}</p>
                 <div className="text-xs font-mono text-blue-700 font-semibold">
-                  Confidence Score: {((verdict?.confidence || 0.9) * 100).toFixed(0)}%
+                  Confidence Score: {(((verdict?.confidence ?? 0.0)) * 100).toFixed(0)}%
                 </div>
               </div>
               <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
                 <span className="text-[10px] font-sans text-slate-500 uppercase font-semibold">Runner-Up Hypothesis</span>
                 <p className="text-sm font-bold text-slate-800 font-sans">{verdict?.runner_up_hypothesis || 'High Velocity Transfer'}</p>
                 <div className="text-xs font-mono text-slate-600 font-semibold">
-                  Confidence Gap: {((verdict?.confidence_gap || 0.15) * 100).toFixed(0)}%
+                  Confidence Gap: {(((verdict?.confidence_gap ?? 0.0)) * 100).toFixed(0)}%
                 </div>
               </div>
             </div>

@@ -99,7 +99,7 @@ export const useEvidenceGraph = (investigationId: string) => {
           (sel.includes('fin') && exp.includes('fin'));
 
         // Account & Tribunal nodes provide topological context for expert evidence chains
-        const isContextNode = node.type === 'account' || node.type === 'tribunal';
+        const isContextNode = (node.type as string) === 'account' || (node.type as string) === 'tribunal';
 
         if (!isExactMatch && !isContextNode) {
           return false;

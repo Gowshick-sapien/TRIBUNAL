@@ -29,6 +29,26 @@ class ExecutiveSummaryBuilder:
         risk = getattr(verdict, "risk_level", "MEDIUM")
         rec = getattr(verdict, "recommendation", "")
 
+        import re
+        suspect_entity = None
+        match = re.search(r"(?:Account|Customer)\s+([A-Za-z0-9_-]+)", primary_hyp, re.IGNORECASE)
+        if match:
+            suspect_entity = match.group(1)
+
+        target_entity = None
+        t_match = re.search(r"(?:Account|Customer|ACC_)\s*([A-Za-z0-9_-]+)", query_text, re.IGNORECASE)
+        if t_match:
+            target_entity = t_match.group(1)
+
+        if suspect_entity and target_entity and suspect_entity.lower() not in target_entity.lower() and target_entity.lower() not in suspect_entity.lower():
+            key_takeaway = (
+                f"The requested target entity '{query_text}' was successfully investigated. "
+                f"Primary suspicious evidence was identified on connected counterparty account {suspect_entity}, "
+                f"which exhibited suspicious patterns linked to the target."
+            )
+        else:
+            key_takeaway = f"Tribunal issued '{v_cat}' verdict for primary hypothesis '{primary_hyp}' with calibrated confidence of {conf:.2f}."
+
         return {
             "report_id": report_id,
             "date": now_str,
@@ -43,5 +63,6 @@ class ExecutiveSummaryBuilder:
             "calibrated_confidence": round(conf, 4),
             "risk_level": risk,
             "recommendation": rec,
-            "key_takeaway": f"Tribunal issued '{v_cat}' verdict for primary hypothesis '{primary_hyp}' with calibrated confidence of {conf:.2f}.",
+            "key_takeaway": key_takeaway,
+            "suspect_entity": suspect_entity,
         }

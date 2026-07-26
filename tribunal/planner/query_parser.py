@@ -64,11 +64,48 @@ class QueryParser:
         """Convenience method accepting raw query string."""
         return self.parse(query_text)
 
+    AML_KEYWORDS: set[str] = {
+        "account", "acc", "customer", "user", "transaction", "transactions", "transfer", "transfers",
+        "wire", "deposit", "deposits", "withdrawal", "withdrawals", "money", "laundering", "aml",
+        "structuring", "velocity", "smurfing", "fan_in", "fan_out", "scatter", "gather", "high_value",
+        "dormant", "dormancy", "drift", "anomaly", "anomalies", "fraud", "shell", "layering", "sanction",
+        "sanctions", "risk", "investigate", "investigation", "audit", "eda", "summary", "network", "graph",
+        "counterparty", "currency", "spending", "payment", "pattern", "behavior", "behaviour", "cash",
+        "baseline", "micro-transfer", "burst", "reactivation", "activity", "balance", "score"
+    }
+
+    def is_aml_domain_query(self, text: str) -> tuple[bool, str | None]:
+        """Check if raw text contains AML/financial investigation domain terms or account IDs."""
+        text_lower = text.lower().strip()
+        if not text_lower:
+            return False, "Query text cannot be empty"
+
+        # Check explicit ACC_ account match or account ID patterns
+        if re.search(r"\bACC_[A-Za-z0-9_-]+\b", text) or re.search(r"(?:account|acc|customer)\s+[A-Za-z0-9_-]+", text_lower):
+            return True, None
+
+        tokens = set(re.findall(r"\b[a-z0-9_-]+\b", text_lower))
+        if tokens.intersection(self.AML_KEYWORDS):
+            return True, None
+
+        return False, f"TRIBUNAL is an autonomous AML investigation system. The query '{text.strip()}' is outside the supported financial investigation domain."
+
     def parse_text_rule_based(self, text: str) -> InvestigationPlan:
         """Rule-based regex parser fallback for natural language text when LLM JSON is unavailable."""
         text_lower = text.lower().strip()
         if not text_lower:
             raise ValidationError("Query text cannot be empty")
+
+        is_supported, reason = self.is_aml_domain_query(text)
+        if not is_supported:
+            return InvestigationPlan(
+                raw_query=text,
+                intent="unsupported",
+                experts=[],
+                run_eda=False,
+                is_domain_supported=False,
+                rejection_reason=reason,
+            )
 
         # Intent detection
         if "eda" in text_lower or "distribution" in text_lower or "statistics" in text_lower:
@@ -193,8 +230,15 @@ class QueryParser:
         requested_output: str,
     ) -> InvestigationPlan:
         """Map intent to experts and construct domain InvestigationPlan."""
-        experts: list[str] = []
-        run_eda = False
+        if intent == "unsupported":
+            return InvestigationPlan(
+                raw_query=raw_query,
+                intent="unsupported",
+                experts=[],
+                run_eda=False,
+                is_domain_supported=False,
+                rejection_reason=f"TRIBUNAL is an autonomous AML investigation system. The query '{raw_query.strip()}' is outside the supported financial investigation domain.",
+            )
 
         if intent in (PATTERN_DETECTION, CUSTOMER_LOOKUP):
             experts = [FINANCIAL, BEHAVIOUR]

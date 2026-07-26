@@ -11,6 +11,7 @@ from api.services.investigation_service import (
     InvestigationExecutionError,
     InvestigationNotFoundError,
     ServiceError,
+    UnsupportedQueryError,
 )
 from tribunal.data.dataset_resolver import DatasetNotFoundError
 from storage.sqlite.sqlite_repository import (
@@ -25,6 +26,17 @@ logger = logging.getLogger("tribunal.api.middleware.exceptions")
 
 def register_exception_handlers(app: FastAPI) -> None:
     """Register custom exception handlers on FastAPI application."""
+
+    @app.exception_handler(UnsupportedQueryError)
+    async def unsupported_query_handler(request: Request, exc: UnsupportedQueryError) -> JSONResponse:
+        logger.warning(f"Unsupported Domain Query Rejected: {exc}")
+        payload = ErrorResponse(
+            error="UnsupportedQuery",
+            message=str(exc),
+            status_code=status.HTTP_400_BAD_REQUEST,
+            timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        )
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=payload.model_dump())
 
     @app.exception_handler(DatasetNotFoundError)
     async def dataset_not_found_handler(request: Request, exc: DatasetNotFoundError) -> JSONResponse:

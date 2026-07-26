@@ -3,21 +3,21 @@ import { NavLink } from 'react-router-dom';
 import {
   Home,
   PlusCircle,
-  History,
   Database,
   ArrowLeftRight,
   Activity,
   Settings,
   Sparkles,
+  FileText,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const navItems = [
     { to: '/', label: 'Home Overview', icon: Home, exact: true },
     { to: '/investigate', label: 'New Investigation', icon: PlusCircle, highlight: true },
+    { to: '/history', label: 'Report Workstation', icon: FileText },
     { to: '/explorer', label: 'Repository Explorer', icon: Database },
     { to: '/compare', label: 'Compare Workspace', icon: ArrowLeftRight },
-    { to: '/history', label: 'Investigation History', icon: History },
     { to: '/system', label: 'System & Health', icon: Activity },
     { to: '/settings', label: 'Settings', icon: Settings },
   ];

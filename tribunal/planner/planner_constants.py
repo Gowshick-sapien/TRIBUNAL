@@ -14,6 +14,7 @@ CUSTOMER_LOOKUP = "customer_lookup"
 NETWORK_ANALYSIS = "network_analysis"
 EDA_REQUEST = "eda_request"
 CASE_SUMMARY = "case_summary"
+UNSUPPORTED = "unsupported"
 
 SUPPORTED_INTENTS: set[str] = {
     PATTERN_DETECTION,
@@ -22,6 +23,7 @@ SUPPORTED_INTENTS: set[str] = {
     NETWORK_ANALYSIS,
     EDA_REQUEST,
     CASE_SUMMARY,
+    UNSUPPORTED,
 }
 
 # -----------------------------------------------------------------------------

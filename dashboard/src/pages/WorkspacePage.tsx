@@ -3,11 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Play,
   Database,
-  Search,
   Sparkles,
-  AlertCircle,
+  ShieldAlert,
   FileText,
   CheckCircle,
+  ExternalLink,
+  RotateCcw,
 } from 'lucide-react';
 import { api } from '../services/api';
 import type { DatasetItemSchema, InvestigationResponse } from '../types';
@@ -48,42 +49,47 @@ export const WorkspacePage: React.FC = () => {
     }
 
     // Dynamically load datasets from GET /api/v1/datasets
-    const fetchDatasets = async () => {
+    const loadDatasets = async () => {
       try {
-        const res = await api.getDatasets();
-        if (res.datasets && res.datasets.length > 0) {
-          setAvailableDatasets(res.datasets);
+        const data = await api.getDatasets();
+        if (data.datasets && data.datasets.length > 0) {
+          setAvailableDatasets(data.datasets);
         }
-      } catch (err) {
-        console.warn('Could not fetch datasets dynamically from API, using fallback list:', err);
+      } catch {
+        // Fallback default
       }
     };
-    fetchDatasets();
+    loadDatasets();
   }, [location.state]);
 
-  const handleRunInvestigation = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!query || query.trim().length < 3) {
-      setError('Please enter an investigation query (at least 3 characters).');
-      return;
-    }
+  const handleRunInvestigation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
 
-    setError(null);
     setLoading(true);
+    setError(null);
     setResult(null);
 
-    // Reset timeline animation steps
-    setSteps((prev) => prev.map((s) => ({ ...s, status: 'pending', durationMs: undefined })));
-
-    // Step 1: Running Planner
-    setSteps((prev) => prev.map((s) => (s.id === '1' ? { ...s, status: 'running' } : s)));
+    // Reset steps
+    setSteps((prev) =>
+      prev.map((s) => ({
+        ...s,
+        status: 'pending',
+        durationMs: undefined,
+      }))
+    );
 
     try {
+      // Simulate pipeline execution animation steps
+      setSteps((prev) =>
+        prev.map((s) => (s.id === '1' ? { ...s, status: 'running' } : s))
+      );
+
       setTimeout(() => {
         setSteps((prev) =>
           prev.map((s) =>
             s.id === '1'
-              ? { ...s, status: 'completed', durationMs: 12.4 }
+              ? { ...s, status: 'completed', durationMs: 12.5 }
               : s.id === '2'
               ? { ...s, status: 'running' }
               : s
@@ -95,7 +101,7 @@ export const WorkspacePage: React.FC = () => {
         setSteps((prev) =>
           prev.map((s) =>
             s.id === '2'
-              ? { ...s, status: 'completed', durationMs: 15.2 }
+              ? { ...s, status: 'completed', durationMs: 18.2 }
               : s.id === '3'
               ? { ...s, status: 'running' }
               : s
@@ -107,7 +113,7 @@ export const WorkspacePage: React.FC = () => {
         setSteps((prev) =>
           prev.map((s) =>
             s.id === '3'
-              ? { ...s, status: 'completed', durationMs: 18.6 }
+              ? { ...s, status: 'completed', durationMs: 15.0 }
               : s.id === '4'
               ? { ...s, status: 'running' }
               : s
@@ -150,6 +156,7 @@ export const WorkspacePage: React.FC = () => {
         },
       });
 
+      // Complete all steps
       setSteps((prev) =>
         prev.map((s) => ({
           ...s,
@@ -168,104 +175,157 @@ export const WorkspacePage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 font-sans">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 font-sans tracking-tight flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-blue-600" />
-            Investigation Execution Workspace
-          </h1>
-          <p className="text-xs font-sans text-slate-500 mt-1">
-            Submit natural language queries to trigger the Phase C agentic pipeline and persist artifacts in D.2 storage.
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              Investigation Execution Workspace
+            </h1>
+            <span className="px-2 py-0.5 text-[10px] font-mono font-medium bg-blue-50 border border-blue-200 text-blue-700 rounded-md">
+              D.1 Rest API
+            </span>
+          </div>
+          <p className="text-slate-600 text-xs font-sans mt-1">
+            Orchestrate end-to-end multi-expert analysis, adversarial defense review, and tribunal consensus.
           </p>
         </div>
       </div>
 
-      {/* Query & Input Form */}
-      <form onSubmit={handleRunInvestigation} className="surface-card p-6 rounded-lg border border-slate-200 space-y-4 shadow-xs bg-white">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 space-y-2">
-            <label className="block text-xs font-sans font-semibold text-slate-700 uppercase tracking-wider">
-              Natural Language Query / Target Objective
+      {/* Query Input Section */}
+      <div className="surface-card p-6 rounded-lg border border-slate-200 space-y-6 bg-white shadow-xs">
+        <form onSubmit={handleRunInvestigation} className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-xs font-sans font-semibold text-slate-900 uppercase tracking-wider">
+              Natural Language Investigation Query / Objective
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
-              <input
-                type="text"
+              <textarea
+                rows={3}
+                disabled={loading}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="e.g. Is customer ACC_8000A94C0 engaged in structuring and velocity anomalies?"
-                className="w-full bg-white border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-md py-2 pl-10 pr-4 text-xs font-sans text-slate-900 placeholder-slate-400 transition-colors"
+                className="w-full p-3.5 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-sm text-slate-900 placeholder-slate-400 font-sans transition-colors resize-none disabled:opacity-50"
               />
             </div>
           </div>
 
-          <div className="w-full md:w-72 space-y-2">
-            <label className="block text-xs font-sans font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-blue-600" />
-              Dataset Alias ID
-            </label>
-            <select
-              value={dataset}
-              onChange={(e) => setDataset(e.target.value)}
-              className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-md py-2 px-3 text-xs font-sans text-slate-900 transition-colors"
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+            <div className="flex items-center gap-3">
+              <Database className="w-4 h-4 text-slate-400" />
+              <span className="text-xs font-sans font-medium text-slate-700">Target Dataset:</span>
+              <select
+                disabled={loading}
+                value={dataset}
+                onChange={(e) => setDataset(e.target.value)}
+                className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs font-sans text-slate-800 font-medium focus:outline-none focus:border-blue-500"
+              >
+                {availableDatasets.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !query.trim()}
+              className="px-6 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-medium text-xs transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
-              {availableDatasets.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} ({d.id})
-                </option>
+              {loading ? (
+                <>
+                  <Sparkles className="w-4 h-4 animate-spin" />
+                  Orchestrating Investigation Pipeline...
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 fill-current" />
+                  Execute Autonomous Investigation
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Execution Progress & Status */}
+      {(loading || steps.some((s) => s.status !== 'pending')) && (
+        <ExecutionTimeline steps={steps} totalMs={result?.metrics?.total_ms} />
+      )}
+
+      {/* Domain Guard Rejection & Error View */}
+      {error && (
+        <div className="surface-card p-6 rounded-lg border border-amber-200 bg-amber-50/70 space-y-4 font-sans shadow-xs">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 rounded-lg bg-amber-100 text-amber-800 shrink-0">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-slate-900 font-sans">
+                  Investigation Domain Guard Rejection (Phase C.1.1)
+                </h3>
+                <span className="px-2 py-0.5 text-[10px] font-mono font-medium bg-amber-200/80 text-amber-900 rounded">
+                  Out-of-Domain Query
+                </span>
+              </div>
+              <p className="text-xs text-slate-800 leading-relaxed font-sans font-medium">
+                {error}
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-amber-200/60 space-y-2">
+            <span className="text-[11px] font-sans font-semibold text-slate-700 uppercase tracking-wider">
+              Try Supported AML Investigation Objectives:
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: 'Structuring & Velocity', q: 'Is customer ACC_8000A94C0 engaged in structuring and velocity anomalies?' },
+                { label: 'Behavioral Baseline Drift', q: 'Check account ACC_9999B11C1 for dormancy reactivation and currency change drift' },
+                { label: 'Customer Account Lookup', q: 'Investigate ACC_8016B3750' },
+              ].map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setQuery(item.q);
+                    setError(null);
+                  }}
+                  className="px-3 py-1 rounded-md bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 text-slate-700 text-xs font-sans transition-colors"
+                >
+                  {item.label} &rarr;
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         </div>
+      )}
 
-        {error && (
-          <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-700 text-xs font-sans flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            {error}
-          </div>
-        )}
-
-        <div className="flex justify-end pt-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-xs flex items-center gap-2 disabled:opacity-50"
-          >
-            {loading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Executing Pipeline...
-              </>
-            ) : (
-              <>
-                <Play className="w-3.5 h-3.5 fill-white" />
-                Run Investigation Engine
-              </>
-            )}
-          </button>
-        </div>
-      </form>
-
-      {/* Execution Timeline */}
-      <ExecutionTimeline steps={steps} totalMs={result?.metrics?.total_ms} />
-
-      {/* Result Display Card */}
+      {/* Investigation Results Card */}
       {result && (
-        <div className="surface-card p-6 rounded-lg border border-slate-200 space-y-6 bg-white shadow-xs">
+        <div className="surface-card p-6 rounded-lg border border-slate-200 space-y-6 bg-white shadow-xs font-sans">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-sans text-slate-500">ID:</span>
-                <span className="font-mono text-sm font-semibold text-blue-600">{result.investigation_id}</span>
+                <span className="text-xs text-slate-500 font-medium">Case ID:</span>
+                <button
+                  onClick={() => navigate(`/report/${result.investigation_id}`)}
+                  className="font-mono text-sm font-bold text-blue-600 hover:underline flex items-center gap-1 group"
+                  title="Open 10-Section Interactive Report"
+                >
+                  <span>{result.investigation_id}</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-blue-500 opacity-70 group-hover:opacity-100" />
+                </button>
                 <span className="text-[10px] font-sans bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-md flex items-center gap-1 font-medium">
                   <CheckCircle className="w-3 h-3" /> Persisted to Storage (D.2)
                 </span>
               </div>
-              <h2 className="text-lg font-bold text-slate-900 font-sans">
-                {result.winning_hypothesis || 'Investigation Completed'}
+              <h2 className="text-lg font-bold text-slate-900 font-sans flex items-center gap-2 pt-1">
+                <span>Autonomous Investigation Completed</span>
               </h2>
             </div>
 
@@ -275,16 +335,46 @@ export const WorkspacePage: React.FC = () => {
             </div>
           </div>
 
+          {/* Structured Concept Breakdown: Requested Target vs Suspicious Entity */}
+          {(() => {
+            const suspectMatch = result.winning_hypothesis?.match(/(?:Account|Customer)\s+([A-Za-z0-9_-]+)/i);
+            const suspectEntity = suspectMatch ? suspectMatch[1] : null;
+            const targetQuery = result.query;
+
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-slate-50/80 p-4 rounded-lg border border-slate-200">
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Investigation Target</div>
+                  <div className="text-sm font-bold text-slate-900 font-mono mt-0.5 bg-white px-2 py-1 rounded border border-slate-200 inline-block">
+                    {targetQuery}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Primary Suspicious Entity</div>
+                  <div className="text-sm font-bold text-blue-700 font-mono mt-0.5 bg-blue-50/80 px-2 py-1 rounded border border-blue-200 inline-block">
+                    {suspectEntity ? `Account ${suspectEntity}` : 'Target Account'}
+                  </div>
+                </div>
+                <div className="sm:col-span-2">
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Primary Typology Finding</div>
+                  <div className="text-xs font-semibold text-slate-800 mt-1 leading-relaxed">
+                    {result.winning_hypothesis}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Metrics & Confidence */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 space-y-3">
               <div className="text-xs font-sans font-semibold text-slate-700 uppercase tracking-wider">
                 Executive Findings Summary
               </div>
-              <p className="text-sm text-slate-800 leading-relaxed font-sans bg-slate-50 p-4 rounded-lg border border-slate-200">
+              <p className="text-sm text-slate-800 leading-relaxed font-sans bg-slate-50/50 p-4 rounded-lg border border-slate-200">
                 {result.summary}
               </p>
-              <p className="text-xs text-slate-800 font-sans bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <p className="text-xs text-slate-800 font-sans bg-slate-50/50 p-3 rounded-lg border border-slate-200">
                 <strong className="text-slate-900">Actionable Recommendation:</strong> {result.recommendation}
               </p>
             </div>
@@ -294,11 +384,7 @@ export const WorkspacePage: React.FC = () => {
 
               <div className="space-y-2 text-xs font-sans border-t border-slate-200 pt-3">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Planner Latency</span>
-                  <span className="text-blue-600 font-mono font-semibold">{result.metrics?.planner_ms?.toFixed(1) || '0.0'} ms</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Total Duration</span>
+                  <span className="text-slate-500">Total Latency</span>
                   <span className="text-blue-600 font-mono font-semibold">{result.metrics?.total_ms?.toFixed(1) || '0.0'} ms</span>
                 </div>
               </div>
@@ -306,25 +392,39 @@ export const WorkspacePage: React.FC = () => {
           </div>
 
           {/* Action Links */}
-          <div className="pt-4 border-t border-slate-200 flex flex-wrap gap-3">
+          <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => navigate(`/report/${result.investigation_id}`)}
+                className="px-4 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors flex items-center gap-2 shadow-xs"
+              >
+                <FileText className="w-4 h-4" />
+                Open 10-Section Investigation Report &rarr;
+              </button>
+              <button
+                onClick={() => navigate(`/investigation/${result.investigation_id}`)}
+                className="px-4 py-2.5 rounded-md bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs transition-colors shadow-xs"
+              >
+                View Interactive Case File
+              </button>
+              <button
+                onClick={() => navigate(`/investigation/${result.investigation_id}?tab=verdict`)}
+                className="px-4 py-2.5 rounded-md bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs transition-colors shadow-xs"
+              >
+                View Deliberation Trace
+              </button>
+            </div>
+
             <button
-              onClick={() => navigate(`/investigation/${result.investigation_id}`)}
-              className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors flex items-center gap-2 shadow-xs"
+              onClick={() => {
+                setResult(null);
+                setQuery('');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="px-4 py-2.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition-colors flex items-center gap-1.5 shadow-xs"
             >
-              <FileText className="w-4 h-4" />
-              Open Full Investigation Viewer &rarr;
-            </button>
-            <button
-              onClick={() => navigate(`/investigation/${result.investigation_id}?tab=report`)}
-              className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs transition-colors shadow-xs"
-            >
-              View 10-Section Report
-            </button>
-            <button
-              onClick={() => navigate(`/investigation/${result.investigation_id}?tab=verdict`)}
-              className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs transition-colors shadow-xs"
-            >
-              View Deliberation Trace
+              <RotateCcw className="w-3.5 h-3.5" />
+              Run Another Investigation
             </button>
           </div>
         </div>

@@ -19,6 +19,7 @@ export interface StructuredReportPayload {
   json_payload: Record<string, any>;
   risk_level: string;
   recommendation: string;
+  confidence?: number;
 }
 
 export interface ReportAnnotation {

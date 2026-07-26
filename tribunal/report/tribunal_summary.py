@@ -72,8 +72,13 @@ class TribunalSummaryBuilder:
             f"The Tribunal determined consensus category '{v_cat}' for primary hypothesis '{prim_hyp}' "
             f"with Net Support Score of {prim_score:.4f} and calibrated confidence of {conf:.4f}."
         )
-        if sec_hyp:
-            narrative += f" Secondary hypothesis '{sec_hyp}' scored {sec_score:.4f} (Confidence Gap Delta: {gap:.4f})."
+        if sec_hyp and sec_score is not None:
+            gap_str = f"{gap:.4f}" if gap is not None else "N/A"
+            narrative += f" Secondary hypothesis '{sec_hyp}' scored {sec_score:.4f} (Confidence Gap Delta: {gap_str})."
+
+        pattern_rejections = [r for r in rejected if isinstance(r, dict) and "does not match target query pattern" in r.get("rejection_reason", "")]
+        if pattern_rejections:
+            narrative += " Note: Higher-confidence anomalies in other pattern categories were not selected because the investigation objective was specifically aligned to the requested query pattern."
 
         return {
             "verdict": v_cat,

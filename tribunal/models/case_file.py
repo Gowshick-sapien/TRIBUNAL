@@ -9,6 +9,8 @@ from typing import Any
 @dataclass
 class CaseFile:
     case_id: str | None = None
+    target_pattern: str | None = None
+    intent: str | None = None
     dominant_confidence: float = 0.0
     contradictions_found: list[str] = field(default_factory=list)
     defense_skipped: bool = False

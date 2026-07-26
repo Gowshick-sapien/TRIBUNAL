@@ -24,4 +24,5 @@ class ReportResponse(BaseModel):
     sections: List[ReportSectionSchema] = Field(default_factory=list, description="Structured 10-section breakdown")
     json_payload: Dict[str, Any] = Field(default_factory=dict, description="Raw structured JSON report payload")
     risk_level: str = Field(default="MEDIUM", description="Assessed risk level")
+    confidence: float = Field(default=0.0, description="Calibrated tribunal confidence score")
     recommendation: str = Field(default="", description="Executive recommendation")

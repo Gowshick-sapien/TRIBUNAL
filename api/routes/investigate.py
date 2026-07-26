@@ -35,7 +35,19 @@ def run_investigation(
     service: InvestigationService = Depends(get_investigation_service),
 ) -> InvestigationResponse:
     """Execute complete TRIBUNAL investigation."""
-    return service.run_investigation(request)
+    print("=" * 80)
+    print("REQUEST RECEIVED")
+    print(request.query)
+    print("=" * 80)
+
+    response = service.run_investigation(request)
+
+    print("=" * 80)
+    print("FINAL REPORT")
+    print(response.report.summary if hasattr(response, "report") and response.report else response)
+    print("=" * 80)
+
+    return response
 
 
 @router.post(

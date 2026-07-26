@@ -71,6 +71,14 @@ class BaseInvestigationExpert(BaseExpert, ABC):
             return ExpertResult(cards=[], case_file=case_file)
 
         candidates = self._candidate_selector.select_candidates(transactions, execution_plan)
+        expert_name = self.__class__.__name__
+        acct_col = "from_account" if "from_account" in candidates.columns else ("Account" if "Account" in candidates.columns else None)
+        accts = candidates[acct_col].unique() if acct_col else []
+        print("=" * 80)
+        print(f"{expert_name} Input")
+        print(accts)
+        print("=" * 80)
+
         if candidates.empty:
             return ExpertResult(cards=[], case_file=case_file)
 

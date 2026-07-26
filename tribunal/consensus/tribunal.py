@@ -81,7 +81,8 @@ class Tribunal:
 
         # Stage 4: Consensus Engine
         t0 = time.perf_counter()
-        consensus_res = self.consensus_engine.evaluate(resolved_scores)
+        target_pattern = getattr(case_file, "target_pattern", None)
+        consensus_res = self.consensus_engine.evaluate(resolved_scores, target_pattern=target_pattern)
         dur4 = (time.perf_counter() - t0) * 1000.0
         trace.add_step(
             stage_name="Consensus Formation",

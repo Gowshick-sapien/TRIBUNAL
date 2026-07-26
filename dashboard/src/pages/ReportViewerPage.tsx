@@ -91,7 +91,7 @@ export const ReportViewerPage: React.FC = () => {
         id={report.investigation_id}
         generatedAt={report.generated_at}
         riskLevel={report.risk_level}
-        confidence={0.85}
+        confidence={report.confidence ?? report.json_payload?.tribunal_summary?.confidence ?? report.json_payload?.verdict?.confidence ?? 0.0}
         recommendation={report.recommendation}
         dataset="default"
         onNavigateGraph={() => navigate(`/graph/${report.investigation_id}`)}
@@ -129,7 +129,12 @@ export const ReportViewerPage: React.FC = () => {
           <DefenseSection />
 
           {/* Tribunal Section */}
-          <TribunalSection />
+          <TribunalSection
+            winningHypothesis={report.json_payload?.tribunal_summary?.primary_hypothesis || report.json_payload?.verdict?.winning_hypothesis}
+            runnerUp={report.json_payload?.tribunal_summary?.secondary_hypothesis || report.json_payload?.verdict?.runner_up_hypothesis || 'None'}
+            confidenceGap={report.json_payload?.tribunal_summary?.confidence_gap ?? report.json_payload?.verdict?.confidence_gap ?? 0.0}
+            supportMargin={report.json_payload?.tribunal_summary?.primary_score ?? report.json_payload?.verdict?.primary_score ?? report.json_payload?.verdict?.winning_score ?? 0.0}
+          />
 
           {/* Audit Section */}
           <AuditSection />

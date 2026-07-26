@@ -41,6 +41,7 @@ Supported Intents:
 - "{NETWORK_ANALYSIS}": Analyze transaction graph connections or network topology
 - "{EDA_REQUEST}": Request statistical distribution or summary of dataset
 - "{CASE_SUMMARY}": Summarize existing investigation case
+- "unsupported": Query is unrelated to financial investigations, AML, transactions, accounts, or risk (e.g. general knowledge, jokes, weather, recipes)
 
 Supported Patterns:
 - "{STRUCTURING}", "{SMURFING}", "{VELOCITY}", "{FAN_IN}", "{FAN_OUT}", "{SCATTER_GATHER}", "{GATHER_SCATTER}", "{HIGH_VALUE_TRANSFER}"

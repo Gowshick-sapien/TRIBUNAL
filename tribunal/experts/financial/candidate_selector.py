@@ -54,10 +54,7 @@ class CandidateSelector:
                     df[from_col].astype(str).isin(entity_set) | df[to_col].astype(str).isin(entity_set)
                 ].copy()
 
-                if not matched_df.empty:
-                    df = matched_df
-                else:
-                    logger.info(f"Entities {entity_set} yielded no direct matches in sample. Fallback to top active dataset rows.")
+                df = matched_df
 
         # 2. Filter by currency if requested
         if "currency" in filters and filters["currency"]:
@@ -81,5 +78,13 @@ class CandidateSelector:
             active_df = df[df[amount_col] > 0]
             if not active_df.empty:
                 df = active_df
+
+        acct_col = "from_account" if "from_account" in df.columns else ("Account" if "Account" in df.columns else None)
+        candidate_accounts = df[acct_col].unique() if acct_col else []
+        print("=" * 80)
+        print("Candidate Selector (Financial)")
+        print("Planner Entities:", target_entities)
+        print("Candidates:", candidate_accounts)
+        print("=" * 80)
 
         return df

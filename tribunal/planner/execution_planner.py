@@ -43,6 +43,23 @@ class ExecutionPlanner:
         pattern = investigation_plan.target_pattern
         filters = dict(investigation_plan.filters or {})
 
+        if intent == "unsupported" or not getattr(investigation_plan, "is_domain_supported", True):
+            return ExecutionPlan(
+                run_eda=False,
+                expert_sequence=[],
+                filters={},
+                rationale=investigation_plan.rejection_reason or "Query is outside supported AML investigation domain.",
+                target_pattern=None,
+                assets=[],
+                tools=[],
+                needs_tribunal=False,
+                needs_report=False,
+                output_format="none",
+                is_supported=False,
+                intent="unsupported",
+                rejection_reason=investigation_plan.rejection_reason or "Query is outside supported AML investigation domain.",
+            )
+
         # Transfer entities into filters if present
         if investigation_plan.entities and "entities" not in filters:
             filters["entities"] = investigation_plan.entities

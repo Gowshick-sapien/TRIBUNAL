@@ -10,9 +10,9 @@ interface TribunalSectionProps {
 
 export const TribunalSection: React.FC<TribunalSectionProps> = ({
   winningHypothesis = 'Financial Structuring & Velocity Anomaly',
-  runnerUp = 'Unusual High Volume Transfer',
-  confidenceGap = 0.42,
-  supportMargin = 0.65,
+  runnerUp = 'None',
+  confidenceGap = 0.0,
+  supportMargin = 0.0,
 }) => {
   return (
     <div id="sec-tribunal" className="surface-card p-6 rounded-lg border border-slate-200 space-y-4 scroll-mt-6 shadow-xs font-sans">

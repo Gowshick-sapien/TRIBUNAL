@@ -53,19 +53,43 @@ class ReportBuilder:
         # Section 2: Query Interpretation
         intent = "unknown"
         experts_invoked = []
+        target_entities: list[str] = []
+        resolved_target_id = "N/A"
+        target_resolution_status = "GENERAL_SEARCH"
+
         if planner_context:
             inv_plan = getattr(planner_context, "investigation_plan", None)
             exec_plan = getattr(planner_context, "execution_plan", None)
             if inv_plan:
                 intent = getattr(inv_plan, "intent", "unknown")
+                if getattr(inv_plan, "entities", None):
+                    target_entities.extend([str(e) for e in inv_plan.entities])
+                elif getattr(inv_plan, "customer_id", None):
+                    target_entities.append(str(inv_plan.customer_id))
             if exec_plan:
                 experts_invoked = getattr(exec_plan, "expert_sequence", [])
+                if getattr(exec_plan, "filters", None) and isinstance(exec_plan.filters, dict):
+                    cust_id = exec_plan.filters.get("customer_id")
+                    if cust_id and str(cust_id) not in target_entities:
+                        target_entities.append(str(cust_id))
+                    ents = exec_plan.filters.get("entities")
+                    if isinstance(ents, list):
+                        for ent in ents:
+                            if str(ent) not in target_entities:
+                                target_entities.append(str(ent))
+
+        if target_entities:
+            target_resolution_status = "EXACT_MATCH"
+            resolved_target_id = ", ".join(target_entities)
 
         query_interp = {
             "raw_query": query_text or "General Investigation Query",
             "parsed_intent": intent,
             "experts_invoked": experts_invoked,
-            "interpretation_statement": f"User query '{query_text}' parsed as intent '{intent}' targeting experts {experts_invoked}.",
+            "target_entities": target_entities,
+            "resolved_target_id": resolved_target_id,
+            "target_resolution_status": target_resolution_status,
+            "interpretation_statement": f"User query '{query_text}' parsed as intent '{intent}' targeting target '{resolved_target_id}' ({target_resolution_status}) with experts {experts_invoked}.",
         }
 
         # Section 3: Investigation Timeline
@@ -107,6 +131,8 @@ class ReportBuilder:
             "generated_at": now_str,
             "case_id": case_id,
             "engine_version": "C.7",
+            "confidence": exec_summary.get("calibrated_confidence", 0.0),
+            "risk_level": exec_summary.get("risk_level", "MEDIUM"),
         }
 
         # Construct InvestigationReport

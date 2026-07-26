@@ -29,7 +29,11 @@ class ConsensusResult:
 class ConsensusEngine:
     """Ranks competing hypotheses and applies deterministic consensus rules to determine the winning hypothesis and category."""
 
-    def evaluate(self, resolved_hypotheses: list[ResolvedHypothesis]) -> ConsensusResult:
+    def evaluate(
+        self,
+        resolved_hypotheses: list[ResolvedHypothesis],
+        target_pattern: str | None = None,
+    ) -> ConsensusResult:
         """Deterministically rank hypotheses and evaluate consensus rules."""
         if not resolved_hypotheses:
             default_hyp = ResolvedHypothesis(
@@ -48,9 +52,31 @@ class ConsensusEngine:
                 rejection_reason="No hypotheses available for deliberation",
             )
 
+        candidates = list(resolved_hypotheses)
+        rejected_list: list[dict[str, Any]] = []
+
+        # Intent & Pattern Filtering: If a specific target pattern was requested, prioritize matching hypotheses
+        if target_pattern and str(target_pattern).lower() not in ("general", "none"):
+            pat = str(target_pattern).lower().strip()
+            matching_candidates = [
+                h for h in candidates
+                if h.is_defense_hypothesis or pat in h.title.lower()
+            ]
+            if matching_candidates:
+                non_matching = [h for h in candidates if h not in matching_candidates]
+                for r in non_matching:
+                    rejected_list.append({
+                        "hypothesis_id": r.hypothesis_id,
+                        "title": r.title,
+                        "net_support_score": r.net_support_score,
+                        "raw_support_score": r.raw_support_score,
+                        "rejection_reason": f"Hypothesis pattern does not match target query pattern '{target_pattern}'. Higher-confidence anomalies in other pattern categories were not selected because the investigation objective was specifically to identify '{target_pattern}' patterns.",
+                    })
+                candidates = matching_candidates
+
         # Sort hypotheses by net_support_score descending, then raw_support_score descending
         ranked = sorted(
-            resolved_hypotheses,
+            candidates,
             key=lambda h: (h.net_support_score, h.raw_support_score),
             reverse=True,
         )
@@ -59,8 +85,7 @@ class ConsensusEngine:
         runner_up = ranked[1] if len(ranked) > 1 else None
         confidence_gap = round(winner.net_support_score - (runner_up.net_support_score if runner_up else 0.0), 4)
 
-        # Format rejected hypotheses list with explicit rejection reasons
-        rejected_list: list[dict[str, Any]] = []
+        # Format remaining rejected hypotheses list with explicit rejection reasons
         for r in ranked[1:]:
             reason = f"Lower net support score ({r.net_support_score:.2f} vs winner {winner.net_support_score:.2f})"
             if r.opposing_score > 0.30:

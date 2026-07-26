@@ -7,6 +7,10 @@ interface ExecutiveSummaryProps {
 }
 
 export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ report }) => {
+  const confVal = report.confidence ?? report.json_payload?.tribunal_summary?.confidence ?? report.json_payload?.verdict?.confidence ?? 0.0;
+  const confPercent = Math.round(confVal * 100);
+  const winningHyp = report.json_payload?.tribunal_summary?.primary_hypothesis || report.json_payload?.verdict?.winning_hypothesis || report.recommendation || 'Investigation Completed';
+
   return (
     <div id="sec-summary" className="surface-card p-6 rounded-lg border border-slate-200 space-y-4 scroll-mt-6 shadow-xs font-sans">
       <div className="flex items-center gap-2 text-blue-600 font-sans text-xs font-semibold uppercase tracking-wider border-b border-slate-200 pb-2.5">
@@ -20,7 +24,7 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ report }) =>
         </div>
         <div className="p-4 rounded-md bg-slate-50 border border-slate-200 space-y-1">
           <span className="text-[10px] text-slate-500 uppercase font-semibold">Calibrated Confidence</span>
-          <p className="text-lg font-bold text-blue-600 font-mono">85%</p>
+          <p className="text-lg font-bold text-blue-600 font-mono">{confPercent}%</p>
         </div>
         <div className="p-4 rounded-md bg-slate-50 border border-slate-200 space-y-1">
           <span className="text-[10px] text-slate-500 uppercase font-semibold">Engine Status</span>
@@ -30,12 +34,12 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ report }) =>
 
       <div className="space-y-2">
         <span className="text-xs font-sans text-slate-500 uppercase font-semibold">Primary Executive Recommendation</span>
-        <div className="p-4 rounded-md bg-rose-50 border border-rose-200 text-slate-800 font-sans text-xs leading-relaxed space-y-1">
-          <div className="flex items-center gap-2 text-rose-700 font-semibold">
+        <div className="p-4 rounded-md bg-slate-50 border border-slate-200 text-slate-800 font-sans text-xs leading-relaxed space-y-1">
+          <div className="flex items-center gap-2 text-blue-700 font-semibold">
             <ShieldAlert className="w-4 h-4" /> {report.recommendation}
           </div>
           <p className="text-slate-700">
-            Target customer exhibits multiple severe financial velocity and structuring indicators corroborated by cross-expert analysis. Immediate escalation for Suspicious Activity Report (SAR) filing recommended.
+            {winningHyp}
           </p>
         </div>
       </div>
