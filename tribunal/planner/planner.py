@@ -66,16 +66,7 @@ class Planner:
         # 3: Execution Planner phase
         t_planner_start = time.perf_counter()
         ctx.execution_plan = self.execution_planner.plan(ctx.investigation_plan)
-        print("=" * 80)
-        print("EXECUTION PLAN")
-        print(ctx.execution_plan)
-        if ctx.execution_plan:
-            print("intent:", getattr(ctx.execution_plan, "intent", None))
-            print("target_entities:", getattr(ctx.execution_plan, "target_entities", None))
-            print("customer_id:", getattr(ctx.execution_plan, "customer_id", None))
-            print("experts:", getattr(ctx.execution_plan, "experts", None))
-            print("filters:", getattr(ctx.execution_plan, "filters", None))
-        print("=" * 80)
+        logger.debug("Execution plan generated: %s", ctx.execution_plan)
         t_planner_end = time.perf_counter()
 
         planner_ms = round((t_planner_end - t_planner_start) * 1000, 3)

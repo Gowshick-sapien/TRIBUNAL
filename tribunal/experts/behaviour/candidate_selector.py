@@ -58,10 +58,6 @@ class CandidateSelector:
 
         acct_col = "from_account" if "from_account" in df.columns else ("Account" if "Account" in df.columns else None)
         candidate_accounts = df[acct_col].unique() if acct_col else []
-        print("=" * 80)
-        print("Candidate Selector (Behaviour)")
-        print("Planner Entities:", target_entities)
-        print("Candidates:", candidate_accounts)
-        print("=" * 80)
+        logger.debug("Candidate Selector (Behaviour) — Entities: %s, Candidates: %s", target_entities, candidate_accounts)
 
         return df
