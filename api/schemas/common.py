@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -26,3 +26,17 @@ class ErrorResponse(BaseModel):
         description="ISO 8601 UTC timestamp of the error"
     )
     details: Optional[Dict[str, Any]] = Field(default=None, description="Optional detailed error context")
+
+
+class DatasetItemSchema(BaseModel):
+    """Metadata describing an available dataset."""
+    id: str = Field(..., description="Unique dataset alias identifier (e.g. 'default', 'li_small')")
+    name: str = Field(..., description="Display name")
+    description: str = Field(..., description="Human-readable description")
+    default: bool = Field(False, description="Whether this is the default dataset")
+
+
+class DatasetListResponse(BaseModel):
+    """Response returning list of available datasets."""
+    datasets: List[DatasetItemSchema] = Field(default_factory=list, description="Supported dataset metadata items")
+    total: int = Field(..., description="Total count of available datasets")

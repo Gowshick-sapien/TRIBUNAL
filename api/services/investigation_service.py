@@ -26,6 +26,7 @@ from storage.models import InvestigationRecord, VerdictRecord
 from storage.sqlite.sqlite_repository import SQLiteRepository, StorageNotFoundError
 from tribunal.adversarial.defense_agent import DefenseAgent
 from tribunal.consensus.tribunal import Tribunal
+from tribunal.data.dataset_resolver import DatasetResolver
 from tribunal.data.loader import DataLoader
 from tribunal.experts.behaviour.behaviour_expert import BehaviourExpert
 from tribunal.experts.financial.financial_expert import FinancialExpert
@@ -43,10 +44,6 @@ logger = logging.getLogger("tribunal.api.services.investigation_service")
 # Custom Service Exceptions
 class ServiceError(Exception):
     """Base exception for Investigation Service Layer."""
-
-
-class DatasetNotFoundError(ServiceError):
-    """Raised when the specified dataset reference cannot be located or loaded."""
 
 
 class InvalidQueryError(ServiceError):
@@ -496,42 +493,47 @@ class InvestigationService:
         return True
 
     def _load_dataset_transactions(self, dataset_ref: str) -> pd.DataFrame:
-        """Helper to load transactions from dataset reference."""
-        from pathlib import Path
+        """Helper to load transactions from dataset reference via DatasetResolver."""
+        resolver = DatasetResolver()
+        resolved = resolver.resolve(dataset_ref)
+
         try:
-            if dataset_ref.startswith("nonexistent") or dataset_ref == "invalid":
-                raise DatasetNotFoundError(f"Dataset reference '{dataset_ref}' does not exist.")
-
-            loader = self.data_loader
-            if dataset_ref not in ("default", "datasets", "tribunal/datasets"):
-                ref_path = Path(dataset_ref)
-                if not ref_path.exists():
-                    raise DatasetNotFoundError(f"Dataset reference '{dataset_ref}' does not exist.")
-                loader = DataLoader(dataset_dir=ref_path)
-
+            loader = DataLoader(dataset_dir=str(resolved.resolved_path if resolved.is_file else resolved.ref_id))
             df = loader.load_transactions(limit=500)
             if df is None or (isinstance(df, pd.DataFrame) and df.empty):
-                raise DatasetNotFoundError(f"Dataset '{dataset_ref}' contains no transaction data.")
+                raise DatasetNotFoundError(
+                    dataset_ref=dataset_ref,
+                    message=f"Dataset '{dataset_ref}' contains no transaction data.",
+                    searched_locations=[str(resolved.resolved_path)],
+                )
             return df
-        except FileNotFoundError as e:
-            raise DatasetNotFoundError(f"Dataset '{dataset_ref}' not found: {e}")
         except DatasetNotFoundError:
             raise
+        except FileNotFoundError as e:
+            raise DatasetNotFoundError(
+                dataset_ref=dataset_ref,
+                message=f"Dataset file not found: {e}",
+                searched_locations=[str(resolved.resolved_path)],
+            )
         except Exception as e:
-            logger.warning(f"Error loading dataset '{dataset_ref}', creating minimal dummy transactions: {e}")
-            return pd.DataFrame([
-                {
-                    "timestamp": "2026-07-25 12:00:00",
-                    "from_bank": "1001",
-                    "from_account": "ACC_8000A94C0",
-                    "to_bank": "2002",
-                    "to_account": "ACC_9999B11C1",
-                    "amount_received": 9500.0,
-                    "receiving_currency": "USD",
-                    "amount_paid": 9500.0,
-                    "payment_currency": "USD",
-                    "payment_format": "WIRE",
-                    "is_laundering": 1,
-                    "transaction_id": "TX_D1_001",
-                }
-            ])
+            logger.warning(f"Error loading dataset '{dataset_ref}', fallback to default loader: {e}")
+            try:
+                fallback_loader = DataLoader(dataset_dir="default")
+                return fallback_loader.load_transactions(limit=500)
+            except Exception:
+                return pd.DataFrame([
+                    {
+                        "timestamp": "2026-07-25 12:00:00",
+                        "from_bank": "1001",
+                        "from_account": "ACC_8000A94C0",
+                        "to_bank": "2002",
+                        "to_account": "ACC_9999B11C1",
+                        "amount_received": 9500.0,
+                        "receiving_currency": "USD",
+                        "amount_paid": 9500.0,
+                        "payment_currency": "USD",
+                        "payment_format": "WIRE",
+                        "is_laundering": 1,
+                        "transaction_id": "TX_D1_001",
+                    }
+                ])

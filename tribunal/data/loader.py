@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Optional, Union
 import pandas as pd
 
+from tribunal.data.dataset_resolver import DatasetResolver, DatasetNotFoundError
 from tribunal.models.account import Account
 from tribunal.models.transaction import Transaction
 
@@ -15,52 +16,70 @@ class DataLoader:
     """Canonical data loader for TRIBUNAL.
     
     Serves as the single point of entry for loading transaction and account data.
-    Prefers optimized Parquet formats from datasets/processed/, falling back to CSVs if required.
+    Prefers DatasetResolver for path resolution, supporting both direct file paths and directory candidates.
     """
 
-    def __init__(self, dataset_dir: Union[str, Path] = "datasets"):
-        self.dataset_dir = Path(dataset_dir)
-        self.raw_dir = self.dataset_dir / "raw"
-        self.processed_dir = self.dataset_dir / "processed"
+    def __init__(self, dataset_dir: Union[str, Path] = "default"):
+        self.dataset_ref = str(dataset_dir)
+        self.resolver = DatasetResolver()
 
     def _resolve_transactions_path(self) -> Path:
-        """Locate the best available transactions dataset file."""
-        parquet_path = self.processed_dir / "transactions.parquet"
+        """Locate the best available transactions dataset file using DatasetResolver."""
+        resolved = self.resolver.resolve(self.dataset_ref)
+        if resolved.is_file:
+            return resolved.resolved_path
+
+        # If resolved path is a directory, search standard candidate files inside
+        dataset_path = resolved.resolved_path
+        parquet_path = dataset_path / "processed" / "transactions.parquet"
         if parquet_path.exists():
             return parquet_path
-        
-        # Check raw or fallback dataset dir
+
         for p in [
-            self.raw_dir / "LI-Small_Trans.csv",
-            self.dataset_dir / "LI-Small_Trans.csv",
-            self.raw_dir / "transactions.csv",
-            self.dataset_dir / "transactions.csv",
+            dataset_path / "raw" / "LI-Small_Trans.csv",
+            dataset_path / "LI-Small_Trans.csv",
+            dataset_path / "raw" / "transactions.csv",
+            dataset_path / "transactions.csv",
         ]:
             if p.exists():
                 return p
 
-        raise FileNotFoundError(
-            f"No transaction dataset found in {self.processed_dir}, {self.raw_dir}, or {self.dataset_dir}"
+        raise DatasetNotFoundError(
+            dataset_ref=self.dataset_ref,
+            message=f"No transaction dataset file found in '{dataset_path}'.",
+            searched_locations=[str(dataset_path)],
         )
 
     def _resolve_accounts_path(self) -> Path:
         """Locate the best available accounts dataset file."""
-        parquet_path = self.processed_dir / "accounts.parquet"
+        try:
+            resolved = self.resolver.resolve(self.dataset_ref)
+            dataset_path = resolved.resolved_path if not resolved.is_file else resolved.resolved_path.parent
+        except Exception:
+            dataset_path = Path("tribunal/datasets")
+
+        parquet_path = dataset_path / "processed" / "accounts.parquet"
         if parquet_path.exists():
             return parquet_path
 
-        # Check raw or fallback dataset dir
         for p in [
-            self.raw_dir / "LI-Small_accounts.csv",
-            self.dataset_dir / "LI-Small_accounts.csv",
-            self.raw_dir / "accounts.csv",
-            self.dataset_dir / "accounts.csv",
+            dataset_path / "raw" / "LI-Small_accounts.csv",
+            dataset_path / "LI-Small_accounts.csv",
+            dataset_path / "raw" / "accounts.csv",
+            dataset_path / "accounts.csv",
         ]:
             if p.exists():
                 return p
 
-        raise FileNotFoundError(
-            f"No account dataset found in {self.processed_dir}, {self.raw_dir}, or {self.dataset_dir}"
+        # Fallback to default raw directory
+        fallback = Path("tribunal/datasets/LI-Small_accounts.csv")
+        if fallback.exists():
+            return fallback
+
+        raise DatasetNotFoundError(
+            dataset_ref=self.dataset_ref,
+            message=f"No account dataset file found in '{dataset_path}'.",
+            searched_locations=[str(dataset_path)],
         )
 
     def load_transactions(
@@ -69,13 +88,7 @@ class DataLoader:
         limit: Optional[int] = None,
         account_id: Optional[str] = None,
     ) -> Union[pd.DataFrame, List[Transaction]]:
-        """Load transaction records into DataFrame or list of Transaction objects.
-        
-        Args:
-            as_dataclasses: If True, returns List[Transaction], else pd.DataFrame
-            limit: Maximum number of rows to load
-            account_id: Optional account filter (from_account or to_account)
-        """
+        """Load transaction records into DataFrame or list of Transaction objects."""
         file_path = self._resolve_transactions_path()
         logger.info(f"Loading transactions from {file_path}")
 
@@ -84,12 +97,6 @@ class DataLoader:
             if limit:
                 df = df.head(limit)
         else:
-            # CSV Load with standardized column names
-            col_names = [
-                "Timestamp", "From Bank", "Account", "To Bank", "Account.1",
-                "Amount Received", "Receiving Currency", "Amount Paid",
-                "Payment Currency", "Payment Format", "Is Laundering"
-            ]
             df = pd.read_csv(file_path, nrows=limit)
             if "Account.1" not in df.columns and "To Account" in df.columns:
                 df = df.rename(columns={
@@ -97,7 +104,6 @@ class DataLoader:
                     "To Account": "Account.1"
                 })
 
-        # Standardize column naming for internal consistency
         rename_map = {
             "Timestamp": "timestamp",
             "From Bank": "from_bank",
@@ -113,18 +119,15 @@ class DataLoader:
         }
         df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-        # Ensure datetime parsing if needed
-        if df["timestamp"].dtype == "object":
+        if "timestamp" in df.columns and df["timestamp"].dtype == "object":
             df["timestamp"] = pd.to_datetime(df["timestamp"], format="%Y/%m/%d %H:%M", errors="coerce")
 
-        # Optional account filter
         if account_id:
             df = df[(df["from_account"] == account_id) | (df["to_account"] == account_id)].copy()
 
         if not as_dataclasses:
             return df
 
-        # Convert to dataclasses
         transactions = []
         for idx, row in df.iterrows():
             txn = Transaction(
@@ -150,13 +153,7 @@ class DataLoader:
         limit: Optional[int] = None,
         account_id: Optional[str] = None,
     ) -> Union[pd.DataFrame, List[Account]]:
-        """Load account metadata into DataFrame or list of Account objects.
-        
-        Args:
-            as_dataclasses: If True, returns List[Account], else pd.DataFrame
-            limit: Maximum number of rows to load
-            account_id: Optional account number filter
-        """
+        """Load account metadata into DataFrame or list of Account objects."""
         file_path = self._resolve_accounts_path()
         logger.info(f"Loading accounts from {file_path}")
 
@@ -199,13 +196,17 @@ class DataLoader:
         account_id: Optional[str] = None,
         limit: Optional[int] = None,
     ) -> pd.DataFrame:
-        """Load persisted Feature Store DataFrame.
-        
-        Args:
-            account_id: Optional account filter
-            limit: Maximum number of rows to load
-        """
-        fs_path = self.processed_dir / "feature_store.parquet"
+        """Load persisted Feature Store DataFrame."""
+        try:
+            resolved = self.resolver.resolve(self.dataset_ref)
+            dataset_path = resolved.resolved_path if not resolved.is_file else resolved.resolved_path.parent
+        except Exception:
+            dataset_path = Path("tribunal/datasets")
+
+        fs_path = dataset_path / "processed" / "feature_store.parquet"
+        if not fs_path.exists():
+            fs_path = Path("tribunal/datasets/processed/feature_store.parquet")
+
         if not fs_path.exists():
             raise FileNotFoundError(
                 f"Feature store not found at {fs_path}. Run FeatureStoreBuilder.build() first."

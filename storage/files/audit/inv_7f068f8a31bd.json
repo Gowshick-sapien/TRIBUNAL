@@ -1,0 +1,11 @@
+[
+  {
+    "id": 56,
+    "investigation_id": "inv_7f068f8a31bd",
+    "event": "PERSISTED",
+    "timestamp": "2026-07-26T04:31:35.244653+00:00",
+    "details": {
+      "status": "Successfully persisted all artifacts"
+    }
+  }
+]

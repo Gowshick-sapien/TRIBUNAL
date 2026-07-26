@@ -7,12 +7,12 @@ from fastapi.responses import JSONResponse
 
 from api.schemas.common import ErrorResponse
 from api.services.investigation_service import (
-    DatasetNotFoundError,
     InvalidQueryError,
     InvestigationExecutionError,
     InvestigationNotFoundError,
     ServiceError,
 )
+from tribunal.data.dataset_resolver import DatasetNotFoundError
 from storage.sqlite.sqlite_repository import (
     DatabaseUnavailableError,
     InvestigationAlreadyExistsError,
@@ -29,11 +29,20 @@ def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(DatasetNotFoundError)
     async def dataset_not_found_handler(request: Request, exc: DatasetNotFoundError) -> JSONResponse:
         logger.warning(f"Dataset Not Found: {exc}")
+        details = {}
+        if hasattr(exc, "searched_locations") and exc.searched_locations:
+            details["searched_locations"] = exc.searched_locations
+        if hasattr(exc, "hint") and exc.hint:
+            details["hint"] = exc.hint
+        if hasattr(exc, "dataset_ref") and exc.dataset_ref:
+            details["dataset_reference"] = exc.dataset_ref
+
         payload = ErrorResponse(
             error="DatasetNotFound",
             message=str(exc),
             status_code=status.HTTP_404_NOT_FOUND,
             timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            details=details if details else None,
         )
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=payload.model_dump())
 
