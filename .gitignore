@@ -52,12 +52,17 @@ storage/files/audit/*
 *~
 .DS_Store
 Thumbs.db
+.system_generated/
+.agents/
 
-# 6. Logs & Temporary Scratch Files
+# 6. Logs, Export Files & Temporary Scratch Files
 *.log
 *.tmp
 temp/
 scratch/
+tribunal_search_results.csv
+tribunal_search_results.json
+evidence_graph_*.png
 
 # 7. Datasets & Model Artifacts
 tribunal/datasets/*.csv

@@ -4,6 +4,8 @@ import {
   Home,
   PlusCircle,
   History,
+  Database,
+  ArrowLeftRight,
   Activity,
   Settings,
   Sparkles,
@@ -13,6 +15,8 @@ export const Sidebar: React.FC = () => {
   const navItems = [
     { to: '/', label: 'Home Overview', icon: Home, exact: true },
     { to: '/investigate', label: 'New Investigation', icon: PlusCircle, highlight: true },
+    { to: '/explorer', label: 'Repository Explorer', icon: Database },
+    { to: '/compare', label: 'Compare Workspace', icon: ArrowLeftRight },
     { to: '/history', label: 'Investigation History', icon: History },
     { to: '/system', label: 'System & Health', icon: Activity },
     { to: '/settings', label: 'Settings', icon: Settings },
@@ -55,10 +59,10 @@ export const Sidebar: React.FC = () => {
         <div className="p-3.5 rounded-xl bg-gradient-to-br from-cyan-950/40 to-slate-900 border border-cyan-800/40">
           <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold mb-1">
             <Sparkles className="w-4 h-4" />
-            Agentic Engine D.3
+            Agentic Engine Platform
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
-            Exposes multi-expert reasoning, evidence graphs, and adversarial tribunal deliberation.
+            Exposes multi-expert reasoning, evidence graphs, repository search, and tribunal consensus.
           </p>
           <NavLink
             to="/investigate"
@@ -73,7 +77,7 @@ export const Sidebar: React.FC = () => {
       <div className="border-t border-slate-800/80 pt-3 text-[11px] font-mono text-slate-500 flex flex-col gap-1 px-1">
         <div className="flex justify-between">
           <span>Platform Phase</span>
-          <span className="text-slate-300 font-bold">Phase D.3</span>
+          <span className="text-slate-300 font-bold">Phase D.5</span>
         </div>
         <div className="flex justify-between">
           <span>Backend REST API</span>

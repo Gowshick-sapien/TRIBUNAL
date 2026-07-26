@@ -5,6 +5,8 @@ import { Sidebar } from './components/layout/Sidebar';
 import { HomePage } from './pages/HomePage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { HistoryPage } from './pages/HistoryPage';
+import { ExplorerPage } from './pages/ExplorerPage';
+import { ComparePage } from './pages/ComparePage';
 import { ViewerPage } from './pages/ViewerPage';
 import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { SystemPage } from './pages/SystemPage';
@@ -24,6 +26,8 @@ export const App: React.FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/investigate" element={<WorkspacePage />} />
               <Route path="/history" element={<HistoryPage />} />
+              <Route path="/explorer" element={<ExplorerPage />} />
+              <Route path="/compare" element={<ComparePage />} />
               <Route path="/investigation/:id" element={<ViewerPage />} />
               <Route path="/graph/:id" element={<EvidenceGraphPage />} />
               <Route path="/system" element={<SystemPage />} />
