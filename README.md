@@ -1,5 +1,6 @@
 # TRIBUNAL — Autonomous Multi-Expert Legal & Financial Investigative AI Framework
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Gowshick-sapien/TRIBUNAL)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB.svg)](https://react.dev/)
@@ -7,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > **Hackathon Master Submission Package**  
+> **Official Code Repository**: [https://github.com/Gowshick-sapien/TRIBUNAL](https://github.com/Gowshick-sapien/TRIBUNAL)  
 > **TRIBUNAL** is an autonomous, multi-expert AI investigation framework designed to analyze complex financial transaction networks, detect structuring and money laundering anomalies, construct dynamic evidence graphs, and generate calibrated, defensible verdicts with adversarial defense reviews.
 
 ---
@@ -17,9 +19,11 @@ Use the map below to locate all project deliverables, media assets, architecture
 
 | Deliverable / Asset | File Path / Location | Description |
 | :--- | :--- | :--- |
+| **Official GitHub Repository** | [https://github.com/Gowshick-sapien/TRIBUNAL](https://github.com/Gowshick-sapien/TRIBUNAL) | Canonical online source code repository |
 | **Presentation Slides (PPT/PDF)** | [`assets/ppt/`](assets/ppt/) | Hackathon pitch deck and presentation slides |
 | **Demonstration Video** | [`assets/video/`](assets/video/) | Full video demonstration and system walkthrough |
 | **Proposed Architecture Spec (Full)** | [`docs/Architecture_Design_Specification.md`](docs/Architecture_Design_Specification.md) | Canonical 1,300+ line architecture design specification (v2.0) |
+| **Walkthrough Visual Companion (Word)** | [`docs/End_to_End_Investigation_Walkthrough_Visual_Guide.docx`](docs/End_to_End_Investigation_Walkthrough_Visual_Guide.docx) | Printable MS Word companion with screenshot containers |
 | **System Architecture Summary** | [`docs/Architecture_Overview.md`](docs/Architecture_Overview.md) | High-level topology diagram and component breakdown |
 | **Architecture Diagrams & Visuals** | [`assets/diagrams/`](assets/diagrams/) | Multi-expert DAG, consensus engine & system topology diagrams |
 | **End-to-End Evaluation Walkthrough** | [`docs/End_to_End_Investigation_Walkthrough.md`](docs/End_to_End_Investigation_Walkthrough.md) | Step-by-step investigation walkthrough protocol |
@@ -29,6 +33,7 @@ Use the map below to locate all project deliverables, media assets, architecture
 | **Submission Deliverables Checklist** | [`submission_checklist.md`](submission_checklist.md) | Interactive progress and deliverables tracking matrix |
 | **Screenshots & UI Showcase** | [`assets/screenshots/`](assets/screenshots/) | High-resolution UI screenshots of dashboard and graph |
 | **Branding & Logos** | [`assets/logo/`](assets/logo/) | High-resolution project logo and banner assets |
+
 
 ---
 
@@ -191,8 +196,10 @@ D:\TRIBUNAL_Submission
 
 ## Complete Documentation Index
 
+- [Official GitHub Repository](https://github.com/Gowshick-sapien/TRIBUNAL)
 - [Canonical Architecture Design Specification](docs/Architecture_Design_Specification.md)
 - [TRIBUNAL End-to-End Investigation Walkthrough](docs/End_to_End_Investigation_Walkthrough.md)
+- [Walkthrough Visual Companion (MS Word Doc)](docs/End_to_End_Investigation_Walkthrough_Visual_Guide.docx)
 - [Detailed Installation Guide](docs/Installation_Guide.md)
 - [1-Page Quick Start Guide](docs/Quick_Start.md)
 - [Architecture Overview](docs/Architecture_Overview.md)
